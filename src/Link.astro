@@ -1,0 +1,20 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'a'>;
+
+const { rel, ...props } = Astro.props;
+
+let target = '_self';
+
+if (props.href?.toString().startsWith('http')) {
+  target = '_blank';
+}
+---
+
+<a
+  rel={['noopener noreferrer', rel].filter(Boolean).join(' ')}
+  target={target}
+  data-astro-prefetch={target === '_self' ? true : false}
+  {...props}
+><slot /></a>

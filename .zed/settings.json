@@ -5,14 +5,22 @@
     "source.fixAll.eslint": true,
     "source.organizeImports": true
   },
-  "prettier": {
-    "allowed": false
-  },
   "language_servers": ["!biome", "!oxfmt", "!oxlint", "!typescript-ls"],
   "languages": {
     "JavaScript": {
       "prettier": {
         "allowed": false
+      },
+      "external": {
+        "command": "pnpm",
+        "arguments": [
+          "exec",
+          "eslint",
+          "--fix",
+          "--stdin",
+          "--stdin-filename",
+          "{buffer_path}"
+        ]
       },
       "language_servers": ["eslint"]
     },
@@ -20,15 +28,56 @@
       "prettier": {
         "allowed": false
       },
+      "external": {
+        "command": "pnpm",
+        "arguments": [
+          "exec",
+          "eslint",
+          "--fix",
+          "--stdin",
+          "--stdin-filename",
+          "{buffer_path}"
+        ]
+      },
       "language_servers": ["vtsls", "eslint"]
     },
     "Astro": {
+      "prettier": {
+        "allowed": false
+      },
+      "external": {
+        "command": "pnpm",
+        "arguments": [
+          "exec",
+          "eslint",
+          "--fix",
+          "--stdin",
+          "--stdin-filename",
+          "{buffer_path}"
+        ]
+      },
       "language_servers": ["astro-language-server", "vtsls", "eslint"]
+    },
+    "JSON": {
+      "external": {
+        "command": "pnpm",
+        "arguments": [
+          "exec",
+          "eslint",
+          "--fix",
+          "--stdin",
+          "--stdin-filename",
+          "{buffer_path}"
+        ]
+      },
+      "language_servers": ["json-language-server", "vtsls", "eslint"]
+
     }
   },
   "lsp": {
     "eslint": {
       "settings": {
+        "useFlatConfig": true,
         "workingDirectories": ["./"],
         "rulesCustomizations": [
           {

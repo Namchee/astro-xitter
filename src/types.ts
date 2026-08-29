@@ -1,9 +1,8 @@
 export type XitterHost = {
-  type: 'x',
+  type: 'x';
 } | {
-  type: 'nitter',
-  host?: string;
-}
+  type: 'nitter'; host?: string;
+};
 
 interface XitterUser {
   name: string;
