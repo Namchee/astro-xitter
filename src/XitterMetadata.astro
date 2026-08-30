@@ -1,0 +1,91 @@
+---
+import type { Xitter } from '@/types';
+
+import Info from '@/icons/Info.astro';
+import Link from '@/Link.astro';
+
+interface Props {
+  tweet: Xitter;
+}
+
+const { tweet } = Astro.props;
+const { user, created_at, id_str } = tweet;
+
+const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
+---
+
+<div class="astro-xitter-metadata-container">
+  <Link
+    href={`https://x.com/${user.screen_name}/status/${id_str}`}
+    class="astro-xitter-metadata"
+  >
+    {
+      new Date(created_at).toLocaleString(locale, {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }
+  &#8239;&middot;&#8239;
+    {
+      new Date(created_at).toLocaleString(locale, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    }
+  </Link>
+
+  <Link
+    href="https://help.x.com/en/x-for-websites-ads-info-and-privacy"
+    class="group hover:bg-twitter-blue/10 p-[6px] rounded-full transition-colors"
+  >
+    <Info class="" />
+  </Link>
+</div>
+
+<style>
+.astro-xitter-metadata-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: var(--xitter-font-sm);
+
+    color: var(--xitter-subheading);
+
+    margin-bottom: calc(1.5 * var(--xitter-spacing));
+}
+
+.astro-xitter-metadata {
+    line-height: 1;
+
+    &:hover, &:focus-visible {
+        text-decoration-color: var(--xitter-subheading);
+    }
+}
+
+.astro-xitter-metadata-help {
+    background-color: transparent;
+
+    border-radius: 9999px;
+
+    transition: background-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+
+    &:hover, &:focus-visible {
+        background-color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+
+        & > .astro-xitter-metadata-help-icon {
+            color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+        }
+    }
+}
+
+.astro-xitter-metadata-help-icon {
+    width: calc(4 * var(--xitter-spacing));
+    height: calc(4 * var(--xitter-spacing));
+
+    transition: color var(--xitter-easing-duration) var(--xitter-easing-timing);
+
+    color: var(--xitter-subheading);
+}
+</style>

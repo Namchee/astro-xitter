@@ -1,0 +1,212 @@
+---
+import type { Xitter } from '@/types';
+
+import Chain from '@/icons/Chain.astro';
+import Checkmark from '@/icons/Checkmark.astro';
+import Heart from '@/icons/Heart.astro';
+import Reply from '@/icons/Reply.astro';
+import Link from '@/Link.astro';
+
+import { NumberFormatterOptions } from './const';
+
+interface Props {
+  tweet: Xitter;
+}
+
+const { tweet } = Astro.props;
+
+const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
+
+const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
+---
+
+<div class="astro-xitter-actions-container">
+  <Link
+    title="Like this Tweet"
+    class="astro-xitter-actions-link"
+    href={`https://x.com/intent/like?tweet_id=${tweet.id_str}`}
+  >
+    <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-like-container">
+      <Heart class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-like" />
+    </div>
+
+    <span class="astro-xitter-actions-link-label astro-xitter-action-link-label-like">
+      {format(tweet.favorite_count)}
+    </span>
+  </Link>
+
+  <Link
+    title="Reply this Tweet"
+    class="astro-xitter-actions-link"
+    href={`https://x.com/intent/tweet?in_reply_to=${tweet.id_str}`}
+  >
+    <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-reply-container">
+      <Reply class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-reply" />
+    </div>
+
+    <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-reply">
+      Reply
+    </span>
+  </Link>
+
+  <button
+    class="astro-xitter-actions-link flex astro-xitter-actions-copy-button"
+    data-tweet={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+  >
+    <div
+      class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container"
+    >
+      <Chain
+        class="astro-xitter-actions-link-icon astro-xitter-action-link-icon-copy"
+      />
+      <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check" />
+    </div>
+
+    <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">
+      Copy Link
+    </span>
+  </button>
+</div>
+
+<style>
+.astro-xitter-actions-container {
+    margin-bottom: calc(1.5 * var(--xitter-spacing));
+
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--xitter-spacing));
+}
+
+.astro-xitter-actions-link {
+    display: flex;
+    align-items: center;
+    gap: calc(0.5 * var(--xitter-spacing));
+
+    &:hover, &:focus-visible {
+        & > .astro-xitter-actions-link-icon-like-container {
+            background-color: color-mix(in oklch, var(--xitter-red) 10%, transparent);
+
+            & > .astro-xitter-actions-link-icon-like {
+                color: var(--xitter-red);
+            }
+
+            & > .astro-xitter-actions-link-label-like {
+                color: var(--xitter-red);
+                text-decoration-color: var(--xitter-red);
+            }
+        }
+
+        & > .astro-xitter-actions-link-icon-reply-container {
+            background-color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+
+            & > .astro-xitter-actions-link-icon-reply {
+                color: var(--xitter-blue);
+            }
+
+            & > .astro-xitter-actions-link-label-reply {
+                color: var(--xitter-blue);
+                text-decoration-color: var(--xitter-blue);
+            }
+        }
+
+        & > .astro-xitter-actions-link-icon-copy-container {
+            background-color: color-mix(in oklch, var(--xitter-green) 10%, transparent);
+
+            & > .astro-xitter-actions-link-icon-copy {
+                stroke: var(--xitter-green);
+            }
+
+            & > .astro-xitter-actions-link-label-copy {
+                stroke: var(--xitter-green);
+                text-decoration-color: var(--xitter-green);
+            }
+        }
+    }
+}
+
+.astro-xitter-actions-link-icon-container {
+    padding: calc(1.5 * var(--xitter-spacing));
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 9999px;
+    background-color: transparent;
+
+    transition: background-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+}
+
+.astro-xitter-actions-link-icon {
+    width: calc(4 * var(--xitter-spacing));
+    height: calc(4 * var(--xitter-spacing));
+
+    transition: color var(--xitter-easing-duration) var(--xitter-easing-timing);
+}
+
+.astro-xitter-actions-link-label {
+    font-weight: 600;
+    font-size: var(--xitter-font-sm);
+
+    color: var(--xitter-subheading);
+
+    text-decoration: underline;
+    text-underline-offset: var(2 * var(--xitter-spacing));
+    text-decoration-color: transparent;
+
+    transition: text-decoration-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+}
+
+.astro-xitter-actions-link-copy-button {
+    cursor: pointer;
+
+    &:disabled {
+        cursor: default;
+
+        & > .astro-xitter-actions-link-copy-icon {
+            stroke: var(--xitter-subheading);
+        }
+
+        & > .astro-xitter-actions-link-label {
+            color: var(--xitter-subheading)
+            text-decoration-color: transparent;
+        }
+    }
+
+    & .astro-xitter-actions-link-icon-check {
+        display: none;
+    }
+}
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('.astro-xitter-actions-link-copy');
+
+  for (const b of buttons) {
+    const button = b as HTMLButtonElement;
+
+    button.addEventListener('click', async () => {
+      const tweet = button.dataset.tweet;
+      const copy = button.querySelector('.astro-xitter-actions-link-icon-copy');
+      const check = button.querySelector('.astro-xitter-actions-link-icon-check');
+      const text = button.querySelector('span');
+
+      if (!navigator.clipboard || !tweet || !copy || !check || !text) {
+        return;
+      }
+
+      await navigator.clipboard.writeText(tweet);
+
+      text.textContent = 'Copied!';
+      copy.classList.toggle('hidden');
+      check.classList.toggle('hidden');
+      button.disabled = true;
+
+      setTimeout(() => {
+        text.textContent = 'Copy Link';
+        copy.classList.toggle('hidden');
+        check.classList.toggle('hidden');
+        button.disabled = false;
+      }, 2_500);
+    });
+  }
+</script>

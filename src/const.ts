@@ -7,3 +7,11 @@ export const HostLabelMap = {
   x: 'X',
   nitter: 'Nitter',
 };
+
+export const NumberFormatterOptions: Intl.NumberFormatOptions = {
+  style: 'decimal',
+  notation: 'compact',
+  compactDisplay: 'short',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 1,
+};

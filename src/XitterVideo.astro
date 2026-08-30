@@ -30,8 +30,8 @@ const videoUrl = tweet.video?.variants
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}
   />
 
-  <button class="astro-xitter-play-button">
-    <Play class="astro-xitter-play-button-icon" />
+  <button class="astro-xitter-video-play-button">
+    <Play class="astro-xitter-video-play-button-icon" />
   </button>
 
   <Link
@@ -45,46 +45,78 @@ const videoUrl = tweet.video?.variants
 <style>
 .astro-xitter-video-container {
     position: relative;
+
     display: grid;
     place-items: center;
 }
 
 .astro-xitter-video {
-    width: 100%;
-    border-radius: calc(4 * var(--xitter-spacing));
-    background: black;
     grid-column-start: 1;
     grid-row-start: 1;
-    margin-bottom: calc(2 * var(--xitter-spacing));
+
+    width: 100%;
+
+    border-radius: calc(4 * var(--xitter-spacing));
+
+    background: black;
+
+    margin-bottom: calc(1.5 * var(--xitter-spacing));
 }
 
-.astro-xitter-play-button {
+.astro-xitter-video-play-button {
     width: calc(16 * var(--xitter-spacing));
     height: calc(16 * var(--xitter-spacing));
+
+    display: grid;
+    place-items: center;
     grid-column-start: 1;
     grid-row-start: 1;
     z-index: 1;
+
     background: var(--xitter-blue);
+
     border-radius: 9999px;
-    display: grid;
-    place-items: center;
     border: calc(4 * var(--xitter-spacing)) solid white;
+
     cursor: pointer;
+
     filter: brightness(1);
-    transition: filter var(--xitter-transition-duration) var(--xitter-transition-timing);
+    transition: filter var(--xitter-transition-duration) var(--xitter-transition-easing);
 
     &:hover, &:focus-visible {
         filter: brightness(0.9);
     }
 }
 
-.astro-xitter-play-button-icon {
+.astro-xitter-video-play-button-icon {
     width: calc(8 * var(--xitter-spacing));
     fill: white;
     stroke: white;
 }
 
-.astro-xitter
+.astro-xitter-video-link {
+    position: absolute;
+    z-index: 1;
+    top: calc(3 * var(--xitter-spacing));
+    right: calc(3 * var(--xitter-spacing));
+
+    background-color: var(--xitter-content) / 75%;
+    transition: filter var(--xitter-transition-duration) var(--xitter-transition-easing);
+    backdrop-filter: blur(5px);
+
+    font-size: var(--xitter-font-sm);
+    color: white;
+
+    padding: calc(2 * var(--xitter-spacing)) calc(4 * var(--xitter-spacing));
+
+    font-weight: 600;
+
+    border-radius: 9999px;
+
+    &:hover, &:focus-visible {
+        filter: brightness(110%);
+    }
+}
 </style>
 
 <script>
