@@ -4,15 +4,20 @@ export type XitterHost = {
   type: 'nitter'; host?: string;
 };
 
-interface XitterUser {
+export const XitterUserVerifiedType = {
+  Business: 'Business',
+  Government: 'Government',
+} as const;
+
+export interface XitterUser {
+  id: string;
   name: string;
   screen_name: string;
   profile_image_shape: string;
-  id: string;
+  profile_image_url_https: string;
   is_blue_verified: boolean;
   verified: boolean;
-  verified_type: 'Business' | 'Government';
-  profile_image_url_https: string;
+  verified_type?: typeof XitterUserVerifiedType[keyof typeof XitterUserVerifiedType];
 }
 
 interface XitterPhoto {
