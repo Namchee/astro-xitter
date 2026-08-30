@@ -1,16 +1,14 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Xitter } from './types';
 
 import Link from '@/Link.astro';
 
 interface Props {
   tweet: Xitter;
-  host: XitterHost;
 }
 
-const { tweet, host } = Astro.props;
+const { tweet } = Astro.props;
 
-const hostname = host.type === 'x' ? 'https://x.com' : host.host;
 const isTruncated = !!tweet.note_tweet;
 ---
 
@@ -22,7 +20,7 @@ const isTruncated = !!tweet.note_tweet;
         <>... </>
         <Link
           class="astro-xitter-content-truncated-notice astro-xitter-link"
-          href={`${hostname}/${tweet.user.screen_name}/status/${tweet.id_str}`}
+          href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
         >
           Show More
         </Link>

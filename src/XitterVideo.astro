@@ -1,0 +1,132 @@
+---
+import type { Xitter } from './types';
+
+import Play from '@/icons/Play.astro';
+import Link from '@/Link.astro';
+
+interface Props {
+  tweet: Xitter;
+}
+
+const { tweet } = Astro.props;
+
+const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
+
+const videoUrl = tweet.video?.variants
+  .filter(variant => variant.type === 'video/mp4')
+  .sort((a, b) => {
+    const widthA = Number(videoRegex.exec(a.src)?.groups?.width ?? 0);
+    const widthB = Number(videoRegex.exec(b.src)?.groups?.width ?? 0);
+    return widthB - widthA;
+  })[0]?.src;
+---
+
+<div class="astro-xitter-video-container">
+  <video
+    src={videoUrl}
+    poster={tweet.video?.poster}
+    referrerPolicy="no-referrer"
+    class="astro-xitter-video"
+    style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}
+  />
+
+  <button class="astro-xitter-play-button">
+    <Play class="astro-xitter-play-button-icon" />
+  </button>
+
+  <Link
+    class="absolute z-10 top-4 right-4 bg-black/25 hover:brightness-105 transition-all backdrop-blur-sm text-sm text-white py-2 px-4 font-semibold rounded-full text-sm"
+    href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+  >
+    Watch on X
+  </Link>
+</div>
+
+<style>
+.astro-xitter-video-container {
+    position: relative;
+    display: grid;
+    place-items: center;
+}
+
+.astro-xitter-video {
+    width: 100%;
+    border-radius: calc(4 * var(--xitter-spacing));
+    background: black;
+    grid-column-start: 1;
+    grid-row-start: 1;
+    margin-bottom: calc(2 * var(--xitter-spacing));
+}
+
+.astro-xitter-play-button {
+    width: calc(16 * var(--xitter-spacing));
+    height: calc(16 * var(--xitter-spacing));
+    grid-column-start: 1;
+    grid-row-start: 1;
+    z-index: 1;
+    background: var(--xitter-blue);
+    border-radius: 9999px;
+    display: grid;
+    place-items: center;
+    border: calc(4 * var(--xitter-spacing)) solid white;
+    cursor: pointer;
+    filter: brightness(1);
+    transition: filter var(--xitter-transition-duration) var(--xitter-transition-timing);
+
+    &:hover, &:focus-visible {
+        filter: brightness(0.9);
+    }
+}
+
+.astro-xitter-play-button-icon {
+    width: calc(8 * var(--xitter-spacing));
+    fill: white;
+    stroke: white;
+}
+
+.astro-xitter
+</style>
+
+<script>
+  const playButtons = document.querySelectorAll('.astro-xitter-play-button');
+
+  for (const pb of playButtons) {
+    pb.addEventListener('click', () => {
+      const playButton = pb as HTMLButtonElement;
+      const par = pb.parentElement;
+      if (!par) {
+        return;
+      }
+
+      const vid = par.querySelector('video');
+      const watchOn = par.querySelector('a');
+      if (!vid) {
+        return;
+      }
+
+      vid.setAttribute('controls', 'true');
+      vid.play();
+
+      playButton.style.opacity = '0';
+      playButton.style.pointerEvents = 'none';
+
+      if (watchOn) {
+        watchOn.style.opacity = '0';
+        watchOn.style.pointerEvents = 'none';
+
+        vid.addEventListener('pause', () => {
+          if (!vid.ended) {
+            watchOn.textContent = 'Continue watching on X';
+            watchOn.style.opacity = '1';
+            watchOn.style.pointerEvents = 'auto';
+          }
+        });
+
+        vid.addEventListener('play', () => {
+          watchOn.style.opacity = '0';
+          watchOn.style.pointerEvents = 'none';
+        });
+      }
+    });
+  }
+</script>

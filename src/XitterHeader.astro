@@ -1,24 +1,22 @@
 ---
-import type { XitterHost, XitterUser } from '@/types';
+import type { Xitter } from '@/types';
 
-import { HostLabelMap, XitterUserVerifiedType } from '@/const';
+import { XitterUserVerifiedType } from '@/const';
 import { Verified } from '@/icons/Verified.astro';
 import Link from '@/Link.astro';
 
 interface Props {
-  user: XitterUser;
-  host: XitterHost;
+  tweet: Xitter;
 }
 
-const { host, user } = Astro.props;
-
-const hostname = host.type === 'x' ? 'https://x.com' : host.host;
+const { tweet } = Astro.props;
+const user = tweet.user;
 ---
 
 <div class="astro-xitter-header-container">
   <Link
-    title={`View Profile on ${HostLabelMap[host.type]}`}
-    href={`${hostname}/${user.screen_name}`}
+    title="View Profile on X"
+    href={`https://x.com/${user.screen_name}`}
     class="astro-xitter-profile-picture"
   >
     <img
@@ -34,9 +32,9 @@ const hostname = host.type === 'x' ? 'https://x.com' : host.host;
 
   <div class="astro-xitter-profile">
     <Link
-      title={`View Profile on ${HostLabelMap[host.type]}`}
+      title="View Profile on X"
       class="astro-xitter-profile-name astro-xitter-link"
-      href={`${hostname}/${user.screen_name}`}
+      href={`https://x.com/${user.screen_name}`}
     >{user.name}
 
       {
@@ -52,23 +50,21 @@ const hostname = host.type === 'x' ? 'https://x.com' : host.host;
 
     <div class="astro-xitter-profile-screen">
       <Link
-        title={`View Profile on ${HostLabelMap[host.type]}`}
-        href={`${hostname}/${user.screen_name}`}
+        title="View Profile on X"
+        href={`https://x.com/${user.screen_name}`}
         class="astro-xitter-profile-screen-name"
       >
         @{user.screen_name}
       </Link>
 
-      {host.type === 'x' && <>
-        &middot;
+      &middot;
 
-        <Link
-          class="astro-xitter-profile-screen-follow astro-xitter-link"
-          href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
-        >
-          Follow
-        </Link>
-      </>}
+      <Link
+        class="astro-xitter-profile-screen-follow astro-xitter-link"
+        href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
+      >
+        Follow
+      </Link>
     </div>
   </div>
 </div>
@@ -77,8 +73,8 @@ const hostname = host.type === 'x' ? 'https://x.com' : host.host;
 .astro-xitter-header-container {
     display: flex;
     align-items: center;
-    gap: 2 * var(--xitter-spacing);
-    margin-bottom: 3 * var(--xitter-spacing);
+    gap: calc(2 * var(--xitter-spacing));
+    margin-bottom: calc(3 * var(--xitter-spacing));
 }
 
 .astro-xitter-profile-picture {
@@ -95,7 +91,7 @@ const hostname = host.type === 'x' ? 'https://x.com' : host.host;
     }
 
     &.astro-xitter-profile-avatar-square {
-        border-radius: 4 * var(--xitter-spacing);
+        border-radius: calc(4 * var(--xitter-spacing));
     }
 }
 

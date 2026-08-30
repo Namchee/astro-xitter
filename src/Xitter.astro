@@ -1,26 +1,25 @@
 ---
-import type { Xitter, XitterHost } from '@/types';
+import type { Xitter } from '@/types';
 
 import Chain from '@/icons/Chain.astro';
 import Checkmark from '@/icons/Checkmark.astro';
 import Heart from '@/icons/Heart.astro';
 import Info from '@/icons/Info.astro';
-import Nitter from '@/icons/Nitter.astro';
 import Play from '@/icons/Play.astro';
 import Reply from '@/icons/Reply.astro';
-import Verified from '@/icons/Verified.astro';
 import X from '@/icons/X.astro';
 import Link from '@/Link.astro';
+import XitterContent from '@/XitterContent.astro';
+import XitterHeader from '@/XitterHeader.astro';
+import XitterPhotos from '@/XitterPhotos.astro';
 
 import Quote from './Quote.astro';
-import XitterHeader from '@/XitterHeader.astro';
 
 interface Props {
   id: string;
-  host?: XitterHost;
 }
 
-const { id, host = { type: 'x' } } = Astro.props;
+const { id } = Astro.props;
 
 const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
@@ -38,80 +37,29 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
 });
 
 const entityRegex = /https:\/\/t.co\/.+$/v;
-const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
 tweet.text = tweet.text.replace(entityRegex, '').trim();
-
-const isTruncated = !!tweet.note_tweet;
-
-const Icon = HostIconMap[host.type];
 
 const hasCustomRenderer = Astro.slots.has('default');
 
 const renderedContent = hasCustomRenderer
   ? await Astro.slots.render('default', [tweet])
   : null;
-
-const videoUrl = tweet.video?.variants
-  .filter(variant => variant.type === 'video/mp4')
-  .sort((a, b) => {
-    const widthA = Number(videoRegex.exec(a.src)?.groups?.width ?? 0);
-    const widthB = Number(videoRegex.exec(b.src)?.groups?.width ?? 0);
-    return widthB - widthA;
-  })[0]?.src;
 ---
 
 {renderedContent
   ? <Fragment set:html={renderedContent} />
   : <div class="astro-xitter-container">
-      <XitterHeader user={tweet.user} host={host} />
+    <XitterHeader tweet={tweet} />
 
-    <p class="astro-xitter-content">
-      {tweet.text}
-      {
-        isTruncated && (
-          <>
-            <>... </>
-            <Link
-              class="astro-xitter-content-truncated-notice astro-xitter-link"
-              href={`${hostname}/${tweet.user.screen_name}/status/${tweet.id_str}`}
-            >
-              Show More
-            </Link>
-          </>
-        )
-      }
-    </p>
+    <XitterContent tweet={tweet} />
 
     {
-      tweet.photos && tweet.photos.length > 0 && (
-
-      )
+      tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />
     }
 
     {
       tweet.video && (
-        <div class="relative grid place-items-center">
-          <video
-            src={videoUrl}
-            poster={tweet.video.poster}
-            referrerpolicy="no-referrer"
-            class="w-full mb-[6px] rounded-2xl bg-black col-start-1 row-start-1"
-            style={`aspect-ratio: ${tweet.video.aspectRatio[0]} / ${tweet.video.aspectRatio[1]}`}
-          />
 
-          <button class="size-16 col-start-1 row-start-1 z-10 bg-twitter-blue rounded-full border-4 grid place-items-center border-white hover:brightness-90 transition-all cursor-pointer play__button">
-            <Play class="size-8 fill-white stroke-white" />
-          </button>
-
-          {host.type === 'x' && (
-            <Link
-              class="absolute z-10 top-4 right-4 bg-black/25 hover:brightness-105 transition-all backdrop-blur-sm text-sm text-white py-2 px-4 font-semibold rounded-full text-sm"
-              href={`${host}/${tweet.user.screen_name}/status/${tweet.id_str}`}
-            >
-              Watch on X
-            </Link>
-          )}
-        </div>
       )
     }
 
@@ -119,7 +67,6 @@ const videoUrl = tweet.video?.variants
       tweet.quoted_tweet && (
         <Quote
           tweet={tweet.quoted_tweet}
-          host={host}
         />
       )
     }
@@ -145,16 +92,12 @@ const videoUrl = tweet.video?.variants
         }
       </Link>
 
-      {
-        host === 'https://x.com' && (
-          <Link
-            href="https://help.x.com/en/x-for-websites-ads-info-and-privacy"
-            class="group hover:bg-twitter-blue/10 p-[6px] rounded-full transition-colors"
-          >
-            <Info class="size-4 text-content/70 group-hover:text-twitter-blue transition-colors" />
-          </Link>
-        )
-      }
+      <Link
+        href="https://help.x.com/en/x-for-websites-ads-info-and-privacy"
+        class="group hover:bg-twitter-blue/10 p-[6px] rounded-full transition-colors"
+      >
+        <Info class="size-4 text-content/70 group-hover:text-twitter-blue transition-colors" />
+      </Link>
     </div>
 
     <div class="h-px w-full border border-separator/50 mb-[6px]"></div>
@@ -282,54 +225,6 @@ const videoUrl = tweet.video?.variants
     text-decoration-color: transparent;
     text-underline-offset: 2 * var(--xitter-spacing);
     transition: text-decoration-color var(--xitter-transition-timing) var(--xitter-transition-easing);
-}
-
-
-.astro-xitter-content {
-    white-space: pre-wrap;
-    line-height: 1.375;
-    color: var(--xitter-content);
-    margin-bottom: 3 * var(--xitter-spacing);
-}
-
-@media (min-width: 768px) {
-    .astro-xitter-content {
-        font-size: var(--xitter-font-lg);
-    }
-}
-
-.astro-xitter-content-truncated-notice {
-    color: var(--xitter-blue);
-
-    &:hover, &:focus-visible {
-        text-decoration-color: var(--xitter-blue);
-    }
-}
-
-.astro-xitter-photo-container {
-    display: grid;
-    overflow: hidden;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    margin-bottom: 3 * var(--xitter-spacing);
-    border-radius: 4 * var(--xitter-spacing);
-
-    &.astro-xitter-photo-container-one {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
-    }
-
-    &.astro-xitter-photo-container-two {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    &.astro-xitter-photo-container-many {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-template-rows: repeat(2, minmax(0, 1fr));
-    }
-}
-
-.astro-xitter-photo {
-
 }
 </style>}
 
