@@ -1,0 +1,161 @@
+---
+import type { XitterHost, XitterUser } from '@/types';
+
+import { HostLabelMap, XitterUserVerifiedType } from '@/const';
+import { Verified } from '@/icons/Verified.astro';
+import Link from '@/Link.astro';
+
+interface Props {
+  user: XitterUser;
+  host: XitterHost;
+}
+
+const { host, user } = Astro.props;
+
+const hostname = host.type === 'x' ? 'https://x.com' : host.host;
+---
+
+<div class="astro-xitter-header-container">
+  <Link
+    title={`View Profile on ${HostLabelMap[host.type]}`}
+    href={`${hostname}/${user.screen_name}`}
+    class="astro-xitter-profile-picture"
+  >
+    <img
+      src={user.profile_image_url_https}
+      class:list={[
+        'astro-xitter-profile-avatar',
+        {
+          'astro-xitter-profile-avatar-square': user.profile_image_shape === 'Square',
+        },
+      ]}
+    />
+  </Link>
+
+  <div class="astro-xitter-profile">
+    <Link
+      title={`View Profile on ${HostLabelMap[host.type]}`}
+      class="astro-xitter-profile-name astro-xitter-link"
+      href={`${hostname}/${user.screen_name}`}
+    >{user.name}
+
+      {
+        (user.is_blue_verified || user.verified) && (
+          <Verified class:list={['astro-xitter-profile-verified-badge', {
+            'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
+            'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+            'astro-xitter-profile-verified-personal': user.verified_type !== XitterUserVerifiedType.Business && user.verified_type !== XitterUserVerifiedType.Government,
+          }]} />
+        )
+      }</Link
+    >
+
+    <div class="astro-xitter-profile-screen">
+      <Link
+        title={`View Profile on ${HostLabelMap[host.type]}`}
+        href={`${hostname}/${user.screen_name}`}
+        class="astro-xitter-profile-screen-name"
+      >
+        @{user.screen_name}
+      </Link>
+
+      {host.type === 'x' && <>
+        &middot;
+
+        <Link
+          class="astro-xitter-profile-screen-follow astro-xitter-link"
+          href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
+        >
+          Follow
+        </Link>
+      </>}
+    </div>
+  </div>
+</div>
+
+<style>
+.astro-xitter-header-container {
+    display: flex;
+    align-items: center;
+    gap: 2 * var(--xitter-spacing);
+    margin-bottom: 3 * var(--xitter-spacing);
+}
+
+.astro-xitter-profile-picture {
+    flex-shrink: 0;
+}
+
+.astro-xitter-profile-avatar {
+    filter: brightness(1);
+    transition: filter var(--xitter-transition-timing) var(--xitter-transition-easing);
+    border-radius: 9999px;
+
+    &:hover, &:focus {
+        filter: brightness(0.9);
+    }
+
+    &.astro-xitter-profile-avatar-square {
+        border-radius: 4 * var(--xitter-spacing);
+    }
+}
+
+.astro-xitter-profile {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--xitter-spacing);
+}
+
+,astro-xitter-profile-name {
+    font-weight: 600;
+    color: var(--xitter-heading);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--xitter-spacing);
+
+    &:hover, &:focus-visible {
+        text-decoration-color: var(--xitter-heading);
+    }
+}
+
+.astro-xitter-profile-verified-badge {
+    & > .astro-xitter-profile-verified-checkmark {
+        fill: var(--xitter-heading);
+    }
+
+    &.astro-xitter-profile-verified-business > .astro-xitter-profile-verified-bubble {
+        fill: var(--xitter-gold);
+    }
+
+    &.astro-xitter-profile-verified-government > .astro-xitter-profile-verified-bubble {
+        fill: var(--xitter-gray);
+    }
+
+    &.astro-xitter-profile-verified-personal > .astro-xitter-profile-verified-bubble {
+        fill: var(--xitter-blue);
+    }
+}
+
+.astro-xitter-profile-screen {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    gap: var(--xitter-spacing);
+    font-size: var(--xitter-font-sm);
+}
+
+.astro-xitter-profile-screen-name {
+    color: var(--xitter-subheading);
+    font-size: var(--xitter-font-sm);
+}
+
+.astro-xitter-profile-screen-follow {
+    font-weight: 600;
+    color: var(--xitter-blue);
+    font-size: var(--xitter-font-sm);
+
+    &:hover, &:focus-visible {
+        text-decoration-color: var(--xitter-blue);
+    }
+}
+</style>

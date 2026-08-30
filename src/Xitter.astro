@@ -11,9 +11,9 @@ import Reply from '@/icons/Reply.astro';
 import Verified from '@/icons/Verified.astro';
 import X from '@/icons/X.astro';
 import Link from '@/Link.astro';
-import { XitterUserVerifiedType } from '@/types';
 
 import Quote from './Quote.astro';
+import XitterHeader from '@/XitterHeader.astro';
 
 interface Props {
   id: string;
@@ -21,17 +21,6 @@ interface Props {
 }
 
 const { id, host = { type: 'x' } } = Astro.props;
-
-const HostLabelMap = {
-  x: 'X',
-  nitter: 'Nitter',
-};
-const HostIconMap = {
-  x: X,
-  nitter: Nitter,
-};
-
-const hostname = host.type === 'x' ? 'https://x.com' : host.host;
 
 const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
@@ -74,63 +63,7 @@ const videoUrl = tweet.video?.variants
 {renderedContent
   ? <Fragment set:html={renderedContent} />
   : <div class="astro-xitter-container">
-    <div class="astro-xitter-header-container">
-      <Link
-        title={`View Profile on ${HostLabelMap[host.type]}`}
-        href={`${hostname}/${tweet.user.screen_name}`}
-        class="astro-xitter-profile-picture"
-      >
-        <img
-          src={tweet.user.profile_image_url_https}
-          class:list={[
-            'astro-xitter-profile-avatar',
-            {
-              'astro-xitter-profile-avatar-square': tweet.user.profile_image_shape === 'Square',
-            },
-          ]}
-        />
-      </Link>
-
-      <div class="astro-xitter-profile">
-        <Link
-          title={`View Profile on ${HostLabelMap[host.type]}`}
-          class="astro-xitter-profile-name astro-xitter-link"
-          href={`${hostname}/${tweet.user.screen_name}`}
-        >{tweet.user.name}
-
-          {
-            (tweet.user.is_blue_verified || tweet.user.verified) && (
-              <Verified class:list={['astro-xitter-profile-verified-badge', {
-                'astro-xitter-profile-verified-business': tweet.user.verified_type === XitterUserVerifiedType.Business,
-                'astro-xitter-profile-verified-government': tweet.user.verified_type === XitterUserVerifiedType.Government,
-                'astro-xitter-profile-verified-personal': ![XitterUserVerifiedType.Business, XitterUserVerifiedType.Government].includes(tweet.user.verified_type),
-              }]} />
-            )
-          }</Link
-        >
-
-        <div class="astro-xitter-profile-screen">
-          <Link
-            title={`View Profile on ${HostLabelMap[host.type]}`}
-            href={`${hostname}/${tweet.user.screen_name}`}
-            class="astro-xitter-profile-screen-name"
-          >
-            @{tweet.user.screen_name}
-          </Link>
-
-          {host.type === 'x' && <>
-            &middot;
-
-            <Link
-              class="astro-xitter-profile-screen-follow astro-xitter-link"
-              href={`https://x.com/intent/follow?screen_name=${tweet.user.screen_name}`}
-            >
-              Follow
-            </Link>
-          </>}
-        </div>
-      </div>
-    </div>
+      <XitterHeader user={tweet.user} host={host} />
 
     <p class="astro-xitter-content">
       {tweet.text}
@@ -139,8 +72,8 @@ const videoUrl = tweet.video?.variants
           <>
             <>... </>
             <Link
-              class="text-twitter-blue underline underline-offset-2 underline-transparent hover:underline-twitter-blue transition-colors"
-              href={`${host}/${tweet.user.screen_name}/status/${tweet.id_str}`}
+              class="astro-xitter-content-truncated-notice astro-xitter-link"
+              href={`${hostname}/${tweet.user.screen_name}/status/${tweet.id_str}`}
             >
               Show More
             </Link>
@@ -151,32 +84,7 @@ const videoUrl = tweet.video?.variants
 
     {
       tweet.photos && tweet.photos.length > 0 && (
-        <div
-          class:list={[
-            'grid gap-0.5 overflow-hidden rounded-2xl w-full aspect-[16/9] mb-3',
-            {
-              'grid-cols-1': tweet.photos.length === 1,
-              'grid-cols-2': tweet.photos.length === 2,
-              'grid-cols-2 grid-rows-2': tweet.photos.length >= 3,
-            },
-          ]}
-        >
-          {tweet.photos.slice(0, 4).map((p, i) => (
-            <Link
-              class:list={[
-                {
-                  'row-span-2': tweet.photos?.length === 3 && i === 0,
-                },
-              ]}
-              href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
-            >
-              <img
-                src={p.url}
-                class="h-full w-full object-cover"
-              />
-            </Link>
-          ))}
-        </div>
+
       )
     }
 
@@ -317,8 +225,6 @@ const videoUrl = tweet.video?.variants
     </Link>
   </div>}
 
-
-
 {!hasCustomRenderer && <style>
 .astro-xitter-container {
     --xitter-blue: oklch(0.682 0.158 243.354);
@@ -331,6 +237,7 @@ const videoUrl = tweet.video?.variants
     --xitter-separator: oklch(0.8791 0.0129 228.95);
     --xitter-content: oklch(21% 0.034 264.665);
     --xitter-heading: black;
+    --xitter-subheading: oklch(0.4939 0.0294 241.16);
 
     --xitter-spacing: 0.25rem;
 
@@ -370,38 +277,6 @@ const videoUrl = tweet.video?.variants
     }
 }
 
-.astro-xitter-header-container {
-    display: flex;
-    align-items: center;
-    gap: 2 * var(--xitter-spacing);
-    margin-bottom: 3 * var(--xitter-spacing);
-}
-
-.astro-xitter-profile-picture {
-    flex-shrink: 0;
-}
-
-.astro-xitter-profile-avatar {
-    filter: brightness(1);
-    transition: filter var(--xitter-transition-timing) var(--xitter-transition-easing);
-    border-radius: 9999px;
-
-    &:hover, &:focus {
-        filter: brightness(0.9);
-    }
-
-    &.astro-xitter-profile-avatar-square {
-        border-radius: 4 * var(--xitter-spacing);
-    }
-}
-
-.astro-xitter-profile {
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--xitter-spacing);
-}
-
 .astro-xitter-link {
     text-decoration: underline;
     text-decoration-color: transparent;
@@ -409,63 +284,52 @@ const videoUrl = tweet.video?.variants
     transition: text-decoration-color var(--xitter-transition-timing) var(--xitter-transition-easing);
 }
 
-,astro-xitter-profile-name {
-    font-weight: 600;
-    color: var(--xitter-heading);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--xitter-spacing);
 
-    &:hover, &:focus-visible {
-        text-decoration-color: var(--xitter-heading);
-    }
-}
-
-.astro-xitter-profile-verified-badge {
-    & > .astro-xitter-profile-verified-checkmark {
-        fill: var(--xitter-heading);
-    }
-
-    &.astro-xitter-profile-verified-business > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-gold);
-    }
-
-    &.astro-xitter-profile-verified-government > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-gray);
-    }
-
-    &.astro-xitter-profile-verified-personal > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-blue);
-    }
-}
-
-.astro-xitter-profile-screen {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-    gap: var(--xitter-spacing);
-    font-size: var(--xitter-font-sm);
-}
-
-.astro-xitter-profile-screen-name {
+.astro-xitter-content {
+    white-space: pre-wrap;
+    line-height: 1.375;
     color: var(--xitter-content);
-    font-size: var(--xitter-font-sm);
+    margin-bottom: 3 * var(--xitter-spacing);
 }
 
-.astro-xitter-profile-screen-follow {
-    font-weight: 600;
+@media (min-width: 768px) {
+    .astro-xitter-content {
+        font-size: var(--xitter-font-lg);
+    }
+}
+
+.astro-xitter-content-truncated-notice {
     color: var(--xitter-blue);
-    font-size: var(--xitter-font-sm);
 
     &:hover, &:focus-visible {
         text-decoration-color: var(--xitter-blue);
     }
 }
 
-.astro-xitter-content {
-    white-space: pre-wrap;
+.astro-xitter-photo-container {
+    display: grid;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 3 * var(--xitter-spacing);
+    border-radius: 4 * var(--xitter-spacing);
 
-    "leading-snug whitespace-pre-wrap md:text-lg dark:text-heading mb-3"
+    &.astro-xitter-photo-container-one {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    &.astro-xitter-photo-container-two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &.astro-xitter-photo-container-many {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.astro-xitter-photo {
+
 }
 </style>}
 

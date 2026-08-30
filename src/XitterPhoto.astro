@@ -1,0 +1,72 @@
+---
+import type { Xitter, XitterHost } from './types';
+
+import Link from '@/Link.astro';
+
+interface Props {
+  tweet: Xitter;
+  host: XitterHost;
+}
+
+const { tweet, host } = Astro.props;
+
+const photos = tweet.photos?.map(p => ({
+  ...p,
+  url:
+}))
+---
+
+<div
+  class:list={[
+    'astro-xitter-photo-container',
+    {
+      'astro-xitter-photo-container-one': tweet.photos?.length === 1,
+      'astro-xitter-photo-container-two': tweet.photos?.length === 2,
+      'astro-xitter-photo-container-many': tweet.photos?.length ?? 0 >= 3,
+    },
+  ]}
+>
+  {photos.slice(0, 4).map((p, i) => (
+    <Link
+      class:list={[
+        {
+          'row-span-2': photos.length === 3 && i === 0,
+        },
+      ]}
+      href={`https://x.com/${user.screen_name}/status/${id}/photo/${i + 1}`}
+    >
+      <img
+        src={p.url}
+        class="h-full w-full object-cover"
+      />
+    </Link>
+  ))}
+</div>
+
+<style>
+.astro-xitter-photo-container {
+    display: grid;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 3 * var(--xitter-spacing);
+    border-radius: 4 * var(--xitter-spacing);
+
+    &.astro-xitter-photo-container-one {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    &.astro-xitter-photo-container-two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    &.astro-xitter-photo-container-many {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.astro-xitter-photo {
+
+}
+</style>

@@ -1,13 +1,4 @@
-export type XitterHost = {
-  type: 'x';
-} | {
-  type: 'nitter'; host?: string;
-};
-
-export const XitterUserVerifiedType = {
-  Business: 'Business',
-  Government: 'Government',
-} as const;
+import type { XitterUserVerifiedType } from './const';
 
 export interface XitterUser {
   id: string;
@@ -20,7 +11,7 @@ export interface XitterUser {
   verified_type?: typeof XitterUserVerifiedType[keyof typeof XitterUserVerifiedType];
 }
 
-interface XitterPhoto {
+export interface XitterPhoto {
   backgroundColor?: {
     red: number;
     green: number;
