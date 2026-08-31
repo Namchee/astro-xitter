@@ -16,7 +16,7 @@ const { user } = tweet;
 
 <Link title="View Post" href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`} class='p-2 border border-separator rounded-lg mb-[6px] transition-colors'>
   <div class='astro-xitter-quote-heading'>
-      <img
+    <img
         src={user.profile_image_url_https}
         class:list={[
           'astro-xitter-quote-avatar',
@@ -26,13 +26,12 @@ const { user } = tweet;
         ]}
       />
 
-    <div class='flex leading-none items-center'>
-      <Link
-        href={`https://x.com/${user.screen_name}`}
-        class='text-sm font-semibold text-heading underline underline-offset-2 underline-transparent hover:underline-heading transition-colors mr-0.5'
+    <div class='astro-xitter-quote-profile'>
+        <span
+        class=''
       >
         {user.name}
-      </Link>
+      </span>
       {
         (user.is_blue_verified || user.verified) && (
           <Verified class:list={['astro-xitter-profile-verified-badge', {
@@ -95,5 +94,20 @@ const { user } = tweet;
     &.astro-xitter-quote-avatar-square {
         border-radius: calc(4 * var(--xitter-spacing));
     }
+}
+
+.astro-xitter-quote-profile {
+    display: flex;
+    align-items: center;
+
+    line-height: 1;
+}
+
+.astro-xitter-quote-profile-name {
+    font-weight: 600;
+    font-size: var(--xitter-font-sm);
+    color: var(--xitter-heading);
+
+    margin-right: calc(0.5 * var(--xitter-spacing));
 }
 </style>
