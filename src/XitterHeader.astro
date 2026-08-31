@@ -2,7 +2,7 @@
 import type { Xitter } from '@/types';
 
 import { XitterUserVerifiedType } from '@/const';
-import { Verified } from '@/icons/Verified.astro';
+import Verified from '@/icons/Verified.astro';
 import Link from '@/Link.astro';
 
 interface Props {
@@ -74,7 +74,6 @@ const user = tweet.user;
     display: flex;
     align-items: center;
     gap: calc(2 * var(--xitter-spacing));
-    margin-bottom: calc(3 * var(--xitter-spacing));
 }
 
 .astro-xitter-profile-picture {

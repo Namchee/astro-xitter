@@ -1,9 +1,99 @@
 ---
 import type { Xitter } from './types';
 
+import Verified from '@/icons/Verified.astro';
+import Link from '@/Link.astro';
+
+import { XitterUserVerifiedType } from './const';
+
 interface Props {
   tweet: Xitter;
 }
 
 const { tweet } = Astro.props;
+const { user } = tweet;
 ---
+
+<Link title="View Post" href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`} class='p-2 border border-separator rounded-lg mb-[6px] transition-colors'>
+  <div class='astro-xitter-quote-heading'>
+      <img
+        src={user.profile_image_url_https}
+        class:list={[
+          'astro-xitter-quote-avatar',
+          {
+            'astro-xitter-quote-avatar-square': user.profile_image_shape === 'Square',
+          },
+        ]}
+      />
+
+    <div class='flex leading-none items-center'>
+      <Link
+        href={`https://x.com/${user.screen_name}`}
+        class='text-sm font-semibold text-heading underline underline-offset-2 underline-transparent hover:underline-heading transition-colors mr-0.5'
+      >
+        {user.name}
+      </Link>
+      {
+        (user.is_blue_verified || user.verified) && (
+          <Verified class:list={['astro-xitter-profile-verified-badge', {
+            'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
+            'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+            'astro-xitter-profile-verified-personal': user.verified_type !== XitterUserVerifiedType.Business && user.verified_type !== XitterUserVerifiedType.Government,
+          }]} />
+        )
+      }
+      <Link
+        href={`https://x.com/${user.screen_name}`}
+        class='text-content/70 text-sm leading-none mx-1'
+      >
+        @{user.screen_name}
+      </Link>
+      &middot;
+      <span class='text-content/70 text-sm leading-none ml-1'>
+        {
+          new Date(tweet.created_at).toLocaleString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        }
+      </span>
+    </div>
+  </div>
+
+  <p class='leading-snug whitespace-pre-wrap text-sm dark:text-heading'>{tweet.text}</p>
+</>
+
+<style>
+.astro-xitter-quote-container {
+    border: 1px solid var(--xitter-separator);
+    border-radius: var(4 * var(--xitter-spacing));
+
+    transition: background-color var(--xitter-transition-duration) var(--xitter-transition-easing);
+}
+
+.astro-xitter-quote-heading {
+    line-height: 1;
+
+    display: flex;
+    align-items: center;
+    gap: calc(2 * var(--xitter-spacing));
+
+    padding-top: var(3 * var(--xitter-spacing));
+    padding-left: var(3 * var(--xitter-spacing));
+    padding-right: var(3 * var(--xitter-spacing));
+}
+
+.astro-xitter-quote-avatar {
+    width: calc(5 * var(--xitter-spacing));
+    height: calc(5 * var(--xitter-spacing));
+
+    border-radius: 9999px;
+
+    flex-shrink: 0;
+
+    &.astro-xitter-quote-avatar-square {
+        border-radius: calc(4 * var(--xitter-spacing));
+    }
+}
+</style>

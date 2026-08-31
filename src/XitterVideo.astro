@@ -30,16 +30,22 @@ const videoUrl = tweet.video?.variants
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}
   />
 
-  <button class="astro-xitter-video-play-button">
-    <Play class="astro-xitter-video-play-button-icon" />
-  </button>
+  <div class="astro-xitter-video-play">
+    <button class="astro-xitter-video-play-button">
+      <Play class="astro-xitter-video-play-button-icon" />
+    </button>
+  </div>
 
   <Link
-    class="absolute z-10 top-4 right-4 bg-black/25 hover:brightness-105 transition-all backdrop-blur-sm text-sm text-white py-2 px-4 font-semibold rounded-full text-sm"
+    class="astro-xitter-video-link"
     href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
   >
     Watch on X
   </Link>
+
+  <div class="astro-xitter-video-context-menu">
+
+  </div>
 </div>
 
 <style>
@@ -48,6 +54,8 @@ const videoUrl = tweet.video?.variants
 
     display: grid;
     place-items: center;
+
+    margin-top: calc(3 * var(--xitter-spacing));
 }
 
 .astro-xitter-video {
@@ -59,19 +67,22 @@ const videoUrl = tweet.video?.variants
     border-radius: calc(4 * var(--xitter-spacing));
 
     background: black;
-
-    margin-bottom: calc(1.5 * var(--xitter-spacing));
 }
 
-.astro-xitter-video-play-button {
-    width: calc(16 * var(--xitter-spacing));
-    height: calc(16 * var(--xitter-spacing));
+.astro-xitter-video-play-container {
+    width: 100%;
+    height: 100%;
 
     display: grid;
     place-items: center;
     grid-column-start: 1;
     grid-row-start: 1;
     z-index: 1;
+}
+
+.astro-xitter-video-play-button {
+    width: calc(16 * var(--xitter-spacing));
+    height: calc(16 * var(--xitter-spacing));
 
     background: var(--xitter-blue);
 
@@ -117,15 +128,20 @@ const videoUrl = tweet.video?.variants
         filter: brightness(110%);
     }
 }
+
+.astro-xitter-video-context-menu {
+    display: none;
+    position: absolute;
+}
 </style>
 
 <script>
-  const playButtons = document.querySelectorAll('.astro-xitter-play-button');
+  const playTrigger = document.querySelectorAll('.astro-xitter-play-container');
 
-  for (const pb of playButtons) {
-    pb.addEventListener('click', () => {
-      const playButton = pb as HTMLButtonElement;
-      const par = pb.parentElement;
+  for (const trigger of playTrigger) {
+    trigger.addEventListener('click', () => {
+      const t = trigger as HTMLButtonElement;
+      const par = trigger.parentElement;
       if (!par) {
         return;
       }
@@ -139,8 +155,8 @@ const videoUrl = tweet.video?.variants
       vid.setAttribute('controls', 'true');
       vid.play();
 
-      playButton.style.opacity = '0';
-      playButton.style.pointerEvents = 'none';
+      t.style.opacity = '0';
+      t.style.pointerEvents = 'none';
 
       if (watchOn) {
         watchOn.style.opacity = '0';
