@@ -49,18 +49,18 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
     align-items: center;
     justify-content: space-between;
 
-    font-size: var(--xitter-font-sm);
+    font-size: var(--astro-xitter-text-sm);
 
-    color: var(--xitter-subheading);
+    color: var(--astro-xitter-subheader);
 
-    margin-bottom: calc(1.5 * var(--xitter-spacing));
+    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
 }
 
 .astro-xitter-metadata {
     line-height: 1;
 
     &:hover, &:focus-visible {
-        text-decoration-color: var(--xitter-subheading);
+        text-decoration-color: var(--astro-xitter-subheader);
     }
 }
 
@@ -69,23 +69,23 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
     border-radius: 9999px;
 
-    transition: background-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+    transition: background-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 
     &:hover, &:focus-visible {
-        background-color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+        background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
 
         & > .astro-xitter-metadata-help-icon {
-            color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+            color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
         }
     }
 }
 
 .astro-xitter-metadata-help-icon {
-    width: calc(4 * var(--xitter-spacing));
-    height: calc(4 * var(--xitter-spacing));
+    width: calc(4 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
 
-    transition: color var(--xitter-easing-duration) var(--xitter-easing-timing);
+    transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 
-    color: var(--xitter-subheading);
+    color: var(--astro-xitter-subheader);
 }
 </style>

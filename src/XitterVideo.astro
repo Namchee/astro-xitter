@@ -55,7 +55,7 @@ const videoUrl = tweet.video?.variants
     display: grid;
     place-items: center;
 
-    margin-top: calc(3 * var(--xitter-spacing));
+    margin-top: calc(3 * var(--astro-xitter-spacing));
 }
 
 .astro-xitter-video {
@@ -64,7 +64,7 @@ const videoUrl = tweet.video?.variants
 
     width: 100%;
 
-    border-radius: calc(4 * var(--xitter-spacing));
+    border-radius: calc(4 * var(--astro-xitter-spacing));
 
     background: black;
 }
@@ -81,18 +81,18 @@ const videoUrl = tweet.video?.variants
 }
 
 .astro-xitter-video-play-button {
-    width: calc(16 * var(--xitter-spacing));
-    height: calc(16 * var(--xitter-spacing));
+    width: calc(16 * var(--astro-xitter-spacing));
+    height: calc(16 * var(--astro-xitter-spacing));
 
-    background: var(--xitter-blue);
+    background: var(--astro-xitter-blue);
 
     border-radius: 9999px;
-    border: calc(4 * var(--xitter-spacing)) solid white;
+    border: calc(4 * var(--astro-xitter-spacing)) solid white;
 
     cursor: pointer;
 
     filter: brightness(1);
-    transition: filter var(--xitter-transition-duration) var(--xitter-transition-easing);
+    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     &:hover, &:focus-visible {
         filter: brightness(0.9);
@@ -100,7 +100,7 @@ const videoUrl = tweet.video?.variants
 }
 
 .astro-xitter-video-play-button-icon {
-    width: calc(8 * var(--xitter-spacing));
+    width: calc(8 * var(--astro-xitter-spacing));
     fill: white;
     stroke: white;
 }
@@ -108,17 +108,17 @@ const videoUrl = tweet.video?.variants
 .astro-xitter-video-link {
     position: absolute;
     z-index: 1;
-    top: calc(3 * var(--xitter-spacing));
-    right: calc(3 * var(--xitter-spacing));
+    top: calc(3 * var(--astro-xitter-spacing));
+    right: calc(3 * var(--astro-xitter-spacing));
 
-    background-color: var(--xitter-content) / 75%;
-    transition: filter var(--xitter-transition-duration) var(--xitter-transition-easing);
+    background-color: color-mix(in oklch, var(--astro-xitter-content) 75%, transparent);
+    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
     backdrop-filter: blur(5px);
 
-    font-size: var(--xitter-font-sm);
+    font-size: var(--astro-xitter-text-sm);
     color: white;
 
-    padding: calc(2 * var(--xitter-spacing)) calc(4 * var(--xitter-spacing));
+    padding: calc(2 * var(--astro-xitter-spacing)) calc(4 * var(--astro-xitter-spacing));
 
     font-weight: 600;
 

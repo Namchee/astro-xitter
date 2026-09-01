@@ -84,26 +84,26 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
 {!hasCustomRenderer && <style>
 .astro-xitter-container {
-    --xitter-blue: oklch(0.682 0.158 243.354);
-    --xitter-red: oklch(0.63 0.258 4.67);
-    --xitter-gold: oklch(0.739 0.161 85.8);
-    --xitter-gray: oklch(0.669 0.035 231.2);
-    --xitter-green: oklch(0.686 0.178 161.4);
+    --astro-xitter-blue: oklch(0.682 0.158 243.354);
+    --astro-xitter-red: oklch(0.63 0.258 4.67);
+    --astro-xitter-gold: oklch(0.739 0.161 85.8);
+    --astro-xitter-gray: oklch(0.669 0.035 231.2);
+    --astro-xitter-green: oklch(0.686 0.178 161.4);
 
-    --xitter-background: white;
-    --xitter-separator: oklch(0.8791 0.0129 228.95);
-    --xitter-content: oklch(0.1884 0.0128 248.51);
-    --xitter-heading: black;
-    --xitter-subheading: oklch(0.4939 0.0294 241.16);
+    --astro-xitter-background: white;
+    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+    --astro-xitter-content: oklch(0.1884 0.0128 248.51);
+    --astro-xitter-header: black;
+    --astro-xitter-subheader: oklch(0.4939 0.0294 241.16);
 
-    --xitter-spacing: 0.25rem;
+    --astro-xitter-spacing: 0.25rem;
 
-    --xitter-font-sm: 14px;
-    --xitter-font-md: 16px;
-    --xitter-font-lg: 18px;
+    --astro-xitter-text-sm: 14px;
+    --astro-xitter-text-md: 16px;
+    --astro-xitter-text-lg: 18px;
 
-    --xitter-transition-duration: 150ms;
-    --xitter-transition-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
+    --astro-xitter-transition-duration: 150ms;
+    --astro-xitter-transition-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
 
     position: relative;
     display: flex;
@@ -112,42 +112,42 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     box-sizing: border-box;
     width: 100%;
     max-width: 550px;
-    padding: 2 * var(--xitter-spacing);
-    font-size: var(--xitter-font-md);
+    padding: 2 * var(--astro-xitter-spacing);
+    font-size: var(--astro-xitter-text-md);
 
-    border-radius: 3 * var(--xitter-spacing);
-    border: 1px solid var(--xitter-separator);
-    background-color: var(--xitter-background);
+    border-radius: 3 * var(--astro-xitter-spacing);
+    border: 1px solid var(--astro-xitter-separator);
+    background-color: var(--astro-xitter-background);
 }
 
 @media (prefers-color-scheme: dark) {
     .astro-xitter-container {
-        --xitter-background: oklch(13% 0.028 261.692);
-        --xitter-heading: white;
-        --xitter-content: oklch(96.7% 0.003 264.542);
+        --astro-xitter-background: oklch(13% 0.028 261.692);
+        --astro-xitter-header: white;
+        --astro-xitter-content: oklch(96.7% 0.003 264.542);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .astro-xitter-container {
-        --xitter-transition-duration: 0ms;
+        --astro-xitter-transition-duration: 0ms;
     }
 }
 
 .astro-xitter-container :global(.astro-xitter-link) {
     text-decoration: underline;
     text-decoration-color: transparent;
-    text-underline-offset: 2 * var(--xitter-spacing);
-    transition: text-decoration-color var(--xitter-transition-duration) var(--xitter-transition-easing);
+    text-underline-offset: 2 * var(--astro-xitter-spacing);
+    transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 }
 
 .astro-xitter-separator {
-    border: 1px solid var(--xitter-separator);
+    border: 1px solid var(--astro-xitter-separator);
 
     height: 1px;
     width: 100%;
 
-    margin-bottom: calc(1.5 * var(--xitter-spacing));
+    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
 }
 
 .astro-xitter-replies {
@@ -155,17 +155,17 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     place-items: center;
 
     font-weight: 600;
-    font-size: var(--xitter-font-sm);
+    font-size: var(--astro-xitter-text-sm);
 
-    padding: var(--xitter-spacing);
+    padding: var(--astro-xitter-spacing);
 
-    border: 1px solid var(--xitter-separator);
+    border: 1px solid var(--astro-xitter-separator);
     border-radius: 9999px;
 
-    transition: background-color var(--xitter-transition-duration) var(--xitter-transition-easing);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     &:hover, &:focus-visible {
-        background-color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+        background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
     }
 }
 </style>}

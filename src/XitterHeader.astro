@@ -73,7 +73,7 @@ const user = tweet.user;
 .astro-xitter-header-container {
     display: flex;
     align-items: center;
-    gap: calc(2 * var(--xitter-spacing));
+    gap: calc(2 * var(--astro-xitter-spacing));
 }
 
 .astro-xitter-profile-picture {
@@ -82,7 +82,7 @@ const user = tweet.user;
 
 .astro-xitter-profile-avatar {
     filter: brightness(1);
-    transition: filter var(--xitter-transition-duration) var(--xitter-transition-easing);
+    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
     border-radius: 9999px;
 
     &:hover, &:focus {
@@ -90,7 +90,7 @@ const user = tweet.user;
     }
 
     &.astro-xitter-profile-avatar-square {
-        border-radius: calc(4 * var(--xitter-spacing));
+        border-radius: calc(4 * var(--astro-xitter-spacing));
     }
 }
 
@@ -98,36 +98,36 @@ const user = tweet.user;
     display:flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--xitter-spacing);
+    gap: var(--astro-xitter-spacing);
 }
 
 ,astro-xitter-profile-name {
     font-weight: 600;
-    color: var(--xitter-heading);
+    color: var(--astro-xitter-header);
     display: inline-flex;
     align-items: center;
-    gap: var(--xitter-spacing);
+    gap: var(--astro-xitter-spacing);
 
     &:hover, &:focus-visible {
-        text-decoration-color: var(--xitter-heading);
+        text-decoration-color: var(--astro-xitter-header);
     }
 }
 
 .astro-xitter-profile-verified-badge {
     & > .astro-xitter-profile-verified-checkmark {
-        fill: var(--xitter-heading);
+        fill: var(--astro-xitter-header);
     }
 
     &.astro-xitter-profile-verified-business > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-gold);
+        fill: var(--astro-xitter-gold);
     }
 
     &.astro-xitter-profile-verified-government > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-gray);
+        fill: var(--astro-xitter-gray);
     }
 
     &.astro-xitter-profile-verified-personal > .astro-xitter-profile-verified-bubble {
-        fill: var(--xitter-blue);
+        fill: var(--astro-xitter-blue);
     }
 }
 
@@ -135,22 +135,22 @@ const user = tweet.user;
     display: flex;
     align-items: center;
     line-height: 1;
-    gap: var(--xitter-spacing);
-    font-size: var(--xitter-font-sm);
+    gap: var(--astro-xitter-spacing);
+    font-size: var(--astro-xitter-text-sm);
 }
 
 .astro-xitter-profile-screen-name {
-    color: var(--xitter-subheading);
-    font-size: var(--xitter-font-sm);
+    color: var(--astro-xitter-subheader);
+    font-size: var(--astro-xitter-text-sm);
 }
 
 .astro-xitter-profile-screen-follow {
     font-weight: 600;
-    color: var(--xitter-blue);
-    font-size: var(--xitter-font-sm);
+    color: var(--astro-xitter-blue);
+    font-size: var(--astro-xitter-text-sm);
 
     &:hover, &:focus-visible {
-        text-decoration-color: var(--xitter-blue);
+        text-decoration-color: var(--astro-xitter-blue);
     }
 }
 </style>

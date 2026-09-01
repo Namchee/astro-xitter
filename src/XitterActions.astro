@@ -70,62 +70,62 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
 <style>
 .astro-xitter-actions-container {
-    margin-bottom: calc(1.5 * var(--xitter-spacing));
+    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
 
     display: flex;
     align-items: center;
-    gap: calc(2 * var(--xitter-spacing));
+    gap: calc(2 * var(--astro-xitter-spacing));
 }
 
 .astro-xitter-actions-link {
     display: flex;
     align-items: center;
-    gap: calc(0.5 * var(--xitter-spacing));
+    gap: calc(0.5 * var(--astro-xitter-spacing));
 
     &:hover, &:focus-visible {
         & > .astro-xitter-actions-link-icon-like-container {
-            background-color: color-mix(in oklch, var(--xitter-red) 10%, transparent);
+            background-color: color-mix(in oklch, var(--astro-xitter-red) 10%, transparent);
 
             & > .astro-xitter-actions-link-icon-like {
-                color: var(--xitter-red);
+                color: var(--astro-xitter-red);
             }
 
             & > .astro-xitter-actions-link-label-like {
-                color: var(--xitter-red);
-                text-decoration-color: var(--xitter-red);
+                color: var(--astro-xitter-red);
+                text-decoration-color: var(--astro-xitter-red);
             }
         }
 
         & > .astro-xitter-actions-link-icon-reply-container {
-            background-color: color-mix(in oklch, var(--xitter-blue) 10%, transparent);
+            background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
 
             & > .astro-xitter-actions-link-icon-reply {
-                color: var(--xitter-blue);
+                color: var(--astro-xitter-blue);
             }
 
             & > .astro-xitter-actions-link-label-reply {
-                color: var(--xitter-blue);
-                text-decoration-color: var(--xitter-blue);
+                color: var(--astro-xitter-blue);
+                text-decoration-color: var(--astro-xitter-blue);
             }
         }
 
         & > .astro-xitter-actions-link-icon-copy-container {
-            background-color: color-mix(in oklch, var(--xitter-green) 10%, transparent);
+            background-color: color-mix(in oklch, var(--astro-xitter-green) 10%, transparent);
 
             & > .astro-xitter-actions-link-icon-copy {
-                stroke: var(--xitter-green);
+                stroke: var(--astro-xitter-green);
             }
 
             & > .astro-xitter-actions-link-label-copy {
-                stroke: var(--xitter-green);
-                text-decoration-color: var(--xitter-green);
+                stroke: var(--astro-xitter-green);
+                text-decoration-color: var(--astro-xitter-green);
             }
         }
     }
 }
 
 .astro-xitter-actions-link-icon-container {
-    padding: calc(1.5 * var(--xitter-spacing));
+    padding: calc(1.5 * var(--astro-xitter-spacing));
 
     display: grid;
     place-items: center;
@@ -133,27 +133,27 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     border-radius: 9999px;
     background-color: transparent;
 
-    transition: background-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+    transition: background-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 }
 
 .astro-xitter-actions-link-icon {
-    width: calc(4 * var(--xitter-spacing));
-    height: calc(4 * var(--xitter-spacing));
+    width: calc(4 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
 
-    transition: color var(--xitter-easing-duration) var(--xitter-easing-timing);
+    transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 }
 
 .astro-xitter-actions-link-label {
     font-weight: 600;
-    font-size: var(--xitter-font-sm);
+    font-size: var(--astro-xitter-text-sm);
 
-    color: var(--xitter-subheading);
+    color: var(--astro-xitter-subheader);
 
     text-decoration: underline;
-    text-underline-offset: var(2 * var(--xitter-spacing));
+    text-underline-offset: var(2 * var(--astro-xitter-spacing));
     text-decoration-color: transparent;
 
-    transition: text-decoration-color var(--xitter-easing-duration) var(--xitter-easing-timing);
+    transition: text-decoration-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 }
 
 .astro-xitter-actions-link-copy-button {
@@ -163,11 +163,11 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
         cursor: default;
 
         & > .astro-xitter-actions-link-copy-icon {
-            stroke: var(--xitter-subheading);
+            stroke: var(--astro-xitter-subheader);
         }
 
         & > .astro-xitter-actions-link-label {
-            color: var(--xitter-subheading)
+            color: var(--astro-xitter-subheader)
             text-decoration-color: transparent;
         }
     }
