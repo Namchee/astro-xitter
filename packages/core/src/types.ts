@@ -1,5 +1,22 @@
 import type { XitterUserVerifiedType } from './const';
 
+interface XitterVideoVariant {
+  type: string;
+  src: string;
+}
+
+interface XitterVideo {
+  aspectRatio: [number, number];
+  contentType: string;
+  durationMs?: number;
+  poster: string;
+  variants: XitterVideoVariant[];
+}
+
+interface FullXitter {
+  id: string;
+}
+
 export interface XitterUser {
   id: string;
   name: string;
@@ -27,23 +44,6 @@ export interface XitterPhoto {
   url: string;
   width: number;
   height: number;
-}
-
-interface XitterVideoVariant {
-  type: string;
-  src: string;
-}
-
-interface XitterVideo {
-  aspectRatio: [number, number];
-  contentType: string;
-  durationMs?: number;
-  poster: string;
-  variants: XitterVideoVariant[];
-}
-
-interface FullXitter {
-  id: string;
 }
 
 export interface Xitter {
