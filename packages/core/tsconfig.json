@@ -1,12 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
-  "include": ["src", "types"],
   "compilerOptions": {
-    "allowJs": true,
-    "module": "es2022",
     "target": "esnext",
+    "jsx": "preserve",
+    "module": "es2022",
+    "allowJs": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "jsx": "preserve"
-  }
+    "rootDir": "."
+  },
+  "include": ["index.ts", "src"]
 }

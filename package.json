@@ -1,25 +1,12 @@
 {
-  "name": "astro-xitter",
-  "version": "1.0.0",
-  "description": "Embed Xitter Post in Your Astro Site",
+  "name": "root",
+  "version": "0.0.0",
+  "description": "Astro Xitter monorepo",
   "type": "module",
-  "exports": {
-    ".": {
-      "import": "./index.ts"
-    }
-  },
-  "files": [
-    "index.ts"
-  ],
   "scripts": {
-    "lint": "eslint src --fix"
+    "format": "prettier --write packages",
+    "lint": "eslint packages --fix"
   },
-  "keywords": [
-    "astro",
-    "astro-component",
-    "twitter",
-    "x"
-  ],
   "author": {
     "name": "Cristopher",
     "email": "hello@namchee.dev",
@@ -40,11 +27,12 @@
     "@changesets/cli": "^3.0.1",
     "@namchee/eslint-config": "^3.3.1",
     "@stylistic/eslint-plugin": "^5.10.0",
-    "astro": "^7.2.9",
+    "astro": "^7.3.1",
     "astro-eslint-parser": "^3.1.0",
     "eslint": "^10.9.1",
     "eslint-plugin-astro": "^3.1.0",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
     "typescript": "^6.0.3"
-  },
-  "sideEffects": false
+  }
 }

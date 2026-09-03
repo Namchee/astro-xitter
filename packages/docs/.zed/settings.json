@@ -13,14 +13,7 @@
       },
       "external": {
         "command": "pnpm",
-        "arguments": [
-          "exec",
-          "eslint",
-          "--fix",
-          "--stdin",
-          "--stdin-filename",
-          "{buffer_path}"
-        ]
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
       },
       "language_servers": ["eslint"]
     },
@@ -30,14 +23,7 @@
       },
       "external": {
         "command": "pnpm",
-        "arguments": [
-          "exec",
-          "eslint",
-          "--fix",
-          "--stdin",
-          "--stdin-filename",
-          "{buffer_path}"
-        ]
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
       },
       "language_servers": ["vtsls", "eslint"]
     },
@@ -47,31 +33,16 @@
       },
       "external": {
         "command": "pnpm",
-        "arguments": [
-          "exec",
-          "eslint",
-          "--fix",
-          "--stdin",
-          "--stdin-filename",
-          "{buffer_path}"
-        ]
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
       },
       "language_servers": ["astro-language-server", "vtsls", "eslint"]
     },
     "JSON": {
       "external": {
         "command": "pnpm",
-        "arguments": [
-          "exec",
-          "eslint",
-          "--fix",
-          "--stdin",
-          "--stdin-filename",
-          "{buffer_path}"
-        ]
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
       },
       "language_servers": ["json-language-server", "vtsls", "eslint"]
-
     }
   },
   "lsp": {

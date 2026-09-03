@@ -11,9 +11,7 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Guides',
-          items: [
-            { label: 'Example Guide', slug: 'guides/example' },
-          ],
+          items: [{ label: 'Example Guide', slug: 'guides/example' }],
         },
         {
           label: 'Reference',

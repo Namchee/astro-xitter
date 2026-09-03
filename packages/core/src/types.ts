@@ -25,7 +25,7 @@ export interface XitterUser {
   profile_image_url_https: string;
   is_blue_verified: boolean;
   verified: boolean;
-  verified_type?: typeof XitterUserVerifiedType[keyof typeof XitterUserVerifiedType];
+  verified_type?: (typeof XitterUserVerifiedType)[keyof typeof XitterUserVerifiedType];
 }
 
 export interface XitterPhoto {

@@ -27,8 +27,7 @@ const videoUrl = tweet.video?.variants
     poster={tweet.video?.poster}
     referrerPolicy="no-referrer"
     class="astro-xitter-video"
-    style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}
-  />
+    style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}></video>
 
   <div class="astro-xitter-video-play">
     <button class="astro-xitter-video-play-button">
@@ -36,29 +35,24 @@ const videoUrl = tweet.video?.variants
     </button>
   </div>
 
-  <Link
-    class="astro-xitter-video-link"
-    href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-  >
+  <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
     Watch on X
   </Link>
 
-  <div class="astro-xitter-video-context-menu">
-
-  </div>
+  <div class="astro-xitter-video-context-menu"></div>
 </div>
 
 <style>
-.astro-xitter-video-container {
+  .astro-xitter-video-container {
     position: relative;
 
     display: grid;
     place-items: center;
 
     margin-top: calc(3 * var(--astro-xitter-spacing));
-}
+  }
 
-.astro-xitter-video {
+  .astro-xitter-video {
     grid-column-start: 1;
     grid-row-start: 1;
 
@@ -67,9 +61,9 @@ const videoUrl = tweet.video?.variants
     border-radius: calc(4 * var(--astro-xitter-spacing));
 
     background: black;
-}
+  }
 
-.astro-xitter-video-play-container {
+  .astro-xitter-video-play-container {
     width: 100%;
     height: 100%;
 
@@ -78,9 +72,9 @@ const videoUrl = tweet.video?.variants
     grid-column-start: 1;
     grid-row-start: 1;
     z-index: 1;
-}
+  }
 
-.astro-xitter-video-play-button {
+  .astro-xitter-video-play-button {
     width: calc(16 * var(--astro-xitter-spacing));
     height: calc(16 * var(--astro-xitter-spacing));
 
@@ -94,18 +88,19 @@ const videoUrl = tweet.video?.variants
     filter: brightness(1);
     transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
-    &:hover, &:focus-visible {
-        filter: brightness(0.9);
+    &:hover,
+    &:focus-visible {
+      filter: brightness(0.9);
     }
-}
+  }
 
-.astro-xitter-video-play-button-icon {
+  .astro-xitter-video-play-button-icon {
     width: calc(8 * var(--astro-xitter-spacing));
     fill: white;
     stroke: white;
-}
+  }
 
-.astro-xitter-video-link {
+  .astro-xitter-video-link {
     position: absolute;
     z-index: 1;
     top: calc(3 * var(--astro-xitter-spacing));
@@ -124,15 +119,16 @@ const videoUrl = tweet.video?.variants
 
     border-radius: 9999px;
 
-    &:hover, &:focus-visible {
-        filter: brightness(110%);
+    &:hover,
+    &:focus-visible {
+      filter: brightness(110%);
     }
-}
+  }
 
-.astro-xitter-video-context-menu {
+  .astro-xitter-video-context-menu {
     display: none;
     position: absolute;
-}
+  }
 </style>
 
 <script>
