@@ -35,13 +35,19 @@ const videoUrl = tweet.video?.variants
     </button>
   </div>
 
-  <button class="astro-xitter-video-replies">View Replies</button>
+  <Link
+    href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+    class="astro-xitter-video-replies"
+    aria-hidden="true"
+  >
+    View Replies
+  </Link>
 
   <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
     Watch on X
   </Link>
 
-  <div class="astro-xitter-video-context-menu">Copy Video Address</div>
+  <div class="astro-xitter-video-context-menu" aria-hidden="true">Copy Video Address</div>
 </div>
 
 <style>
@@ -140,6 +146,8 @@ const videoUrl = tweet.video?.variants
       0 4px 6px -2px rgba(0, 0, 0, 0.05);
     padding: var(--astro-xitter-spacing);
 
+    pointer-events: none;
+
     visibility: hidden;
     opacity: 0;
     transform: scale(0.95);
@@ -155,6 +163,41 @@ const videoUrl = tweet.video?.variants
       visibility: visible;
       opacity: 1;
       transform: scale(1);
+      pointer-events: all;
+    }
+  }
+
+  .astro-xitter-video-replies {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: none;
+    visibility: hidden;
+
+    z-index: 1;
+
+    color: white;
+    font-weight: 600;
+
+    background: var(--astro-xitter-blue);
+
+    border-radius: 9999px;
+
+    cursor: pointer;
+
+    filter: brightness(1);
+    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    &[aria-hidden='false'] {
+      display: block;
+      visibility: visible;
+    }
+
+    &:hover,
+    &:focus-visible {
+      filter: brightness(0.9);
     }
   }
 </style>
@@ -171,7 +214,9 @@ const videoUrl = tweet.video?.variants
       }
 
       const vid = par.querySelector('video');
-      const watchOn = par.querySelector('a');
+      const vidLink = par.querySelector('.astro-xitter-video-link');
+      const vidReply = par.querySelector('.astro-xitter-video-replies');
+
       if (!vid) {
         return;
       }
@@ -182,21 +227,33 @@ const videoUrl = tweet.video?.variants
       t.style.opacity = '0';
       t.style.pointerEvents = 'none';
 
-      if (watchOn) {
-        watchOn.style.opacity = '0';
-        watchOn.style.pointerEvents = 'none';
+      if (vidLink) {
+        const link = vidLink as HTMLAnchorElement;
+
+        link.style.opacity = '0';
+        link.style.pointerEvents = 'none';
 
         vid.addEventListener('pause', () => {
           if (!vid.ended) {
-            watchOn.textContent = 'Continue watching on X';
-            watchOn.style.opacity = '1';
-            watchOn.style.pointerEvents = 'auto';
+            link.textContent = 'Continue watching on X';
+            link.style.opacity = '1';
+            link.style.pointerEvents = 'auto';
           }
         });
 
         vid.addEventListener('play', () => {
-          watchOn.style.opacity = '0';
-          watchOn.style.pointerEvents = 'none';
+          link.style.opacity = '0';
+          link.style.pointerEvents = 'none';
+        });
+      }
+
+      if (vidReply) {
+        vid.addEventListener('ended', () => {
+          vidReply.setAttribute('aria-hidden', 'false');
+        });
+
+        vid.addEventListener('play', () => {
+          vidReply.setAttribute('aria-hidden', 'true');
         });
       }
     });
