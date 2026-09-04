@@ -6,9 +6,11 @@ import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
+
+  interactive: boolean;
 }
 
-const { tweet } = Astro.props;
+const { tweet, interactive } = Astro.props;
 
 const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
 
@@ -29,25 +31,33 @@ const videoUrl = tweet.video?.variants
     class="astro-xitter-video"
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}></video>
 
-  <div class="astro-xitter-video-play">
-    <button class="astro-xitter-video-play-button">
-      <Play class="astro-xitter-video-play-button-icon" />
-    </button>
-  </div>
+  {
+    interactive && (
+      <>
+        <div class="astro-xitter-video-play">
+          <button class="astro-xitter-video-play-button">
+            <Play class="astro-xitter-video-play-button-icon" />
+          </button>
+        </div>
 
-  <Link
-    href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-    class="astro-xitter-video-replies"
-    aria-hidden="true"
-  >
-    View Replies
-  </Link>
+        <Link
+          href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+          class="astro-xitter-video-replies"
+          aria-hidden="true"
+        >
+          View Replies
+        </Link>
 
-  <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
-    Watch on X
-  </Link>
+        <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
+          Watch on X
+        </Link>
 
-  <div class="astro-xitter-video-context-menu" aria-hidden="true">Copy Video Address</div>
+        <div class="astro-xitter-video-context-menu" aria-hidden="true">
+          Copy Video Address
+        </div>
+      </>
+    )
+  }
 </div>
 
 <style>
@@ -202,7 +212,7 @@ const videoUrl = tweet.video?.variants
   }
 </style>
 
-<script>
+{interactive && <script>
   const playTrigger = document.querySelectorAll('.astro-xitter-play-container');
 
   for (const trigger of playTrigger) {
@@ -334,4 +344,4 @@ const videoUrl = tweet.video?.variants
     },
     true,
   );
-</script>
+</script>}

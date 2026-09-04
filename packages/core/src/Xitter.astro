@@ -14,9 +14,11 @@ import XitterVideo from './XitterVideo.astro';
 
 interface Props {
   id: string;
+
+  interactive?: boolean;
 }
 
-const { id } = Astro.props;
+const { id, interactive = true } = Astro.props;
 
 const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
@@ -49,13 +51,14 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     {
       tweet.video
-        && <XitterVideo tweet={tweet} />
+        && <XitterVideo tweet={tweet} interactive={interactive} />
     }
 
     {
       tweet.quoted_tweet && (
         <XitterQuote
           tweet={tweet.quoted_tweet}
+          interactive={interactive}
         />
       )
     }
@@ -64,7 +67,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     <div class="astro-xitter-separator"></div>
 
-    <XitterActions tweet={tweet} />
+    <XitterActions tweet={tweet} interactive={interactive} />
 
     <Link
       href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}

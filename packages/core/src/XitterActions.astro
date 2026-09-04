@@ -10,9 +10,11 @@ import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
+
+  interactive: boolean;
 }
 
-const { tweet } = Astro.props;
+const { tweet, interactive } = Astro.props;
 
 const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
@@ -48,7 +50,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     </span>
   </Link>
 
-  <button
+  {interactive && <button
     class="astro-xitter-actions-link flex astro-xitter-actions-copy-button"
     data-tweet={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
   >
@@ -64,7 +66,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">
       Copy Link
     </span>
-  </button>
+  </button>}
 </div>
 
 <style>
@@ -177,7 +179,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 }
 </style>
 
-<script>
+{interactive && <script>
   const buttons = document.querySelectorAll('.astro-xitter-actions-link-copy');
 
   for (const b of buttons) {
@@ -208,4 +210,4 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
       }, 2_500);
     });
   }
-</script>
+</script>}

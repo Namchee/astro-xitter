@@ -9,9 +9,11 @@ import XitterVideo from './XitterVideo.astro';
 
 interface Props {
   tweet: Xitter;
+
+  interactive: boolean;
 }
 
-const { tweet } = Astro.props;
+const { tweet, interactive } = Astro.props;
 const { user } = tweet;
 ---
 
@@ -71,7 +73,7 @@ const { user } = tweet;
 
   {tweet.photos && <XitterPhotos tweet={tweet} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} />}
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
 </Link>
 
 <style>
