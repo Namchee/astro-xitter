@@ -35,11 +35,13 @@ const videoUrl = tweet.video?.variants
     </button>
   </div>
 
+  <button class="astro-xitter-video-replies">View Replies</button>
+
   <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
     Watch on X
   </Link>
 
-  <div class="astro-xitter-video-context-menu"></div>
+  <div class="astro-xitter-video-context-menu">Copy Video Address</div>
 </div>
 
 <style>
@@ -126,8 +128,34 @@ const videoUrl = tweet.video?.variants
   }
 
   .astro-xitter-video-context-menu {
-    display: none;
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background: var(--astro-xitter-background);
+    border: 1px solid var(--astro-xitter-separator);
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: var(--astro-xitter-spacing);
+
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(0.95);
+    transform-origin: top left;
+    transition:
+      opacity var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing),
+      transform var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing),
+      visibility var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    -webkit-tap-highlight-color: transparent;
+
+    &:[aria-hidden="false"] {
+      visibility: visible;
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 </style>
 
@@ -173,4 +201,80 @@ const videoUrl = tweet.video?.variants
       }
     });
   }
+
+  const videoContainers = document.querySelectorAll('.astro-xitter-video-container');
+  const ctxMenus = document.querySelectorAll('.astro-xitter-video-context-menu');
+
+  function positionMenu(el: HTMLElement, clientX: number, clientY: number) {
+    el.style.visibility = 'hidden';
+    el.style.display = 'block';
+
+    const menuWidth = el.offsetWidth;
+    const menuHeight = el.offsetHeight;
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const padding = 8;
+
+    let x = clientX;
+    let y = clientY;
+
+    if (x + menuWidth > viewportWidth - padding) {
+      x = Math.max(padding, viewportWidth - menuWidth - padding);
+    }
+
+    if (y + menuHeight > viewportHeight - padding) {
+      y = Math.max(padding, viewportHeight - menuHeight - padding);
+    }
+
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.display = '';
+
+    el.setAttribute('aria-hidden', 'false');
+    el.focus();
+  }
+
+  function closeContextMenu(el: HTMLElement) {
+    el.setAttribute('aria-hidden', 'true');
+  }
+
+  for (const c of videoContainers) {
+    const container = c as HTMLDivElement;
+
+    container.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const menu = container.querySelector('.astro-xitter-video-context-menu');
+
+      if (menu) {
+        positionMenu(menu as HTMLElement, e.clientX, e.clientY);
+      }
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      for (const menu of ctxMenus) {
+        closeContextMenu(menu as HTMLElement);
+      }
+    }
+  });
+
+  document.addEventListener(
+    'pointerdown',
+    e => {
+      for (const menu of ctxMenus) {
+        if (!e.target) {
+          return;
+        }
+
+        if (!menu.contains(e.target as HTMLElement) && menu.getAttribute('aria-hidden') === 'false') {
+          closeContextMenu(menu as HTMLElement);
+        }
+      }
+    },
+    true,
+  );
 </script>
