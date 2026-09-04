@@ -111,10 +111,15 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     box-sizing: border-box;
     width: 100%;
     max-width: 550px;
-    padding: 2 * var(--astro-xitter-spacing);
+
+    padding-right: calc(4 * var(--astro-xitter-spacing));
+    padding-top: calc(3 * var(--astro-xitter-spacing));
+    padding-bottom: calc(3 * var(--astro-xitter-spacing));
+    padding-left: calc(4 * var(--astro-xitter-spacing));
+
     font-size: var(--astro-xitter-text-md);
 
-    border-radius: 3 * var(--astro-xitter-spacing);
+    border-radius: calc(3 * var(--astro-xitter-spacing));
     border: 1px solid var(--astro-xitter-separator);
     background-color: var(--astro-xitter-background);
 }
@@ -136,7 +141,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 .astro-xitter-container :global(.astro-xitter-link) {
     text-decoration: underline;
     text-decoration-color: transparent;
-    text-underline-offset: 2 * var(--astro-xitter-spacing);
+    text-underline-offset: calc(2 * var(--astro-xitter-spacing));
     transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 }
 
@@ -166,5 +171,13 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     &:hover, &:focus-visible {
         background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
     }
+}
+
+.astro-xitter-badge {
+    position: absolute;
+    top: calc(3 * var(--astro-xitter-spacing));
+    right: calc(4 * var(--astro-xitter-spacing));
+
+    stroke: currentColor;
 }
 </style>}
