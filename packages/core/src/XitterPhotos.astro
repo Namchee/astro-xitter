@@ -22,26 +22,25 @@ const photos = tweet.photos ?? [];
     },
   ]}
 >
-  {photos.slice(0, 4).map((p, i) => (
-    <Link
-      class:list={[
-        'astro-xitter-photo-link',
-        {
-          'astro-xitter-photo-link-bento': photos.length === 3 && i === 0,
-        },
-      ]}
-      href={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
-    >
-      <img
-        src={p.url}
-        class="astro-xitter-photo"
-      />
-    </Link>
-  ))}
+  {
+    photos.slice(0, 4).map((p, i) => (
+      <Link
+        class:list={[
+          'astro-xitter-photo-link',
+          {
+            'astro-xitter-photo-link-bento': photos.length === 3 && i === 0,
+          },
+        ]}
+        href={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
+      >
+        <img src={p.url} class="astro-xitter-photo" />
+      </Link>
+    ))
+  }
 </div>
 
 <style>
-.astro-xitter-photo-container {
+  .astro-xitter-photo-container {
     display: grid;
     overflow: hidden;
     width: 100%;
@@ -51,26 +50,26 @@ const photos = tweet.photos ?? [];
     border-radius: calc(4 * var(--astro-xitter-spacing));
 
     &.astro-xitter-photo-container-one {
-        grid-template-columns: repeat(1, minmax(0, 1fr));
+      grid-template-columns: repeat(1, minmax(0, 1fr));
     }
 
     &.astro-xitter-photo-container-two {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     &.astro-xitter-photo-container-bento {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-template-rows: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
     }
-}
+  }
 
-.astro-xitter-photo-link-bento {
+  .astro-xitter-photo-link-bento {
     grid-row: span 2;
-}
+  }
 
-.astro-xitter-photo {
+  .astro-xitter-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
+  }
 </style>

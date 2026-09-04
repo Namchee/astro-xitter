@@ -9,7 +9,8 @@
     }
   },
   "files": [
-    "index.ts"
+    "index.ts",
+    "src"
   ],
   "scripts": {
     "lint": "eslint src --fix"

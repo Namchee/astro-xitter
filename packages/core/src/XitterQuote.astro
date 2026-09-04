@@ -4,6 +4,8 @@ import type { Xitter } from './types';
 import { XitterUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
 import Link from './Link.astro';
+import XitterPhotos from './XitterPhotos.astro';
+import XitterVideo from './XitterVideo.astro';
 
 interface Props {
   tweet: Xitter;
@@ -30,7 +32,7 @@ const { user } = tweet;
     />
 
     <div class="astro-xitter-quote-profile">
-      <span class="">
+      <span class="astro-xitter-quote-profile-name">
         {user.name}
       </span>
       {
@@ -49,11 +51,11 @@ const { user } = tweet;
           />
         )
       }
-      <Link href={`https://x.com/${user.screen_name}`} class="text-content/70 text-sm leading-none mx-1">
+      <span class="astro-xitter-quote-profile-screen-name">
         @{user.screen_name}
-      </Link>
+      </span>
       &middot;
-      <span class="text-content/70 text-sm leading-none ml-1">
+      <span class="astro-xitter-quote-profile-created-at">
         {
           new Date(tweet.created_at).toLocaleString('en-US', {
             day: 'numeric',
@@ -65,7 +67,11 @@ const { user } = tweet;
     </div>
   </div>
 
-  <p class="leading-snug whitespace-pre-wrap text-sm dark:text-heading">{tweet.text}</p>
+  <p class="astro-xitter-quote-content">{tweet.text}</p>
+
+  {tweet.photos && <XitterPhotos tweet={tweet} />}
+
+  {tweet.video && <XitterVideo tweet={tweet} />}
 </Link>
 
 <style>
@@ -114,5 +120,32 @@ const { user } = tweet;
     color: var(--astro-xitter-header);
 
     margin-right: calc(0.5 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-quote-profile-screen-name {
+    color: var(--astro-xitter-subheader);
+
+    font-size: var(--astro-xitter-text-sm);
+    line-height: 1;
+
+    margin-left: var(--astro-xitter-spacing);
+    maring-right: var(--astro-xitter-spacing);
+  }
+
+  .astro-xitter-quote-profile-created-at {
+    color: var(--astro-xitter-subheader);
+
+    font-size: var(--astro-xitter-text-sm);
+    line-height: 1;
+
+    margin-left: var(--astro-xitter-spacing);
+  }
+
+  .astro-xitter-quote-content {
+    white-space: pre-wrap;
+    line-height: 1.375;
+    font-size: var(--astro-xitter-text-sm);
+
+    color: var(--astro-xitter-content);
   }
 </style>

@@ -17,4 +17,6 @@ if (props.href?.toString().startsWith('http')) {
   target={target}
   data-astro-prefetch={target === '_self' ? true : false}
   {...props}
-><slot /></a>
+>
+  <slot />
+</a>
