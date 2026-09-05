@@ -37,10 +37,10 @@ const user = tweet.user;
       {
         (user.is_blue_verified || user.verified) && (
           <Verified
+            type={user.verified_type}
             class:list={[
               'astro-xitter-profile-verified-badge',
               {
-                'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
                 'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
                 'astro-xitter-profile-verified-personal':
                   user.verified_type !== XitterUserVerifiedType.Business &&
@@ -61,7 +61,7 @@ const user = tweet.user;
         @{user.screen_name}
       </Link>
 
-      &middot;
+      <span class="astro-xitter-profile-separator">&middot;</span>
 
       <Link
         class="astro-xitter-profile-screen-follow astro-xitter-link"
@@ -113,6 +113,8 @@ const user = tweet.user;
     align-items: center;
     gap: var(--astro-xitter-spacing);
 
+    width: fit-content;
+
     &:hover,
     &:focus-visible {
       text-decoration-color: var(--astro-xitter-header);
@@ -124,20 +126,12 @@ const user = tweet.user;
     width: calc(4.5 * var(--astro-xitter-spacing));
     height: auto;
 
-    & > .astro-xitter-profile-verified-checkmark {
-      fill: var(--astro-xitter-header);
+    &.astro-xitter-profile-verified-government {
+      color: var(--astro-xitter-gray);
     }
 
-    &.astro-xitter-profile-verified-business > :global(.astro-xitter-profile-verified-bubble) {
-      fill: var(--astro-xitter-gold);
-    }
-
-    &.astro-xitter-profile-verified-government > :global(.astro-xitter-profile-verified-bubble) {
-      fill: var(--astro-xitter-gray);
-    }
-
-    &.astro-xitter-profile-verified-personal > :global(.astro-xitter-profile-verified-bubble) {
-      fill: var(--astro-xitter-blue);
+    &.astro-xitter-profile-verified-personal {
+      color: var(--astro-xitter-blue);
     }
   }
 
@@ -147,11 +141,12 @@ const user = tweet.user;
     line-height: 1;
     gap: var(--astro-xitter-spacing);
     font-size: var(--astro-xitter-text-sm);
+    color: var(--astro-xitter-subheader);
   }
 
   .astro-xitter-profile-screen-name {
-    color: var(--astro-xitter-subheader);
     font-size: var(--astro-xitter-text-sm);
+    color: var(--astro-xitter-subheader);
   }
 
   .astro-xitter-profile-screen-follow {
@@ -165,7 +160,7 @@ const user = tweet.user;
     }
   }
 
-  :global(.astro-xitter-link) {
+  .astro-xitter-link {
     text-decoration: underline;
     text-decoration-color: transparent;
     transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
