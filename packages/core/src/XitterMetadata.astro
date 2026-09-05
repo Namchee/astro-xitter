@@ -15,7 +15,7 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 ---
 
 <div class="astro-xitter-metadata-container">
-  <Link href={`https://x.com/${user.screen_name}/status/${id_str}`} class="astro-xitter-metadata">
+  <Link href={`https://x.com/${user.screen_name}/status/${id_str}`} class="astro-xitter-metadata astro-xitter-link">
     {
       new Date(created_at).toLocaleString(locale, {
         hour: '2-digit',
@@ -32,11 +32,8 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
     }
   </Link>
 
-  <Link
-    href="https://help.x.com/en/x-for-websites-ads-info-and-privacy"
-    class="group hover:bg-twitter-blue/10 p-[6px] rounded-full transition-colors"
-  >
-    <Info class="" />
+  <Link href="https://help.x.com/en/x-for-websites-ads-info-and-privacy" class="astro-xitter-metadata-help">
+    <Info class="astro-xitter-metadata-help-icon" />
   </Link>
 </div>
 
@@ -50,11 +47,13 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
     color: var(--astro-xitter-subheader);
 
-    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
+    margin-top: calc(0.5 * var(--astro-xitter-spacing));
   }
 
   .astro-xitter-metadata {
     line-height: 1;
+
+    color: var(--astro-xitter-subheader);
 
     &:hover,
     &:focus-visible {
@@ -69,19 +68,27 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
     transition: background-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 
+    width: calc(8 * var(--astro-xitter-spacing));
+    height: calc(8 * var(--astro-xitter-spacing));
+
+    display: grid;
+    place-items: center;
+
+    margin-right: calc(-1 * var(--astro-xitter-spacing));
+
     &:hover,
     &:focus-visible {
       background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
 
       & > .astro-xitter-metadata-help-icon {
-        color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
+        color: var(--astro-xitter-blue);
       }
     }
   }
 
   .astro-xitter-metadata-help-icon {
-    width: calc(4 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
+    width: calc(5 * var(--astro-xitter-spacing));
+    height: calc(5 * var(--astro-xitter-spacing));
 
     transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 

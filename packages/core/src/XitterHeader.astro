@@ -113,6 +113,8 @@ const user = tweet.user;
     align-items: center;
     gap: var(--astro-xitter-spacing);
 
+    line-height: 1.25;
+
     width: fit-content;
 
     &:hover,
@@ -140,29 +142,20 @@ const user = tweet.user;
     align-items: center;
     line-height: 1;
     gap: var(--astro-xitter-spacing);
-    font-size: var(--astro-xitter-text-sm);
     color: var(--astro-xitter-subheader);
   }
 
   .astro-xitter-profile-screen-name {
-    font-size: var(--astro-xitter-text-sm);
     color: var(--astro-xitter-subheader);
   }
 
   .astro-xitter-profile-screen-follow {
     font-weight: 600;
     color: var(--astro-xitter-blue);
-    font-size: var(--astro-xitter-text-sm);
 
     &:hover,
     &:focus-visible {
       text-decoration-color: var(--astro-xitter-blue);
     }
-  }
-
-  .astro-xitter-link {
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
   }
 </style>

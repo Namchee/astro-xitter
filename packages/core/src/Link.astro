@@ -16,7 +16,16 @@ if (props.href?.toString().startsWith('http')) {
   rel={['noopener noreferrer', rel].filter(Boolean).join(' ')}
   target={target}
   data-astro-prefetch={target === '_self' ? true : false}
+  class:list={['astro-xitter-link', props.class]}
   {...props}
 >
   <slot />
 </a>
+
+<style>
+  .astro-xitter-link {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+  }
+</style>

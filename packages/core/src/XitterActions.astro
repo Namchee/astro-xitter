@@ -31,7 +31,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
       <Heart class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-like" />
     </div>
 
-    <span class="astro-xitter-actions-link-label astro-xitter-action-link-label-like">
+    <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-like">
       {format(tweet.favorite_count)}
     </span>
   </Link>
@@ -51,16 +51,16 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
   </Link>
 
   {interactive && <button
-    class="astro-xitter-actions-link flex astro-xitter-actions-copy-button"
+    class="astro-xitter-actions-link astro-xitter-actions-copy-button"
     data-tweet={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
   >
     <div
       class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container"
     >
       <Chain
-        class="astro-xitter-actions-link-icon astro-xitter-action-link-icon-copy"
+        class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-copy"
       />
-      <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check" />
+      <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check hidden" />
     </div>
 
     <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">
@@ -71,63 +71,79 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
 <style>
 .astro-xitter-actions-container {
-    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
+    margin-top: var(--astro-xitter-spacing);
+
+    padding-top: var(--astro-xitter-spacing);
 
     display: flex;
     align-items: center;
     gap: calc(2 * var(--astro-xitter-spacing));
+
+    border-top: 1px solid var(--astro-xitter-separator);
 }
 
 .astro-xitter-actions-link {
     display: flex;
     align-items: center;
-    gap: calc(0.5 * var(--astro-xitter-spacing));
+    gap: var(--astro-xitter-spacing);
+
+    & .astro-xitter-actions-link-icon-like {
+        color: var(--astro-xitter-red);
+    }
+
+    & .astro-xitter-actions-link-icon-reply {
+        color: var(--astro-xitter-blue);
+    }
+
+    & .astro-xitter-actions-link-icon-copy {
+        color: var(--astro-xitter-subheader);
+    }
+
+    & .astro-xitter-actions-link-icon-check {
+        color: var(--astro-xitter-subheader);
+    }
+
+    &:first-child {
+        margin-left: calc(-1 * var(--astro-xitter-spacing));
+    }
 
     &:hover, &:focus-visible {
         & > .astro-xitter-actions-link-icon-like-container {
             background-color: color-mix(in oklch, var(--astro-xitter-red) 10%, transparent);
+        }
 
-            & > .astro-xitter-actions-link-icon-like {
-                color: var(--astro-xitter-red);
-            }
-
-            & > .astro-xitter-actions-link-label-like {
-                color: var(--astro-xitter-red);
-                text-decoration-color: var(--astro-xitter-red);
-            }
+        & > .astro-xitter-actions-link-label-like {
+            color: var(--astro-xitter-red);
+            text-decoration-color: var(--astro-xitter-red);
         }
 
         & > .astro-xitter-actions-link-icon-reply-container {
             background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
+        }
 
-            & > .astro-xitter-actions-link-icon-reply {
-                color: var(--astro-xitter-blue);
-            }
-
-            & > .astro-xitter-actions-link-label-reply {
-                color: var(--astro-xitter-blue);
-                text-decoration-color: var(--astro-xitter-blue);
-            }
+        & > .astro-xitter-actions-link-label-reply {
+            color: var(--astro-xitter-blue);
+            text-decoration-color: var(--astro-xitter-blue);
         }
 
         & > .astro-xitter-actions-link-icon-copy-container {
             background-color: color-mix(in oklch, var(--astro-xitter-green) 10%, transparent);
+        }
 
-            & > .astro-xitter-actions-link-icon-copy {
-                stroke: var(--astro-xitter-green);
-            }
+        & .astro-xitter-actions-link-icon-copy {
+            color: var(--astro-xitter-green);
+        }
 
-            & > .astro-xitter-actions-link-label-copy {
-                stroke: var(--astro-xitter-green);
-                text-decoration-color: var(--astro-xitter-green);
-            }
+        & .astro-xitter-actions-link-label-copy {
+            color: var(--astro-xitter-green);
+            text-decoration-color: var(--astro-xitter-green);
         }
     }
 }
 
 .astro-xitter-actions-link-icon-container {
-    padding: calc(1.5 * var(--astro-xitter-spacing));
-
+    width: calc(8 * var(--astro-xitter-spacing));
+    height: calc(8 * var(--astro-xitter-spacing));
 
     display: grid;
     place-items: center;
@@ -141,10 +157,16 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 .astro-xitter-actions-link-icon {
     flex-shrink: 0;
 
-    width: calc(4 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
+    width: calc(5 * var(--astro-xitter-spacing));
+    height: auto;
+
+    margin: 0;
 
     transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+
+    &.hidden {
+        display: none;
+    }
 }
 
 .astro-xitter-actions-link-label {
@@ -154,14 +176,20 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     color: var(--astro-xitter-subheader);
 
     text-decoration: underline;
-    text-underline-offset: var(2 * var(--astro-xitter-spacing));
     text-decoration-color: transparent;
 
     transition: text-decoration-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
 }
 
-.astro-xitter-actions-link-copy-button {
+.astro-xitter-actions-copy-button {
     cursor: pointer;
+
+    display: flex;
+    align-items: center;
+
+    background: transparent;
+    border: none;
+    outline: none;
 
     &:disabled {
         cursor: default;
@@ -171,19 +199,19 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
         }
 
         & > .astro-xitter-actions-link-label {
-            color: var(--astro-xitter-subheader)
+            color: var(--astro-xitter-subheader);
             text-decoration-color: transparent;
         }
-    }
 
-    & .astro-xitter-actions-link-icon-check {
-        display: none;
+        & > .astro-xitter-actions-link-icon-container {
+            background: transparent;
+        }
     }
 }
 </style>
 
 {interactive && <script>
-  const buttons = document.querySelectorAll('.astro-xitter-actions-link-copy');
+  const buttons = document.querySelectorAll('.astro-xitter-actions-copy-button');
 
   for (const b of buttons) {
     const button = b as HTMLButtonElement;
@@ -210,7 +238,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
         copy.classList.toggle('hidden');
         check.classList.toggle('hidden');
         button.disabled = false;
-      }, 2_500);
+      }, 3_000);
     });
   }
 </script>}

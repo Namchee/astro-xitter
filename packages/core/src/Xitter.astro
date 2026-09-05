@@ -65,8 +65,6 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     <XitterMetadata tweet={tweet} />
 
-    <div class="astro-xitter-separator"></div>
-
     <XitterActions tweet={tweet} interactive={interactive} />
 
     <Link
@@ -102,7 +100,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     --astro-xitter-text-sm: 14px;
     --astro-xitter-text-md: 16px;
-    --astro-xitter-text-lg: 18px;
+    --astro-xitter-text-lg: 20px;
 
     --astro-xitter-transition-duration: 0ms; /* turn off animation by default */
     --astro-xitter-transition-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
@@ -145,22 +143,6 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     }
 }
 
-.astro-xitter-container :global(.astro-xitter-link) {
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: calc(2 * var(--astro-xitter-spacing));
-    transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
-}
-
-.astro-xitter-separator {
-    border-top: 1px solid var(--astro-xitter-separator);
-
-    height: 1px;
-    width: 100%;
-
-    margin-bottom: calc(1.5 * var(--astro-xitter-spacing));
-}
-
 .astro-xitter-replies {
     display: grid;
     place-items: center;
@@ -170,8 +152,12 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     padding: var(--astro-xitter-spacing);
 
+    margin-top: var(--astro-xitter-spacing);
+
     border: 1px solid var(--astro-xitter-separator);
     border-radius: 9999px;
+
+    color: var(--astro-xitter-blue);
 
     transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
