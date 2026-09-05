@@ -15,7 +15,19 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 ---
 
 <div class="astro-xitter-metadata-container">
-  <Link href={`https://x.com/${user.screen_name}/status/${id_str}`} class="astro-xitter-metadata astro-xitter-link">
+  <Link
+    title={`
+      ${new Date(created_at).toLocaleString(locale, {
+        hour: '2-digit',
+        minute: '2-digit',
+      })} · ${new Date(created_at).toLocaleString(locale, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })}`}
+    href={`https://x.com/${user.screen_name}/status/${id_str}`}
+    class="astro-xitter-metadata astro-xitter-link"
+  >
     {
       new Date(created_at).toLocaleString(locale, {
         hour: '2-digit',

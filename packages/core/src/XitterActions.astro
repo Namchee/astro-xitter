@@ -51,6 +51,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
   </Link>
 
   {interactive && <button
+    title="Share this Tweet"
     class="astro-xitter-actions-link astro-xitter-actions-copy-button"
     data-tweet={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
   >

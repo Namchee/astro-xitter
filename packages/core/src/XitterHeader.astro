@@ -50,6 +50,12 @@ const user = tweet.user;
           />
         )
       }
+
+      {
+        user.highlighted_label?.badge?.url && (
+          <img src={user.highlighted_label.badge.url} class="astro-xitter-profile-highlighted-label" />
+        )
+      }
     </Link>
 
     <div class="astro-xitter-profile-screen">
@@ -158,6 +164,17 @@ const user = tweet.user;
     &:focus-visible {
       text-decoration-color: var(--astro-xitter-blue);
     }
+  }
+
+  .astro-xitter-profile-highlighted-label {
+    box-sizing: border-box;
+
+    width: calc(4 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
+
+    border: 1px solid var(--astro-xitter-separator);
+
+    margin: 0;
   }
 
   @media (prefers-color-scheme: dark) {

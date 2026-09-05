@@ -35,6 +35,8 @@ const renderedContent = hasCustomRenderer
 
 const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
+console.log(tweet.user.highlighted_label);
+
 const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 ---
 
@@ -78,7 +80,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
       href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
       class="astro-xitter-badge"
     >
-      <X class="" />
+      <X />
     </Link>
   </div>}
 

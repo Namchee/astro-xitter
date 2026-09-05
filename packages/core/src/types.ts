@@ -58,6 +58,19 @@ interface XitterEntities {
   media?: Media[];
 }
 
+interface XitterBadge {
+  url?: string;
+  width?: number;
+  height?: number;
+}
+
+interface XitterHighlightedLabel {
+  description: string;
+  url?: string;
+  badge?: XitterBadge;
+  badgeType?: string;
+}
+
 export interface XitterUser {
   id: string;
   name: string;
@@ -67,6 +80,7 @@ export interface XitterUser {
   is_blue_verified: boolean;
   verified: boolean;
   verified_type?: (typeof XitterUserVerifiedType)[keyof typeof XitterUserVerifiedType];
+  highlighted_label?: XitterHighlightedLabel;
 }
 
 export interface XitterPhoto {
