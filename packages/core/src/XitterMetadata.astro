@@ -78,7 +78,7 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
     border-radius: 9999px;
 
-    transition: background-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     width: calc(8 * var(--astro-xitter-spacing));
     height: calc(8 * var(--astro-xitter-spacing));
@@ -102,7 +102,7 @@ const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
     width: calc(5 * var(--astro-xitter-spacing));
     height: calc(5 * var(--astro-xitter-spacing));
 
-    transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+    transition: color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     color: var(--astro-xitter-subheader);
   }

@@ -152,7 +152,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     border-radius: 9999px;
     background-color: transparent;
 
-    transition: background-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 }
 
 .astro-xitter-actions-link-icon {
@@ -163,7 +163,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     margin: 0;
 
-    transition: color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+    transition: color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     &.hidden {
         display: none;
@@ -179,7 +179,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     text-decoration: underline;
     text-decoration-color: transparent;
 
-    transition: text-decoration-color var(--astro-xitter-easing-duration) var(--astro-xitter-easing-timing);
+    transition: text-decoration-color 0ms var(--astro-xitter-easing-timing);
 }
 
 .astro-xitter-actions-copy-button {
