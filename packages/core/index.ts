@@ -1,3 +1,3 @@
 /* eslint-disable unicorn/no-barrel-files */
 // @ts-ignore just export, trust
-export { default as Xitter } from './Xitter.astro';
+export { default as Xitter } from './src/Xitter.astro';

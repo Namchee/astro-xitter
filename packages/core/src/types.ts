@@ -17,6 +17,47 @@ interface FullXitter {
   id: string;
 }
 
+type Indices = [number, number];
+
+interface Hashtag {
+  indices: Indices;
+  text: string;
+}
+
+interface UserMention {
+  id_str: string;
+  indices: Indices;
+  name: string;
+  screen_name: string;
+}
+
+interface Media {
+  display_url: string;
+  expanded_url: string;
+  indices: Indices;
+  url: string;
+}
+
+interface Url {
+  display_url: string;
+  expanded_url: string;
+  indices: Indices;
+  url: string;
+}
+
+interface Symbol {
+  indices: Indices;
+  text: string;
+}
+
+interface XitterEntities {
+  hashtags: Hashtag[]
+  urls: Url[];
+  user_mentions: UserMention[];
+  symbols: Symbol[];
+  media?: Media[];
+}
+
 export interface XitterUser {
   id: string;
   name: string;
@@ -52,7 +93,7 @@ export interface Xitter {
   in_reply_to_screen_name?: string;
   favorite_count: number;
   created_at: string;
-  entities: [];
+  entities: XitterEntities;
   user: XitterUser;
   photos?: XitterPhoto[];
   video?: XitterVideo;

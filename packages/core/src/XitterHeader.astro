@@ -14,11 +14,7 @@ const user = tweet.user;
 ---
 
 <div class="astro-xitter-header-container">
-  <Link
-    title="View Profile on X"
-    href={`https://x.com/${user.screen_name}`}
-    class="astro-xitter-profile-picture"
-  >
+  <Link title="View Profile on X" href={`https://x.com/${user.screen_name}`} class="astro-xitter-profile-picture">
     <img
       src={user.profile_image_url_https}
       class:list={[
@@ -35,24 +31,32 @@ const user = tweet.user;
       title="View Profile on X"
       class="astro-xitter-profile-name astro-xitter-link"
       href={`https://x.com/${user.screen_name}`}
-    >{user.name}
+    >
+      {user.name}
 
       {
         (user.is_blue_verified || user.verified) && (
-          <Verified class:list={['astro-xitter-profile-verified-badge', {
-            'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
-            'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
-            'astro-xitter-profile-verified-personal': user.verified_type !== XitterUserVerifiedType.Business && user.verified_type !== XitterUserVerifiedType.Government,
-          }]} />
+          <Verified
+            class:list={[
+              'astro-xitter-profile-verified-badge',
+              {
+                'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
+                'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+                'astro-xitter-profile-verified-personal':
+                  user.verified_type !== XitterUserVerifiedType.Business &&
+                  user.verified_type !== XitterUserVerifiedType.Government,
+              },
+            ]}
+          />
         )
-      }</Link
-    >
+      }
+    </Link>
 
     <div class="astro-xitter-profile-screen">
       <Link
         title="View Profile on X"
         href={`https://x.com/${user.screen_name}`}
-        class="astro-xitter-profile-screen-name"
+        class="astro-xitter-profile-screen-name astro-xitter-link"
       >
         @{user.screen_name}
       </Link>
@@ -70,87 +74,100 @@ const user = tweet.user;
 </div>
 
 <style>
-.astro-xitter-header-container {
+  .astro-xitter-header-container {
     display: flex;
     align-items: center;
     gap: calc(2 * var(--astro-xitter-spacing));
-}
+  }
 
-.astro-xitter-profile-picture {
+  .astro-xitter-profile-picture {
     flex-shrink: 0;
-}
+  }
 
-.astro-xitter-profile-avatar {
+  .astro-xitter-profile-avatar {
     filter: brightness(1);
     transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
     border-radius: 9999px;
 
-    &:hover, &:focus {
-        filter: brightness(0.9);
+    &:hover,
+    &:focus {
+      filter: brightness(0.9);
     }
 
     &.astro-xitter-profile-avatar-square {
-        border-radius: calc(4 * var(--astro-xitter-spacing));
+      border-radius: calc(4 * var(--astro-xitter-spacing));
     }
-}
+  }
 
-.astro-xitter-profile {
-    display:flex;
+  .astro-xitter-profile {
+    display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
     gap: var(--astro-xitter-spacing);
-}
+  }
 
-,astro-xitter-profile-name {
+  .astro-xitter-profile-name {
     font-weight: 600;
     color: var(--astro-xitter-header);
     display: inline-flex;
     align-items: center;
     gap: var(--astro-xitter-spacing);
 
-    &:hover, &:focus-visible {
-        text-decoration-color: var(--astro-xitter-header);
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: var(--astro-xitter-header);
     }
-}
+  }
 
-.astro-xitter-profile-verified-badge {
+  .astro-xitter-profile-verified-badge {
+    flex-shrink: 0;
+    width: calc(4.5 * var(--astro-xitter-spacing));
+    height: auto;
+
     & > .astro-xitter-profile-verified-checkmark {
-        fill: var(--astro-xitter-header);
+      fill: var(--astro-xitter-header);
     }
 
-    &.astro-xitter-profile-verified-business > .astro-xitter-profile-verified-bubble {
-        fill: var(--astro-xitter-gold);
+    &.astro-xitter-profile-verified-business > :global(.astro-xitter-profile-verified-bubble) {
+      fill: var(--astro-xitter-gold);
     }
 
-    &.astro-xitter-profile-verified-government > .astro-xitter-profile-verified-bubble {
-        fill: var(--astro-xitter-gray);
+    &.astro-xitter-profile-verified-government > :global(.astro-xitter-profile-verified-bubble) {
+      fill: var(--astro-xitter-gray);
     }
 
-    &.astro-xitter-profile-verified-personal > .astro-xitter-profile-verified-bubble {
-        fill: var(--astro-xitter-blue);
+    &.astro-xitter-profile-verified-personal > :global(.astro-xitter-profile-verified-bubble) {
+      fill: var(--astro-xitter-blue);
     }
-}
+  }
 
-.astro-xitter-profile-screen {
+  .astro-xitter-profile-screen {
     display: flex;
     align-items: center;
     line-height: 1;
     gap: var(--astro-xitter-spacing);
     font-size: var(--astro-xitter-text-sm);
-}
+  }
 
-.astro-xitter-profile-screen-name {
+  .astro-xitter-profile-screen-name {
     color: var(--astro-xitter-subheader);
     font-size: var(--astro-xitter-text-sm);
-}
+  }
 
-.astro-xitter-profile-screen-follow {
+  .astro-xitter-profile-screen-follow {
     font-weight: 600;
     color: var(--astro-xitter-blue);
     font-size: var(--astro-xitter-text-sm);
 
-    &:hover, &:focus-visible {
-        text-decoration-color: var(--astro-xitter-blue);
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: var(--astro-xitter-blue);
     }
-}
+  }
+
+  :global(.astro-xitter-link) {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+  }
 </style>

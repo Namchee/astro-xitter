@@ -78,9 +78,9 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     <Link
       href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-      class="top-4 right-4 absolute stroke-content transition-colors hover:stroke-heading"
+      class="astro-xitter-badge"
     >
-      <X class="size-5" />
+      <X class="" />
     </Link>
   </div>}
 
@@ -104,7 +104,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     --astro-xitter-text-md: 16px;
     --astro-xitter-text-lg: 18px;
 
-    --astro-xitter-transition-duration: 150ms;
+    --astro-xitter-transition-duration: 0ms; /* turn off animation by default */
     --astro-xitter-transition-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
 
     position: relative;
@@ -122,6 +122,8 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     font-size: var(--astro-xitter-text-md);
 
+    color: var(--astro-xitter-content);
+
     border-radius: calc(3 * var(--astro-xitter-spacing));
     border: 1px solid var(--astro-xitter-separator);
     background-color: var(--astro-xitter-background);
@@ -129,9 +131,10 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
 @media (prefers-color-scheme: dark) {
     .astro-xitter-container {
-        --astro-xitter-background: oklch(13% 0.028 261.692);
+        --astro-xitter-background: oklch(0.2385 0.0264 248.99);
         --astro-xitter-header: white;
         --astro-xitter-content: oklch(96.7% 0.003 264.542);
+        --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
     }
 }
 
@@ -180,7 +183,5 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     position: absolute;
     top: calc(3 * var(--astro-xitter-spacing));
     right: calc(4 * var(--astro-xitter-spacing));
-
-    stroke: currentColor;
 }
 </style>}
