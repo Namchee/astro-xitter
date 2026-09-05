@@ -35,8 +35,6 @@ const renderedContent = hasCustomRenderer
 
 const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
-console.log(tweet.user.highlighted_label);
-
 const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 ---
 
@@ -136,6 +134,8 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
         --astro-xitter-content: oklch(96.7% 0.003 264.542);
         --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
         --astro-xitter-subheader: oklch(0.6736 0.0244 248.19);
+
+        --astro-xitter-blue: oklch(0.7975 0.1141 233.93);
     }
 }
 
