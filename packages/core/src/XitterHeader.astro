@@ -158,11 +158,11 @@ const user = tweet.user;
 
   .astro-xitter-profile-screen-follow {
     font-weight: 600;
-    color: var(--astro-xitter-blue);
+    color: var(--astro-xitter-blue-link);
 
     &:hover,
     &:focus-visible {
-      text-decoration-color: var(--astro-xitter-blue);
+      text-decoration-color: var(--astro-xitter-blue-link);
     }
   }
 
@@ -177,11 +177,15 @@ const user = tweet.user;
     margin: 0;
   }
 
-  @media (prefers-color-scheme: dark) {
-    .astro-xitter-profile-verified-badge {
-      &.astro-xitter-profile-verified-personal {
-        color: var(--astro-xitter-header);
-      }
+  :global([data-theme='light']) .astro-xitter-profile-verified-badge {
+    &.astro-xitter-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
+  }
+
+  :global([data-theme='dark']) .astro-xitter-profile-verified-badge {
+    &.astro-xitter-profile-verified-personal {
+      color: var(--astro-xitter-header);
     }
   }
 </style>

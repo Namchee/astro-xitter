@@ -161,8 +161,6 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     width: calc(5 * var(--astro-xitter-spacing));
     height: auto;
 
-    margin: 0;
-
     transition: color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     &.hidden {
@@ -173,6 +171,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 .astro-xitter-actions-link-label {
     font-weight: 600;
     font-size: var(--astro-xitter-text-sm);
+    line-height: calc(4 * var(--astro-xitter-spacing));
 
     color: var(--astro-xitter-subheader);
 
