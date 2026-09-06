@@ -78,7 +78,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     display: flex;
     align-items: center;
-    gap: calc(2 * var(--astro-xitter-spacing));
+    gap: calc(5 * var(--astro-xitter-spacing));
 
     border-top: 1px solid var(--astro-xitter-separator);
 }
@@ -190,6 +190,8 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     background: transparent;
     border: none;
     outline: none;
+
+    padding: 0;
 
     &:disabled {
         cursor: default;
