@@ -10,24 +10,32 @@ interface Props {
 const { tweet } = Astro.props;
 
 const isTruncated = !!tweet.note_tweet;
+
+let content = tweet.text;
+if (tweet.entities.urls) {
+  for (const url of tweet.entities.urls) {
+    content = `${content.slice(0, url.indices[0])}<a href="${url.url}" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">${url.display_url}</a> ${content.slice(url.indices[0] + url.indices[1])}`;
+  }
+}
+
+if (tweet.entities.user_mentions) {
+  for (const url of tweet.entities.user_mentions) {
+    content = `${content.slice(0, url.indices[0])}<a href="https://x.com/${url.screen_name}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">${url.screen_name}</a> ${content.slice(url.indices[0] + url.indices[1])}`;
+  }
+}
 ---
 
-<p class="astro-xitter-content">
-  {tweet.text}
-  {
-    isTruncated && (
-      <>
-        <>... </>
-        <Link
-          class="astro-xitter-content-truncated-notice astro-xitter-link"
-          href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-        >
-          Show More
-        </Link>
-      </>
-    )
-  }
-</p>
+<>
+  <div class="astro-xitter-content" set:html={content} />
+
+  {isTruncated && <>... </>
+          <Link
+            class="astro-xitter-content-truncated-notice astro-xitter-link"
+            href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+          >
+            Show More
+          </Link>}
+</>
 
 <style>
   .astro-xitter-content {
@@ -49,6 +57,15 @@ const isTruncated = !!tweet.note_tweet;
     &:hover,
     &:focus-visible {
       text-decoration-color: var(--astro-xitter-blue);
+    }
+  }
+
+  :global(.astro-xitter-content-link) {
+    color: var(--astro-xitter-blue-link);
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: var(--astro-xitter-blue-link);
     }
   }
 </style>

@@ -23,7 +23,7 @@ if (props.href?.toString().startsWith('http')) {
 </a>
 
 <style>
-  .astro-xitter-link {
+  :global(.astro-xitter-link) {
     text-decoration: underline;
     text-decoration-color: transparent;
     transition: text-decoration-color 0ms var(--astro-xitter-transition-easing);
