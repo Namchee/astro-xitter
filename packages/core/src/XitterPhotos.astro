@@ -28,7 +28,7 @@ const photos = tweet.photos ?? [];
         class:list={[
           'astro-xitter-photo-link',
           {
-            'astro-xitter-photo-link-bento': photos.length === 3 && i === 0,
+            'astro-xitter-photo-link-bento': (photos.length === 3 && i === 0) || photos.length === 2,
           },
         ]}
         href={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
@@ -42,12 +42,16 @@ const photos = tweet.photos ?? [];
 <style>
   .astro-xitter-photo-container {
     display: grid;
+    gap: calc(0.5 * var(--astro-xitter-spacing));
+
     overflow: hidden;
     width: 100%;
     aspect-ratio: 16 / 9;
 
     margin-top: calc(3 * var(--astro-xitter-spacing));
     border-radius: calc(4 * var(--astro-xitter-spacing));
+
+    border: 1px solid var(--astro-xitter-separator);
 
     &.astro-xitter-photo-container-one {
       grid-template-columns: repeat(1, minmax(0, 1fr));
