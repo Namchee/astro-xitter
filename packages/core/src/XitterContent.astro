@@ -11,11 +11,7 @@ const { tweet } = Astro.props;
 
 const isTruncated = !!tweet.note_tweet;
 
-console.log(tweet.entities);
-
 let content = tweet.text;
-
-console.log(content);
 
 const allEntities = [
   ...(tweet.entities?.urls || []).map(e => ({ ...e, type: 'url' })),
@@ -56,6 +52,8 @@ for (const entity of allEntities) {
       replacement = '';
       break;
   }
+
+  console.log(content.slice(end));
 
   content = `${content.slice(0, start)}${replacement}${content.slice(end)}`;
 }
