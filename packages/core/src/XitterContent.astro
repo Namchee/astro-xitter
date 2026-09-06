@@ -23,6 +23,8 @@ const allEntities = [
 
 allEntities.sort((a, b) => b.indices[0] - a.indices[0]);
 
+function sliceByCodePoints(str: string, start: number, end?: number) {}
+
 for (const entity of allEntities) {
   const [start, end] = entity.indices;
   let replacement = '';
@@ -53,9 +55,12 @@ for (const entity of allEntities) {
       break;
   }
 
-  console.log(content.slice(end));
+  const characters = [...content];
 
-  content = `${content.slice(0, start)}${replacement}${content.slice(end)}`;
+  const before = characters.slice(0, start).join('');
+  const after = characters.slice(end).join('');
+
+  content = `${before}${replacement}${after}`;
 }
 ---
 
