@@ -36,8 +36,6 @@ const renderedContent = hasCustomRenderer
 const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
 const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
-
-console.log(tweet.entities);
 ---
 
 {renderedContent

@@ -34,7 +34,7 @@ const videoUrl = tweet.video?.variants
   {
     interactive && (
       <>
-        <div class="astro-xitter-video-play">
+        <div class="astro-xitter-video-play-container">
           <button class="astro-xitter-video-play-button">
             <Play class="astro-xitter-video-play-button-icon" />
           </button>
@@ -48,7 +48,7 @@ const videoUrl = tweet.video?.variants
           View Replies
         </Link>
 
-        <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}>
+        <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
           Watch on X
         </Link>
 
@@ -99,12 +99,15 @@ const videoUrl = tweet.video?.variants
     background: var(--astro-xitter-blue);
 
     border-radius: 9999px;
-    border: calc(4 * var(--astro-xitter-spacing)) solid white;
+    border: var(--astro-xitter-spacing) solid white;
 
     cursor: pointer;
 
     filter: brightness(1);
     transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    display: grid;
+    place-items: center;
 
     &:hover,
     &:focus-visible {
@@ -124,7 +127,8 @@ const videoUrl = tweet.video?.variants
     top: calc(3 * var(--astro-xitter-spacing));
     right: calc(3 * var(--astro-xitter-spacing));
 
-    background-color: color-mix(in oklch, var(--astro-xitter-content) 75%, transparent);
+    background-color: color-mix(in oklch, black 75%, transparent);
+    filter: brightness(100%);
     transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
     backdrop-filter: blur(5px);
 
@@ -139,7 +143,7 @@ const videoUrl = tweet.video?.variants
 
     &:hover,
     &:focus-visible {
-      filter: brightness(110%);
+      filter: brightness(150%);
     }
   }
 

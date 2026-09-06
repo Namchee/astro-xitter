@@ -19,42 +19,42 @@ interface FullXitter {
 
 type Indices = [number, number];
 
-interface Hashtag {
+export interface Hashtag {
   indices: Indices;
   text: string;
 }
 
-interface UserMention {
+export interface UserMention {
   id_str: string;
   indices: Indices;
   name: string;
   screen_name: string;
 }
 
-interface Media {
+export interface Media {
   display_url: string;
   expanded_url: string;
   indices: Indices;
   url: string;
 }
 
-interface Url {
+export interface Url {
   display_url: string;
   expanded_url: string;
   indices: Indices;
   url: string;
 }
 
-interface Symbol {
+export interface Symbol {
   indices: Indices;
   text: string;
 }
 
 interface XitterEntities {
-  hashtags: Hashtag[]
-  urls: Url[];
-  user_mentions: UserMention[];
-  symbols: Symbol[];
+  hashtags?: Hashtag[]
+  urls?: Url[];
+  user_mentions?: UserMention[];
+  symbols?: Symbol[];
   media?: Media[];
 }
 
