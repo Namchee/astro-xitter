@@ -47,6 +47,15 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     <XitterContent tweet={tweet} />
 
     {
+      tweet.quoted_tweet && (
+        <XitterQuote
+          tweet={tweet.quoted_tweet}
+          interactive={interactive}
+        />
+      )
+    }
+
+    {
       tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />
     }
 
@@ -56,15 +65,6 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     }
 
     {tweet.card && <XitterCard tweet={tweet} />}
-
-    {
-      tweet.quoted_tweet && (
-        <XitterQuote
-          tweet={tweet.quoted_tweet}
-          interactive={interactive}
-        />
-      )
-    }
 
     <XitterMetadata tweet={tweet} />
 

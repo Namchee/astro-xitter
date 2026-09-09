@@ -10,7 +10,7 @@ interface Props {
 const { tweet } = Astro.props;
 const values = tweet.card?.binding_values;
 const photo = values?.photo_image_full_size_large?.image_value;
-const domain = values?.domain?.string_value;
+const domain = values?.vanity_url?.string_value ?? values?.domain?.string_value;
 const title = values?.title?.string_value;
 const description = values?.description?.string_value;
 ---
