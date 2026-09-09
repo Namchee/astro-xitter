@@ -188,7 +188,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(-100%);
 
     display: none;
     visibility: hidden;
@@ -201,6 +201,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     background: var(--astro-xitter-blue);
 
     border-radius: 9999px;
+
+    padding-left: calc(4 * var(--astro-xitter-spacing));
+    padding-right: calc(4 * var(--astro-xitter-spacing));
+    padding-top: var(--astro-xitter-spacing);
+    padding-bottom: var(--astro-xitter-spacing);
 
     cursor: pointer;
 
