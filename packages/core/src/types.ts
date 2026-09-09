@@ -51,7 +51,7 @@ export interface Symbol {
 }
 
 interface XitterEntities {
-  hashtags?: Hashtag[]
+  hashtags?: Hashtag[];
   urls?: Url[];
   user_mentions?: UserMention[];
   symbols?: Symbol[];

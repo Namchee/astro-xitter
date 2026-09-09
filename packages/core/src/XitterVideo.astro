@@ -56,7 +56,9 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
         </Link>
 
         <div class="astro-xitter-video-context-menu" aria-hidden="true">
-          Copy Video Address
+            <button class="astro-xitter-video-context-menu-item astro-xitter-video-context-menu-link-copy" data-video={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
+            Copy Video Address
+            </button>
         </div>
       </>
     )
@@ -130,9 +132,8 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     top: calc(3 * var(--astro-xitter-spacing));
     right: calc(3 * var(--astro-xitter-spacing));
 
-    background-color: color-mix(in oklch, black 75%, transparent);
-    filter: brightness(100%);
-    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+    background-color: color-mix(in oklch, black 80%, transparent);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
     backdrop-filter: blur(5px);
 
     font-size: var(--astro-xitter-text-sm);
@@ -146,7 +147,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
     &:hover,
     &:focus-visible {
-      filter: brightness(150%);
+      background-color: oklch(25% 0 0 / 80%);
     }
   }
 
@@ -157,7 +158,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     z-index: 9999;
     background: var(--astro-xitter-background);
     border: 1px solid var(--astro-xitter-separator);
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+    border-radius: var(--astro-xitter-spacing);
     box-shadow:
       0 10px 15px -3px rgba(0, 0, 0, 0.1),
       0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -174,14 +175,28 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       transform var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing),
       visibility var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
+    display: flex;
+    flex-direction: column;
+
     -webkit-tap-highlight-color: transparent;
 
-    &:[aria-hidden="false"] {
+    &[aria-hidden="false"] {
       visibility: visible;
       opacity: 1;
       transform: scale(1);
       pointer-events: all;
     }
+  }
+
+  .astro-xitter-video-context-menu-item {
+    font-weight: 600;
+
+    padding: calc(2 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-video-context-menu-link-copy {
+    background: transparent;
+    border: none;
   }
 
   .astro-xitter-video-replies {
@@ -202,10 +217,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
     border-radius: 9999px;
 
-    padding-left: calc(4 * var(--astro-xitter-spacing));
-    padding-right: calc(4 * var(--astro-xitter-spacing));
-    padding-top: var(--astro-xitter-spacing);
-    padding-bottom: var(--astro-xitter-spacing);
+    padding: var(--astro-xitter-spacing) calc(4 * var(--astro-xitter-spacing));
 
     cursor: pointer;
 
@@ -302,11 +314,9 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
   const videoContainers = document.querySelectorAll('.astro-xitter-video-container');
   const ctxMenus = document.querySelectorAll('.astro-xitter-video-context-menu');
+  const copyLinks = document.querySelectorAll('.astro-xitter-video-context-menu-link-copy');
 
   function positionMenu(el: HTMLElement, clientX: number, clientY: number) {
-    el.style.visibility = 'hidden';
-    el.style.display = 'block';
-
     const menuWidth = el.offsetWidth;
     const menuHeight = el.offsetHeight;
 
@@ -337,6 +347,21 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     el.setAttribute('aria-hidden', 'true');
   }
 
+  for (const c of videoContainers) {
+      const container = c as HTMLDivElement;
+
+      container.addEventListener('contextmenu', e => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const menu = container.querySelector('.astro-xitter-video-context-menu');
+
+        if (menu) {
+          positionMenu(menu as HTMLElement, e.clientX, e.clientY);
+        }
+      });
+    }
+
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       for (const menu of ctxMenus) {
@@ -344,4 +369,37 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       }
     }
   });
+
+  document.addEventListener(
+    'pointerdown',
+    e => {
+      for (const menu of ctxMenus) {
+        if (!e.target) {
+          return;
+        }
+
+        if (!menu.contains(e.target as HTMLElement) && menu.getAttribute('aria-hidden') === 'false') {
+          closeContextMenu(menu as HTMLElement);
+        }
+      }
+    },
+    true,
+  );
+
+  for (const copyLink of copyLinks) {
+    const btn = copyLink as HTMLButtonElement;
+
+    btn.addEventListener('click', async () => {
+      const link = btn.dataset.video;
+      if (!link) {
+        return;
+      }
+
+      await navigator.clipboard.writeText(link);
+
+      for (const menu of ctxMenus) {
+        closeContextMenu(menu as HTMLElement);
+      }
+    });
+  }
 </script>}
