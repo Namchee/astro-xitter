@@ -29,8 +29,13 @@ for (const entity of allEntities) {
 
   switch (entity.type) {
     case 'url': {
-      const { expanded_url, display_url } = entity as Url;
+      const { expanded_url, display_url, url } = entity as Url;
+
       replacement = `<a href="${expanded_url}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">${display_url}</a>`;
+      if (url === tweet.card?.url) {
+        replacement = '';
+      }
+
       break;
     }
     case 'mention': {
@@ -60,6 +65,8 @@ for (const entity of allEntities) {
 
   content = `${before}${replacement}${after}`;
 }
+
+content = content.trim();
 ---
 
 <div class="astro-xitter-content">
