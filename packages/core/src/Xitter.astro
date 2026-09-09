@@ -5,6 +5,7 @@ import { NumberFormatterOptions } from './const';
 import X from './icons/X.astro';
 import Link from './Link.astro';
 import XitterActions from './XitterActions.astro';
+import XitterCard from './XitterCard.astro';
 import XitterContent from './XitterContent.astro';
 import XitterHeader from './XitterHeader.astro';
 import XitterMetadata from './XitterMetadata.astro';
@@ -53,6 +54,8 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
       tweet.video
         && <XitterVideo tweet={tweet} interactive={interactive} />
     }
+
+    {tweet.card && <XitterCard tweet={tweet} />}
 
     {
       tweet.quoted_tweet && (

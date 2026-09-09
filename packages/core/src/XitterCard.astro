@@ -1,0 +1,90 @@
+---
+import type { Xitter } from './types';
+
+import Link from './Link.astro';
+
+interface Props {
+  tweet: Xitter;
+}
+
+const { tweet } = Astro.props;
+const values = tweet.card?.binding_values;
+const photo = values?.photo_image_full_size_large?.image_value;
+const domain = values?.domain?.string_value;
+const title = values?.title?.string_value;
+const description = values?.description?.string_value;
+---
+
+<Link href={tweet.card?.url} class="astro-xitter-card-container">
+  <img
+    src={photo?.url}
+    width={photo?.width}
+    height={photo?.height}
+    alt={photo?.alt}
+    title={photo?.alt}
+    class="astro-xitter-card-image"
+  />
+
+  <div class="astro-xitter-card-metadata">
+    <p class="astro-xitter-card-metadata-domain">
+      {domain}
+    </p>
+
+    <p class="astro-xitter-card-metadata-title">
+      {title}
+    </p>
+
+    <p class="astro-xitter-card-metadata-description">
+      {description}
+    </p>
+  </div>
+</Link>
+
+<style>
+  .astro-xitter-card-container {
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+
+    border: 1px solid var(--astro-xitter-separator);
+    border-radius: calc(4 * var(--astro-xitter-spacing));
+
+    overflow: hidden;
+
+    background-color: var(--astro-xitter-background);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+    }
+  }
+
+  .astro-xitter-card-metadata {
+    display: flex;
+    flex-direction: column;
+    gap: calc(0.5 * var(--astro-xitter-spacing));
+
+    padding: calc(3 * var(--astro-xitter-spacing));
+
+    line-height: calc(5 * var(--astro-xitter-spacing));
+
+    margin: 0;
+  }
+
+  .astro-xitter-card-metadata-domain {
+    color: var(--astro-xitter-subheader);
+
+    margin: 0;
+  }
+
+  .astro-xitter-card-metadata-title {
+    color: var(--astro-xitter-header);
+
+    margin: 0;
+  }
+
+  .astro-xitter-card-metadata-description {
+    color: var(--astro-xitter-subheader);
+
+    margin: 0;
+  }
+</style>

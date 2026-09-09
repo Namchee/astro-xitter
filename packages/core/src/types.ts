@@ -101,6 +101,80 @@ export interface XitterPhoto {
   height: number;
 }
 
+export interface StringValue {
+  type: 'STRING';
+  string_value: string;
+}
+
+export interface ImageValue {
+  type: 'IMAGE';
+  image_value: {
+    url: string;
+    width: number;
+    height: number;
+    alt?: string;
+  };
+}
+
+export interface UserValue {
+  type: 'USER';
+  user_value: {
+    id_str: string;
+    path: string[];
+  };
+}
+
+export type BindingValue = StringValue | ImageValue | UserValue;
+
+export interface TwitterCardPlatform {
+  platform: {
+    device: {
+      name: string;
+      version: string;
+    };
+    audience?: {
+      name: string;
+    };
+  };
+}
+
+export interface XitterCard {
+  card_platform: TwitterCardPlatform;
+  name: 'summary_large_image' | string;
+  url: string;
+  binding_values: {
+    title?: StringValue;
+    description?: StringValue;
+    domain?: StringValue;
+    site?: UserValue | StringValue;
+    vanity_url?: StringValue;
+    card_url?: StringValue;
+
+    summary_photo_image?: ImageValue;
+    summary_photo_image_small?: ImageValue;
+    summary_photo_image_large?: ImageValue;
+    summary_photo_image_x_large?: ImageValue;
+    summary_photo_image_original?: ImageValue;
+    summary_photo_image_alt_text?: StringValue;
+    summary_photo_image_color?: StringValue;
+
+    photo_image_full_size?: ImageValue;
+    photo_image_full_size_small?: ImageValue;
+    photo_image_full_size_large?: ImageValue;
+    photo_image_full_size_x_large?: ImageValue;
+    photo_image_full_size_original?: ImageValue;
+    photo_image_full_size_alt_text?: StringValue;
+    photo_image_full_size_color?: StringValue;
+
+    thumbnail_image?: ImageValue;
+    thumbnail_image_small?: ImageValue;
+    thumbnail_image_large?: ImageValue;
+    thumbnail_image_x_large?: ImageValue;
+    thumbnail_image_original?: ImageValue;
+    thumbnail_image_color?: StringValue;
+  };
+}
+
 export interface Xitter {
   id_str: string;
   text: string;
@@ -116,4 +190,5 @@ export interface Xitter {
   quoted_tweet?: Xitter;
   parent?: Xitter;
   note_tweet?: FullXitter;
+  card?: XitterCard;
 }
