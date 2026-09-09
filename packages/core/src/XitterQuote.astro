@@ -3,7 +3,7 @@ import type { Xitter } from './types';
 
 import { XitterUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
-import Link from './Link.astro';
+import { processContent } from './lib';
 import XitterPhotos from './XitterPhotos.astro';
 import XitterVideo from './XitterVideo.astro';
 
@@ -15,13 +15,13 @@ interface Props {
 
 const { tweet, interactive } = Astro.props;
 const { user } = tweet;
+
+console.log(tweet.photos);
+
+const { content } = processContent(tweet);
 ---
 
-<Link
-  title="View Post"
-  href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}
-  class="p-2 border border-separator rounded-lg mb-[6px] transition-colors"
->
+<div title="View Post" class="astro-xitter-quote-container">
   <div class="astro-xitter-quote-heading">
     <img
       src={user.profile_image_url_https}
@@ -42,7 +42,7 @@ const { user } = tweet;
           <Verified
             type={user.verified_type}
             class:list={[
-              'astro-xitter-profile-verified-badge',
+              'astro-xitter-quote-profile-verified-badge',
               {
                 'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
                 'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
@@ -54,35 +54,63 @@ const { user } = tweet;
           />
         )
       }
-      <span class="astro-xitter-quote-profile-screen-name">
-        @{user.screen_name}
-      </span>
-      &middot;
-      <span class="astro-xitter-quote-profile-created-at">
-        {
-          new Date(tweet.created_at).toLocaleString('en-US', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-          })
-        }
-      </span>
+
+      <div class="astro-xitter-quote-profile-screen">
+        <span class="astro-xitter-quote-profile-screen-name">
+          @{user.screen_name}
+        </span>
+
+        <span class="astro-xitter-quote-profile-separator">&middot;</span>
+
+        <span class="astro-xitter-quote-profile-created-at">
+          {
+            new Date(tweet.created_at).toLocaleString('en-US', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            })
+          }
+        </span>
+      </div>
     </div>
   </div>
 
-  <p class="astro-xitter-quote-content">{tweet.text}</p>
+  <p
+    class:list={[
+      'astro-xitter-quote-content',
+      {
+        'astro-xitter-quote-content-last': !tweet.photos && !tweet.video,
+      },
+    ]}
+  >
+    <Fragment set:html={content} />
+  </p>
 
-  {tweet.photos && <XitterPhotos tweet={tweet} />}
+  {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
-</Link>
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote />}
+</div>
 
 <style>
   .astro-xitter-quote-container {
     border: 1px solid var(--astro-xitter-separator);
-    border-radius: var(4 * var(--astro-xitter-spacing));
+    border-radius: calc(4 * var(--astro-xitter-spacing));
+
+    overflow: hidden;
 
     transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+
+    background-color: var(--astro-xitter-background);
+    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+    border-collapse: collapse;
+
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+    }
   }
 
   .astro-xitter-quote-heading {
@@ -92,9 +120,9 @@ const { user } = tweet;
     align-items: center;
     gap: calc(2 * var(--astro-xitter-spacing));
 
-    padding-top: var(3 * var(--astro-xitter-spacing));
-    padding-left: var(3 * var(--astro-xitter-spacing));
-    padding-right: var(3 * var(--astro-xitter-spacing));
+    padding-top: calc(3 * var(--astro-xitter-spacing));
+    padding-left: calc(3 * var(--astro-xitter-spacing));
+    padding-right: calc(3 * var(--astro-xitter-spacing));
   }
 
   .astro-xitter-quote-avatar {
@@ -115,6 +143,18 @@ const { user } = tweet;
     align-items: center;
 
     line-height: 1;
+
+    margin: 0;
+  }
+
+  .astro-xitter-quote-profile-screen {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    gap: var(--astro-xitter-spacing);
+    color: var(--astro-xitter-subheader);
+
+    margin: 0;
   }
 
   .astro-xitter-quote-profile-name {
@@ -123,6 +163,20 @@ const { user } = tweet;
     color: var(--astro-xitter-header);
 
     margin-right: calc(0.5 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-quote-profile-verified-badge {
+    flex-shrink: 0;
+    width: calc(4.5 * var(--astro-xitter-spacing));
+    height: auto;
+
+    &.astro-xitter-profile-verified-government {
+      color: var(--astro-xitter-gray);
+    }
+
+    &.astro-xitter-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
   }
 
   .astro-xitter-quote-profile-screen-name {
@@ -140,15 +194,22 @@ const { user } = tweet;
 
     font-size: var(--astro-xitter-text-sm);
     line-height: 1;
-
-    margin-left: var(--astro-xitter-spacing);
   }
 
   .astro-xitter-quote-content {
     white-space: pre-wrap;
-    line-height: 1.375;
+    line-height: calc(5 * var(--astro-xitter-spacing) / var(--astro-xitter-text-md));
     font-size: var(--astro-xitter-text-sm);
 
+    margin-top: var(--astro-xitter-spacing);
+
     color: var(--astro-xitter-content);
+
+    padding-left: calc(3 * var(--astro-xitter-spacing));
+    padding-right: calc(3 * var(--astro-xitter-spacing));
+
+    &.astro-xitter-quote-content-last {
+      padding-bottom: calc(3 * var(--astro-xitter-spacing));
+    }
   }
 </style>

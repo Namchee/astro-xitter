@@ -8,9 +8,10 @@ interface Props {
   tweet: Xitter;
 
   interactive: boolean;
+  quote?: boolean;
 }
 
-const { tweet, interactive } = Astro.props;
+const { tweet, interactive, quote } = Astro.props;
 
 const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
 
@@ -25,7 +26,9 @@ const rawUrl = new URL(mp4);
 const url = `${rawUrl.origin}${rawUrl.pathname}`;
 ---
 
-<div class="astro-xitter-video-container">
+<div class:list={["astro-xitter-video-container", {
+  "astro-xitter-quote-video-container": quote,
+}]}>
   <video
     poster={tweet.video?.poster}
     data-video-src={url}
@@ -72,7 +75,19 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     display: grid;
     place-items: center;
 
+    border-radius: calc(4 * var(--astro-xitter-spacing));
+    overflow: hidden;
+
     margin-top: calc(3 * var(--astro-xitter-spacing));
+
+    &.astro-xitter-quote-video-container {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+    }
   }
 
   .astro-xitter-video {
@@ -80,8 +95,6 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     grid-row-start: 1;
 
     width: 100%;
-
-    border-radius: calc(4 * var(--astro-xitter-spacing));
 
     background: black;
   }

@@ -47,21 +47,21 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
     <XitterContent tweet={tweet} />
 
     {
-      tweet.quoted_tweet && (
-        <XitterQuote
-          tweet={tweet.quoted_tweet}
-          interactive={interactive}
-        />
-      )
-    }
-
-    {
       tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />
     }
 
     {
       tweet.video
         && <XitterVideo tweet={tweet} interactive={interactive} />
+    }
+
+    {
+      tweet.quoted_tweet && (
+        <XitterQuote
+          tweet={tweet.quoted_tweet}
+          interactive={interactive}
+        />
+      )
     }
 
     {tweet.card && <XitterCard tweet={tweet} />}

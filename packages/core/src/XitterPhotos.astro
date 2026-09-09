@@ -5,9 +5,11 @@ import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
+
+  quote?: boolean;
 }
 
-const { tweet } = Astro.props;
+const { tweet, quote } = Astro.props;
 const user = tweet.user;
 const photos = tweet.photos ?? [];
 ---
@@ -19,6 +21,7 @@ const photos = tweet.photos ?? [];
       'astro-xitter-photo-container-one': photos.length === 1,
       'astro-xitter-photo-container-two': photos.length === 2,
       'astro-xitter-photo-container-bento': photos.length ?? 0 >= 3,
+      'astro-xitter-quote-photo-container': quote,
     },
   ]}
 >
@@ -65,6 +68,15 @@ const photos = tweet.photos ?? [];
     &.astro-xitter-photo-container-bento {
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: repeat(2, minmax(0, 1fr));
+    }
+
+    &.astro-xitter-quote-photo-container {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+
+      border-left: 0;
+      border-right: 0;
+      border-bottom: 0;
     }
   }
 
