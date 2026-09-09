@@ -23,8 +23,6 @@ const allEntities = [
 
 allEntities.sort((a, b) => b.indices[0] - a.indices[0]);
 
-function sliceByCodePoints(str: string, start: number, end?: number) {}
-
 for (const entity of allEntities) {
   const [start, end] = entity.indices;
   let replacement = '';

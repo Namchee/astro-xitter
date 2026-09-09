@@ -14,22 +14,25 @@ const { tweet, interactive } = Astro.props;
 
 const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
 
-const videoUrl = tweet.video?.variants
+const mp4 = tweet.video?.variants
   .filter(variant => variant.type === 'video/mp4')
   .sort((a, b) => {
     const widthA = Number(videoRegex.exec(a.src)?.groups?.width ?? 0);
     const widthB = Number(videoRegex.exec(b.src)?.groups?.width ?? 0);
     return widthB - widthA;
-  })[0]?.src;
+  })[0]?.src!;
+const rawUrl = new URL(mp4);
+const url = `${rawUrl.origin}${rawUrl.pathname}`;
 ---
 
 <div class="astro-xitter-video-container">
   <video
-    src={videoUrl}
     poster={tweet.video?.poster}
-    referrerPolicy="no-referrer"
+    data-video-src={url}
+    preload="metadata"
+    referrerpolicy="no-referrer"
     class="astro-xitter-video"
-    style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}></video>
+    style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`} />
 
   {
     interactive && (
@@ -217,10 +220,29 @@ const videoUrl = tweet.video?.variants
 </style>
 
 {interactive && <script>
-  const playTrigger = document.querySelectorAll('.astro-xitter-play-container');
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-video-src]');
+  const promises = Array.from(videos, async video => {
+    const src = video.dataset.videoSrc;
+    if (!src) {
+      video.src = '';
+
+      return;
+    }
+
+    const data = await fetch(src, { referrerPolicy: 'no-referrer' });
+    const blob = await data.blob();
+
+    const localUrl = URL.createObjectURL(blob);
+
+    video.src = localUrl;
+  });
+  await Promise.all(promises);
+
+  const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');
 
   for (const trigger of playTrigger) {
     trigger.addEventListener('click', () => {
+
       const t = trigger as HTMLButtonElement;
       const par = trigger.parentElement;
       if (!par) {
@@ -310,21 +332,6 @@ const videoUrl = tweet.video?.variants
     el.setAttribute('aria-hidden', 'true');
   }
 
-  for (const c of videoContainers) {
-    const container = c as HTMLDivElement;
-
-    container.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      const menu = container.querySelector('.astro-xitter-video-context-menu');
-
-      if (menu) {
-        positionMenu(menu as HTMLElement, e.clientX, e.clientY);
-      }
-    });
-  }
-
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       for (const menu of ctxMenus) {
@@ -332,20 +339,4 @@ const videoUrl = tweet.video?.variants
       }
     }
   });
-
-  document.addEventListener(
-    'pointerdown',
-    e => {
-      for (const menu of ctxMenus) {
-        if (!e.target) {
-          return;
-        }
-
-        if (!menu.contains(e.target as HTMLElement) && menu.getAttribute('aria-hidden') === 'false') {
-          closeContextMenu(menu as HTMLElement);
-        }
-      }
-    },
-    true,
-  );
 </script>}
