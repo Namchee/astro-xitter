@@ -43,7 +43,7 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 {renderedContent
   ? <Fragment set:html={renderedContent} />
   : <div class="astro-xitter-container">
-    {tweet.parent && <XitterParent tweet={tweet.parent} />}
+    {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} />}
 
     <XitterHeader tweet={tweet} />
 
