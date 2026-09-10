@@ -15,30 +15,28 @@ const title = values?.title?.string_value;
 const description = values?.description?.string_value;
 ---
 
-<Link href={tweet.card?.url} class="astro-xitter-card-container">
-  <img
-    src={photo?.url}
-    width={photo?.width}
-    height={photo?.height}
-    alt={photo?.alt}
-    title={photo?.alt}
-    class="astro-xitter-card-image"
-  />
+{
+  tweet.quoted_tweet ? null : (
+    <Link href={tweet.card?.url} class="astro-xitter-card-container">
+      <img
+        src={photo?.url}
+        width={photo?.width}
+        height={photo?.height}
+        alt={photo?.alt}
+        title={photo?.alt}
+        class="astro-xitter-card-image"
+      />
 
-  <div class="astro-xitter-card-metadata">
-    <p class="astro-xitter-card-metadata-domain">
-      {domain}
-    </p>
+      <div class="astro-xitter-card-metadata">
+        <p class="astro-xitter-card-metadata-domain">{domain}</p>
 
-    <p class="astro-xitter-card-metadata-title">
-      {title}
-    </p>
+        <p class="astro-xitter-card-metadata-title">{title}</p>
 
-    <p class="astro-xitter-card-metadata-description">
-      {description}
-    </p>
-  </div>
-</Link>
+        <p class="astro-xitter-card-metadata-description">{description}</p>
+      </div>
+    </Link>
+  )
+}
 
 <style>
   .astro-xitter-card-container {

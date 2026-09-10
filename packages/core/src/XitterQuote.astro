@@ -4,6 +4,7 @@ import type { Xitter } from './types';
 import { XitterUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
 import { processContent } from './lib';
+import Link from './Link.astro';
 import XitterPhotos from './XitterPhotos.astro';
 import XitterVideo from './XitterVideo.astro';
 
@@ -16,80 +17,77 @@ interface Props {
 const { tweet, interactive } = Astro.props;
 const { user } = tweet;
 
-console.log(tweet.photos);
-
 const { content } = processContent(tweet);
 ---
 
-<div title="View Post" class="astro-xitter-quote-container">
-  <div class="astro-xitter-quote-heading">
-    <img
-      src={user.profile_image_url_https}
-      class:list={[
-        'astro-xitter-quote-avatar',
-        {
-          'astro-xitter-quote-avatar-square': user.profile_image_shape === 'Square',
-        },
-      ]}
-    />
-
-    <div class="astro-xitter-quote-profile">
-      <span class="astro-xitter-quote-profile-name">
-        {user.name}
-      </span>
-      {
-        (user.is_blue_verified || user.verified) && (
-          <Verified
-            type={user.verified_type}
-            class:list={[
-              'astro-xitter-quote-profile-verified-badge',
-              {
-                'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
-                'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
-                'astro-xitter-profile-verified-personal':
-                  user.verified_type !== XitterUserVerifiedType.Business &&
-                  user.verified_type !== XitterUserVerifiedType.Government,
-              },
-            ]}
-          />
-        )
-      }
-
-      <div class="astro-xitter-quote-profile-screen">
-        <span class="astro-xitter-quote-profile-screen-name">
-          @{user.screen_name}
-        </span>
-
-        <span class="astro-xitter-quote-profile-separator">&middot;</span>
-
-        <span class="astro-xitter-quote-profile-created-at">
+<article class="astro-xitter-quote-container">
+  <Link
+    title="View Post"
+    href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}
+    class="astro-xitter-quote-body"
+  >
+    <div class="astro-xitter-quote-heading">
+      <img
+        src={user.profile_image_url_https}
+        class:list={[
+          'astro-xitter-quote-avatar',
           {
-            new Date(tweet.created_at).toLocaleString('en-US', {
-              day: 'numeric',
-              month: 'short',
-              year: 'numeric',
-            })
-          }
+            'astro-xitter-quote-avatar-square': user.profile_image_shape === 'Square',
+          },
+        ]}
+      />
+
+      <div class="astro-xitter-quote-profile">
+        <span class="astro-xitter-quote-profile-name">
+          {user.name}
         </span>
+        {
+          (user.is_blue_verified || user.verified) && (
+            <Verified
+              type={user.verified_type}
+              class:list={[
+                'astro-xitter-quote-profile-verified-badge',
+                {
+                  'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
+                  'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+                  'astro-xitter-profile-verified-personal':
+                    user.verified_type !== XitterUserVerifiedType.Business &&
+                    user.verified_type !== XitterUserVerifiedType.Government,
+                },
+              ]}
+            />
+          )
+        }
+
+        <div class="astro-xitter-quote-profile-screen">
+          <span class="astro-xitter-quote-profile-screen-name">
+            @{user.screen_name}
+          </span>
+
+          <span class="astro-xitter-quote-profile-separator">&middot;</span>
+
+          <span class="astro-xitter-quote-profile-created-at">
+            {
+              new Date(tweet.created_at).toLocaleString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+              })
+            }
+          </span>
+        </div>
       </div>
     </div>
-  </div>
 
-  <p
-    class:list={[
-      'astro-xitter-quote-content',
-      {
-        'astro-xitter-quote-content-last': !tweet.photos && !tweet.video,
-      },
-    ]}
-  >
-    <Fragment set:html={content} />
-  </p>
+    <p class="astro-xitter-quote-content">
+      <Fragment set:html={content} />
+    </p>
+  </Link>
 
   {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote />}
 
   {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote />}
-</div>
+</article>
 
 <style>
   .astro-xitter-quote-container {
@@ -106,6 +104,8 @@ const { content } = processContent(tweet);
     transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     border-collapse: collapse;
+
+    position: relative;
 
     &:hover,
     &:focus-visible {
@@ -199,9 +199,10 @@ const { content } = processContent(tweet);
   .astro-xitter-quote-content {
     white-space: pre-wrap;
     line-height: calc(5 * var(--astro-xitter-spacing) / var(--astro-xitter-text-md));
-    font-size: var(--astro-xitter-text-sm);
+    font-size: var(--astro-xitter-text-md);
 
     margin-top: var(--astro-xitter-spacing);
+    margin-bottom: calc(3 * var(--astro-xitter-spacing));
 
     color: var(--astro-xitter-content);
 
