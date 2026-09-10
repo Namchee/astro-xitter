@@ -11,6 +11,11 @@ interface Props {
 
 const { tweet } = Astro.props;
 const user = tweet.user;
+
+const isVerified =
+  tweet.user.is_blue_verified ||
+  tweet.user.verified ||
+  ['Business', 'Government'].includes(tweet.user.verified_type ?? '');
 ---
 
 <div class="astro-xitter-header-container">
@@ -35,7 +40,7 @@ const user = tweet.user;
       {user.name}
 
       {
-        (user.is_blue_verified || user.verified) && (
+        isVerified && (
           <Verified
             type={user.verified_type}
             class:list={[
