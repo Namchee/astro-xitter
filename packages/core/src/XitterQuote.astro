@@ -21,11 +21,7 @@ const { content } = processContent(tweet);
 ---
 
 <article class="astro-xitter-quote-container">
-  <Link
-    title="View Post"
-    href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}
-    class="astro-xitter-quote-body"
-  >
+  <Link title="View Post" href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}>
     <div class="astro-xitter-quote-heading">
       <img
         src={user.profile_image_url_https}

@@ -40,23 +40,23 @@ const { content, isTruncated } = processContent(tweet, { interactive: true });
   }
 
   .astro-xitter-content-truncated-notice {
-    color: var(--astro-xitter-blue-link);
+    color: var(--astro-xitter-link);
 
     font-size: var(--astro-xitter-text-lg);
     line-height: 1.3;
 
     &:hover,
     &:focus-visible {
-      text-decoration-color: var(--astro-xitter-blue-link);
+      text-decoration-color: var(--astro-xitter-link);
     }
   }
 
   :global(.astro-xitter-content-link) {
-    color: var(--astro-xitter-blue-link);
+    color: var(--astro-xitter-link);
 
     &:hover,
     &:focus-visible {
-      text-decoration-color: var(--astro-xitter-blue-link);
+      text-decoration-color: var(--astro-xitter-link);
     }
   }
 </style>

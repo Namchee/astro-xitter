@@ -32,7 +32,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
           replacement = display_url;
         }
 
-        if (url === tweet.card?.url) {
+        if (url === tweet.card?.url && !tweet.quoted_tweet) {
           replacement = '';
         }
 
