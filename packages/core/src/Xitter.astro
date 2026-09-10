@@ -9,6 +9,7 @@ import XitterCard from './XitterCard.astro';
 import XitterContent from './XitterContent.astro';
 import XitterHeader from './XitterHeader.astro';
 import XitterMetadata from './XitterMetadata.astro';
+import XitterParent from './XitterParent.astro';
 import XitterPhotos from './XitterPhotos.astro';
 import XitterQuote from './XitterQuote.astro';
 import XitterVideo from './XitterVideo.astro';
@@ -42,6 +43,8 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 {renderedContent
   ? <Fragment set:html={renderedContent} />
   : <div class="astro-xitter-container">
+    {tweet.parent && <XitterParent tweet={tweet.parent} />}
+
     <XitterHeader tweet={tweet} />
 
     <XitterContent tweet={tweet} />

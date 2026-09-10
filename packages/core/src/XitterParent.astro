@@ -1,0 +1,284 @@
+---
+import type { Xitter } from './types';
+
+import { XitterUserVerifiedType } from './const';
+import Verified from './icons/Verified.astro';
+import { processContent } from './lib';
+import Link from './Link.astro';
+import XitterPhotos from './XitterPhotos.astro';
+import XitterVideo from './XitterVideo.astro';
+
+interface Props {
+  tweet: Xitter;
+
+  interactive: boolean;
+}
+
+const { tweet, interactive } = Astro.props;
+const { user } = tweet;
+
+const isVerified =
+  user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
+
+const created_at = new Date(tweet.created_at);
+const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
+
+const { content, isTruncated } = processContent(tweet, { interactive: true });
+---
+
+<div class="astro-xitter-parent-container">
+  <div class="astro-xitter-parent-profile-picture-container">
+    <Link
+      title="View Profile on X"
+      href={`https://x.com/${user.screen_name}`}
+      class="astro-xitter-parent-profile-picture"
+    >
+      <img
+        src={user.profile_image_url_https}
+        class:list={[
+          'astro-xitter-parent-profile-avatar',
+          {
+            'astro-xitter-parent-profile-avatar-square': user.profile_image_shape === 'Square',
+          },
+        ]}
+      />
+    </Link>
+
+    <div class="astro-xitter-parent-profile-picture-line"></div>
+  </div>
+
+  <div class="astro-xitter-parent-content-container">
+    <div class="astro-xitter-parent-profile">
+      <div class="astro-xitter-parent-profile-metadata">
+        <Link
+          title="View Profile on X"
+          class="astro-xitter-parent-profile-name astro-xitter-link"
+          href={`https://x.com/${user.screen_name}`}
+        >
+          {user.name}
+
+          {
+            isVerified && (
+              <Verified
+                type={user.verified_type}
+                class:list={[
+                  'astro-xitter-parent-profile-verified-badge',
+                  {
+                    'astro-xitter-parent-profile-verified-government':
+                      user.verified_type === XitterUserVerifiedType.Government,
+                    'astro-xitter-parent-profile-verified-personal':
+                      user.verified_type !== XitterUserVerifiedType.Business &&
+                      user.verified_type !== XitterUserVerifiedType.Government,
+                  },
+                ]}
+              />
+            )
+          }
+
+          {
+            user.highlighted_label?.badge?.url && (
+              <img src={user.highlighted_label.badge.url} class="astro-xitter-parent-profile-highlighted-label" />
+            )
+          }
+        </Link>
+
+        <span class="astro-xitter-profile-separator">&middot;</span>
+
+        {
+          new Date(created_at).toLocaleString(locale, {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        }
+      </div>
+
+      <div class="astro-xitter-parent-profile-screen">
+        <Link
+          title="View Profile on X"
+          href={`https://x.com/${user.screen_name}`}
+          class="astro-xitter-parent-profile-screen-name astro-xitter-link"
+        >
+          @{user.screen_name}
+        </Link>
+
+        <span class="astro-xitter-parent-profile-separator">&middot;</span>
+
+        <Link
+          class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
+          title="View Profile on X"
+          href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
+        >
+          Follow
+        </Link>
+      </div>
+    </div>
+
+    <div class="astro-xitter-parent-content">
+      <Fragment set:html={content} />
+    </div>
+
+    {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />}
+
+    {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
+  </div>
+</div>
+
+<style>
+  .astro-xitter-parent-container {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .astro-xitter-parent-profile-picture-container {
+    display: flex;
+    flex-direction: column;
+
+    align-items: stretch;
+    flex-shrink: 0;
+
+    height: auto;
+  }
+
+  .astro-xitter-parent-profile-picture-line {
+    flex: 1;
+
+    width: 2px;
+    background-color: var(--astro-xitter-separator);
+
+    min-height: calc(2.5 * var(--astro-xitter-separator));
+
+    margin: auto;
+
+    margin-top: var(--astro-xitter-spacing);
+    margin-bottom: var(--astro-xitter-spacing);
+  }
+
+  .astro-xitter-parent-profile-picture {
+    flex-shrink: 0;
+  }
+
+  .astro-xitter-parent-profile-avatar {
+    filter: brightness(1);
+    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+    border-radius: 9999px;
+
+    &:hover,
+    &:focus {
+      filter: brightness(0.9);
+    }
+
+    &.astro-xitter-parent-profile-avatar-square {
+      border-radius: var(--astro-xitter-spacing);
+    }
+  }
+
+  .astro-xitter-parent-content-container {
+    flex: 1;
+
+    margin: 0;
+    margin-left: calc(2 * var(--astro-xitter-spacing));
+    margin-bottom: calc(3 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-parent-profile {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .astro-xitter-parent-profile-metadata {
+    display: flex;
+
+    gap: var(--astro-xitter-spacing);
+    color: var(--astro-xitter-subheader);
+  }
+
+  .astro-xitter-parent-profile-name {
+    font-weight: 600;
+    color: var(--astro-xitter-header);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--astro-xitter-spacing);
+
+    line-height: 1.25;
+
+    width: fit-content;
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: var(--astro-xitter-header);
+    }
+  }
+
+  .astro-xitter-parent-profile-verified-badge {
+    flex-shrink: 0;
+    width: calc(4.5 * var(--astro-xitter-spacing));
+    height: auto;
+
+    &.astro-xitter-parent-profile-verified-government {
+      color: var(--astro-xitter-gray);
+    }
+
+    &.astro-xitter-parent-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
+  }
+
+  .astro-xitter-parent-profile-screen {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    gap: var(--astro-xitter-spacing);
+    color: var(--astro-xitter-subheader);
+
+    margin: 0;
+  }
+
+  .astro-xitter-parent-profile-screen-name {
+    color: var(--astro-xitter-subheader);
+  }
+
+  .astro-xitter-parent-profile-screen-follow {
+    font-weight: 600;
+    color: var(--astro-xitter-link);
+
+    &:hover,
+    &:focus-visible {
+      text-decoration-color: var(--astro-xitter-link);
+    }
+  }
+
+  .astro-xitter-parent-profile-highlighted-label {
+    box-sizing: border-box;
+
+    width: calc(4 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
+
+    border: 1px solid var(--astro-xitter-separator);
+
+    margin: 0;
+  }
+
+  .astro-xitter-parent-content {
+    white-space: pre-wrap;
+    color: var(--astro-xitter-content);
+
+    line-height: calc(5 * var(--astro-xitter-spacing) / var(--astro-xitter-text-md));
+
+    margin: 0;
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+  }
+
+  :global([data-theme='light']) .astro-xitter-parent-profile-verified-badge {
+    &.astro-xitter-parent-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
+  }
+
+  :global([data-theme='dark']) .astro-xitter-parent-profile-verified-badge {
+    &.astro-xitter-parent-profile-verified-personal {
+      color: var(--astro-xitter-header);
+    }
+  }
+</style>
