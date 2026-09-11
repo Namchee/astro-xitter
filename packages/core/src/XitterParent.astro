@@ -6,6 +6,7 @@ import Verified from './icons/Verified.astro';
 import { processContent } from './lib';
 import Link from './Link.astro';
 import XitterPhotos from './XitterPhotos.astro';
+import XitterQuote from './XitterQuote.astro';
 import XitterVideo from './XitterVideo.astro';
 
 interface Props {
@@ -23,7 +24,7 @@ const isVerified =
 const created_at = new Date(tweet.created_at);
 const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
-const { content, isTruncated } = processContent(tweet, { interactive: true });
+const { content } = processContent(tweet, { interactive: true });
 ---
 
 <div class="astro-xitter-parent-container">
@@ -121,6 +122,8 @@ const { content, isTruncated } = processContent(tweet, { interactive: true });
     {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />}
 
     {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
+
+    {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} />}
   </div>
 </div>
 

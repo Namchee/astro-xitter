@@ -47,6 +47,13 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
 
     <XitterHeader tweet={tweet} />
 
+    <Link
+      href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+      class="astro-xitter-badge"
+    >
+      <X />
+    </Link>
+
     <XitterContent tweet={tweet} />
 
     {
@@ -78,13 +85,6 @@ const { format } =new Intl.NumberFormat(locale, NumberFormatterOptions);
       class="astro-xitter-replies"
     >
         {tweet.conversation_count > 0 ? `Read ${format(tweet.conversation_count)} replies` : 'Read more on X'}
-    </Link>
-
-    <Link
-      href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-      class="astro-xitter-badge"
-    >
-      <X />
     </Link>
   </div>}
 

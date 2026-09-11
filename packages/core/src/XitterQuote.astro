@@ -100,7 +100,7 @@ const { content } = processContent(tweet);
     margin-top: calc(3 * var(--astro-xitter-spacing));
 
     background-color: var(--astro-xitter-background);
-    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+    transition: background-colo var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
     border-collapse: collapse;
 
@@ -210,6 +210,29 @@ const { content } = processContent(tweet);
 
     &.astro-xitter-quote-content-last {
       padding-bottom: calc(3 * var(--astro-xitter-spacing));
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .astro-xitter-quote-container {
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, white);
+      }
+    }
+  }
+
+  [data-theme='dark'] .astro-xitter-quote-container {
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, white);
+    }
+  }
+
+  .dark .astro-xitter-quote-container {
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, white);
     }
   }
 </style>
