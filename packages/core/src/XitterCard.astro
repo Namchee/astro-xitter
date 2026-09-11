@@ -85,4 +85,34 @@ const description = values?.description?.string_value;
 
     margin: 0;
   }
+
+  @media (prefers-color-scheme: dark) {
+    .astro-xitter-card-container {
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
+      }
+    }
+  }
+
+  :global([data-theme='dark']) .astro-xitter-card-container {
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
+    }
+  }
+
+  :global([data-theme='light']) .astro-xitter-card-container {
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+    }
+  }
+
+  :global(.astro-xitter-container.dark) .astro-xitter-card-container {
+    &:hover,
+    &:focus-visible {
+      background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
+    }
+  }
 </style>

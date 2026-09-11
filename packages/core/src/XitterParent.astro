@@ -13,16 +13,16 @@ interface Props {
   tweet: Xitter;
 
   interactive: boolean;
+  locale: Intl.LocalesArgument;
 }
 
-const { tweet, interactive } = Astro.props;
+const { tweet, interactive, locale } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
 const created_at = new Date(tweet.created_at);
-const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 
 const { content } = processContent(tweet, { interactive: true });
 ---

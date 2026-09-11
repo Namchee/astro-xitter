@@ -6,12 +6,12 @@ import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
+
+  locale: Intl.LocalesArgument;
 }
 
-const { tweet } = Astro.props;
+const { tweet, locale } = Astro.props;
 const { user, created_at, id_str } = tweet;
-
-const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
 ---
 
 <div class="astro-xitter-metadata-container">

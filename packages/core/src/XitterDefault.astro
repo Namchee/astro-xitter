@@ -17,13 +17,12 @@ import XitterVideo from './XitterVideo.astro';
 interface Props {
   tweet: Xitter;
 
-  theme?: 'light' | 'dark';
   interactive: boolean;
+  locale: Intl.LocalesArgument;
+  theme?: 'light' | 'dark';
 }
 
-const { tweet, theme, interactive } = Astro.props;
-
-const locale = Astro.preferredLocale ?? Astro.currentLocale ?? 'en-US';
+const { tweet, theme, interactive, locale } = Astro.props;
 
 const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 ---
@@ -37,7 +36,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     },
   ]}
 >
-  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} />}
+  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} />}
 
   <XitterHeader tweet={tweet} />
 
@@ -55,9 +54,9 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
   {tweet.card && <XitterCard tweet={tweet} />}
 
-  <XitterMetadata tweet={tweet} />
+  <XitterMetadata tweet={tweet} locale={locale} />
 
-  <XitterActions tweet={tweet} interactive={interactive} />
+  <XitterActions tweet={tweet} interactive={interactive} locale={locale} />
 
   <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
     {tweet.conversation_count > 0 ? `Read ${format(tweet.conversation_count)} replies` : 'Read more on X'}

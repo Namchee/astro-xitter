@@ -9,9 +9,10 @@ interface Props {
 
   theme?: 'light' | 'dark';
   interactive?: boolean;
+  locale?: Intl.LocalesArgument;
 }
 
-const { id, theme, interactive = true } = Astro.props;
+const { id, theme, interactive = true, locale } = Astro.props;
 
 const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
@@ -31,17 +32,35 @@ try {
   status = 500;
 }
 
+let currentLocale = locale;
+
+if (!locale) {
+  currentLocale = Astro.currentLocale;
+
+  if (import.meta.env.SSR && !Astro.isPrerendered) {
+    currentLocale = Astro.preferredLocale ?? currentLocale;
+  }
+
+  currentLocale ??= 'en-US';
+}
+
 const hasCustomRenderer = Astro.slots.has('default');
+const hasError = !tweet;
 
 const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', [tweet, status]) : null;
 ---
 
+{renderedContent && <Fragment set:html={renderedContent} />}
+
+{!renderedContent && hasError && <XitterError status={status} {...(theme === undefined ? {} : { theme })} />}
+
 {
-  renderedContent ? (
-    <Fragment set:html={renderedContent} />
-  ) : tweet ? (
-    <XitterDefault tweet={tweet} theme={theme} interactive={interactive} />
-  ) : (
-    <XitterError status={status} />
+  !renderedContent && !hasError && tweet && (
+    <XitterDefault
+      tweet={tweet}
+      locale={currentLocale}
+      interactive={interactive}
+      {...(theme === undefined ? {} : { theme })}
+    />
   )
 }
