@@ -32,7 +32,8 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
           replacement = display_url;
         }
 
-        if (url === tweet.card?.url && !tweet.quoted_tweet) {
+        // remove if embed exist
+        if ((url === tweet.card?.url && !tweet.quoted_tweet)) {
           replacement = '';
         }
 
@@ -43,6 +44,16 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
         replacement = `<a href="https://x.com/${screen_name}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">@${screen_name}</a>`;
         if (!options?.interactive) {
           replacement = `@${screen_name}`;
+        }
+
+        // remove first mention on reply, but only if it replies to the correct parent
+        if (
+          start === 0 &&
+          tweet.parent &&
+          screen_name.toLowerCase() ===
+          tweet.in_reply_to_screen_name?.toLowerCase()
+        ) {
+          replacement = '';
         }
 
         break;
