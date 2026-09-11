@@ -273,6 +273,14 @@ const { content } = processContent(tweet, { interactive: true });
     margin-top: calc(3 * var(--astro-xitter-spacing));
   }
 
+  @media (prefers-color-scheme: dark) {
+    .astro-xitter-parent-profile-verified-badge {
+      &.astro-xitter-parent-profile-verified-personal {
+        color: var(--astro-xitter-header);
+      }
+    }
+  }
+
   :global([data-theme='light']) .astro-xitter-parent-profile-verified-badge {
     &.astro-xitter-parent-profile-verified-personal {
       color: var(--astro-xitter-blue);
@@ -280,6 +288,12 @@ const { content } = processContent(tweet, { interactive: true });
   }
 
   :global([data-theme='dark']) .astro-xitter-parent-profile-verified-badge {
+    &.astro-xitter-parent-profile-verified-personal {
+      color: var(--astro-xitter-header);
+    }
+  }
+
+  :global(.astro-xitter-container.dark) .astro-xitter-parent-profile-verified-badge {
     &.astro-xitter-parent-profile-verified-personal {
       color: var(--astro-xitter-header);
     }

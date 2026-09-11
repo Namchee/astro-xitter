@@ -47,9 +47,11 @@ const { content } = processContent(tweet);
               class:list={[
                 'astro-xitter-quote-profile-verified-badge',
                 {
-                  'astro-xitter-profile-verified-business': user.verified_type === XitterUserVerifiedType.Business,
-                  'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
-                  'astro-xitter-profile-verified-personal':
+                  'astro-xitter-quote-profile-verified-business':
+                    user.verified_type === XitterUserVerifiedType.Business,
+                  'astro-xitter-quote-profile-verified-government':
+                    user.verified_type === XitterUserVerifiedType.Government,
+                  'astro-xitter-quote-profile-verified-personal':
                     user.verified_type !== XitterUserVerifiedType.Business &&
                     user.verified_type !== XitterUserVerifiedType.Government,
                 },
@@ -219,6 +221,24 @@ const { content } = processContent(tweet);
       &:focus-visible {
         background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
       }
+    }
+  }
+
+  :global([data-theme='dark']) .astro-xitter-quote-profile-verified-badge {
+    &.astro-xitter-quote-profile-verified-personal {
+      color: var(--astro-xitter-header);
+    }
+  }
+
+  :global([data-theme='light']) .astro-xitter-quote-profile-verified-badge {
+    &.astro-xitter-quote-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
+  }
+
+  :global(.astro-xitter-container.dark) .astro-xitter-quote-profile-verified-badge {
+    &.astro-xitter-quote-profile-verified-personal {
+      color: var(--astro-xitter-header);
     }
   }
 
