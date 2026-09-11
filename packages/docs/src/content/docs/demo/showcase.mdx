@@ -71,8 +71,30 @@ import { Xitter } from 'astro-xitter';
   <Xitter id="2069267000098955331" />
 </div>
 
+### Zero JavaScript
+
+<div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+    <Xitter id="2069960028480586054" interactive={false} />
+    <Xitter id="2093364921073549667" interactive={false} />
+</div>
+
+
 ### Not Found
 
 <div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
   <Xitter id="1234234512351235234" />
+</div>
+
+### Custom Renderer
+
+<div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <Xitter id="20">
+      {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
+        <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
+
+        <p>
+            &mdash; {tweet.user.name} (@{tweet.user.screen_name})
+        </p>
+      </div>}
+  </Xitter>
 </div>

@@ -1,4 +1,4 @@
-import type { Hashtag, Symbol, Url, UserMention, Xitter } from "./types";
+import type { Hashtag, Symbol, Url, UserMention, Xitter } from './types';
 
 interface ContentPipelineOptions {
   interactive?: boolean;
@@ -33,7 +33,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
         }
 
         // remove if embed exist
-        if ((url === tweet.card?.url && !tweet.quoted_tweet)) {
+        if (url === tweet.card?.url && !tweet.quoted_tweet) {
           replacement = '';
         }
 
@@ -47,12 +47,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
         }
 
         // remove first mention on reply, but only if it replies to the correct parent
-        if (
-          start === 0 &&
-          tweet.parent &&
-          screen_name.toLowerCase() ===
-          tweet.in_reply_to_screen_name?.toLowerCase()
-        ) {
+        if (start === 0 && tweet.parent && screen_name.toLowerCase() === tweet.in_reply_to_screen_name?.toLowerCase()) {
           replacement = '';
         }
 
