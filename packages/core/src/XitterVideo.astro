@@ -13,16 +13,10 @@ interface Props {
 
 const { tweet, interactive, quote } = Astro.props;
 
-const videoRegex = /\/vid\/[^\/]+\/(?<width>\d+)x\d+/v;
+const video = tweet.video?.variants
+  .filter(variant => variant.type === 'application/x-mpegURL')[0]?.src!;
 
-const mp4 = tweet.video?.variants
-  .filter(variant => variant.type === 'video/mp4')
-  .sort((a, b) => {
-    const widthA = Number(videoRegex.exec(a.src)?.groups?.width ?? 0);
-    const widthB = Number(videoRegex.exec(b.src)?.groups?.width ?? 0);
-    return widthB - widthA;
-  })[0]?.src!;
-const rawUrl = new URL(mp4);
+const rawUrl = new URL(video);
 const url = `${rawUrl.origin}${rawUrl.pathname}`;
 ---
 
@@ -267,26 +261,37 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 {interactive && <script>
   // TODO: refactor this to stream, instead of download until finished
   const videos = document.querySelectorAll<HTMLVideoElement>('video[data-video-src]');
-  const promises = Array.from(videos, async video => {
+  for (const video of videos) {
     const src = video.dataset.videoSrc;
-    if (!src || video.classList.contains('non-interactive')) {
-      video.src = '';
 
-      return;
+    fetch(src, { referrerPolicy: 'no-referrer' }).then(resp => resp.text()).then(t => console.log(t));
+  }
+
+  interface Variant {
+  bandwidth: number;
+  resolution: [number, number];
+  codecs: string;
+  url: string;
+}
+
+  async function fetchMasterPlaylist(url: string): Promise<Variant[]> {
+    const response = await fetch(url, {
+      referrerPolicy: 'no-referrer',
+    });
+
+    if (!response.ok) {
+      return [];
     }
 
-    try {
-      const data = await fetch(src, { referrerPolicy: 'no-referrer' });
-      const blob = await data.blob();
+    const text = await response.text();
 
-      const localUrl = URL.createObjectURL(blob);
+    return parseMasterPlaylist(text, url);
+  }
 
-      video.src = localUrl;
-    } catch {
-      video.src = '';
-    }
-  });
-  await Promise.all(promises);
+  function parseMasterPlaylist(text: string, baseUrl: string): Variant[] {
+    const lines = text.split(/\r?\n/v).map(line => line.trim()).filter(Boolean);
+  }
+
 
   const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');
 
