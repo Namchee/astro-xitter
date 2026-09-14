@@ -259,14 +259,13 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 </style>
 
 {interactive && <script>
-  import { fetchVideo } from './video';
+  import { streamVideo } from './video';
 
-  // TODO: refactor this to stream, instead of download until finished
   const videos = document.querySelectorAll<HTMLVideoElement>('video[data-video-src]');
   for (const video of videos) {
     const src = video.dataset.videoSrc;
 
-    fetchVideo(src ?? '');
+    streamVideo(video, src ?? '');
   }
 
   const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');

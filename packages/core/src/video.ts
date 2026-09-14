@@ -22,15 +22,52 @@ interface Variant {
   url: string;
 }
 
-
-
 const LINE_SPLITTER = /\r?\n/v;
 const URI_MATCHER = /URI="(?<uri>[^"]+)"/v;
-/* eslint-disable regexp/no-super-linear-move */
 const ATTRIBUTE_MATCHER = /(?<key>[-A-Z]+)=(?<value>"[^"]*"|[^,]*)/g;
 const PLAYLIST_HEADER = '#EXT-X-STREAM-INF:';
 
-export async function fetchVideo(src: string) {
+export async function streamVideo(
+  video: HTMLVideoElement,
+  playlistUrl: string,
+) {
+  const playlist = await fetchMediaPlaylist(playlistUrl);
+
+  const mime = 'video/mp4; codecs="avc1.64001F"';
+
+  if (!MediaSource.isTypeSupported(mime)) {
+    throw new Error(`MSE does not support ${mime}`);
+  }
+
+  const mediaSource = new MediaSource();
+  const objectUrl = URL.createObjectURL(mediaSource);
+
+  video.src = objectUrl;
+
+  await once(mediaSource, 'sourceopen');
+
+  URL.revokeObjectURL(objectUrl);
+
+  const sourceBuffer = mediaSource.addSourceBuffer(mime);
+
+  await append(
+    sourceBuffer,
+    await fetchBytes(playlist.initSegment),
+  );
+
+  for (const segment of playlist.segments) {
+    await append(
+      sourceBuffer,
+      await fetchBytes(segment.url),
+    );
+  }
+
+  if (mediaSource.readyState === 'open') {
+    mediaSource.endOfStream();
+  }
+}
+
+async function fetchMediaPlaylist(src: string) {
   const variants = await fetchMasterPlaylist(src);
 
   const variant = variants
@@ -50,9 +87,7 @@ export async function fetchVideo(src: string) {
   }
 
   const mediaPlaylist = await response.text();
-  const playlist = parseMediaPlaylist(mediaPlaylist, variant.url);
-
-  console.log(playlist);
+  return parseMediaPlaylist(mediaPlaylist, variant.url);
 }
 
 function parseMediaPlaylist(
@@ -183,4 +218,58 @@ function parseAttributes(input: string): PlaylistAttributes {
   }
 
   return attributes as unknown as PlaylistAttributes;
+}
+
+async function fetchBytes(url: string): Promise<ArrayBuffer> {
+  const response = await fetch(url, {
+    referrerPolicy: 'no-referrer',
+  });
+
+  if (!response.ok) {
+    throw new Error(`HLS segment: HTTP ${response.status}`);
+  }
+
+  return response.arrayBuffer();
+}
+
+function append(
+  sourceBuffer: SourceBuffer,
+  data: ArrayBuffer,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const onUpdateEnd = () => {
+      sourceBuffer.removeEventListener('updateend', onUpdateEnd);
+      /* eslint-disable no-use-before-define */
+      sourceBuffer.removeEventListener('error', onError);
+      resolve();
+    };
+
+    const onError = () => {
+      sourceBuffer.removeEventListener('updateend', onUpdateEnd);
+      sourceBuffer.removeEventListener('error', onError);
+      reject(new Error('SourceBuffer error'));
+    };
+
+    sourceBuffer.addEventListener('updateend', onUpdateEnd);
+    sourceBuffer.addEventListener('error', onError);
+
+    try {
+      sourceBuffer.appendBuffer(data);
+    } catch (error) {
+      sourceBuffer.removeEventListener('updateend', onUpdateEnd);
+      sourceBuffer.removeEventListener('error', onError);
+      reject(error);
+    }
+  });
+}
+
+function once(
+  target: EventTarget,
+  event: string,
+): Promise<void> {
+  return new Promise(resolve => {
+    target.addEventListener(event, () => resolve(), {
+      once: true,
+    });
+  });
 }
