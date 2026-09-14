@@ -3,7 +3,7 @@ interface HlsMediaSegment {
   duration: number;
 }
 
-interface HlsMediaPlaylist {
+interface HlsMedia {
   initSegment: string;
   segments: HlsMediaSegment[];
   duration: number;
@@ -22,6 +22,11 @@ interface Variant {
   url: string;
 }
 
+interface MediaPlaylist {
+  playlist: HlsMedia;
+  variant: Variant;
+}
+
 const LINE_SPLITTER = /\r?\n/v;
 const URI_MATCHER = /URI="(?<uri>[^"]+)"/v;
 const ATTRIBUTE_MATCHER = /(?<key>[-A-Z]+)=(?<value>"[^"]*"|[^,]*)/g;
@@ -31,9 +36,9 @@ export async function streamVideo(
   video: HTMLVideoElement,
   playlistUrl: string,
 ) {
-  const playlist = await fetchMediaPlaylist(playlistUrl);
+  const { playlist, variant } = await fetchMediaPlaylist(playlistUrl);
 
-  const mime = 'video/mp4; codecs="avc1.64001F"';
+  const mime = `video/mp4; codecs="${variant.codecs}"`;
 
   if (!MediaSource.isTypeSupported(mime)) {
     throw new Error(`MSE does not support ${mime}`);
@@ -67,7 +72,7 @@ export async function streamVideo(
   }
 }
 
-async function fetchMediaPlaylist(src: string) {
+async function fetchMediaPlaylist(src: string): Promise<MediaPlaylist> {
   const variants = await fetchMasterPlaylist(src);
 
   const variant = variants
@@ -87,13 +92,16 @@ async function fetchMediaPlaylist(src: string) {
   }
 
   const mediaPlaylist = await response.text();
-  return parseMediaPlaylist(mediaPlaylist, variant.url);
+  return {
+    playlist: parseMediaPlaylist(mediaPlaylist, variant.url),
+    variant: variant,
+  };
 }
 
 function parseMediaPlaylist(
   text: string,
   playlistUrl: string,
-): HlsMediaPlaylist {
+): HlsMedia {
   const lines = text
     .split(LINE_SPLITTER)
     .map(line => line.trim())
@@ -102,7 +110,7 @@ function parseMediaPlaylist(
   let initSegment: string | null = null;
   let duration = 0;
 
-  const segments: HlsMediaPlaylist['segments'] = [];
+  const segments: HlsMedia['segments'] = [];
 
   let pendingDuration: number | null = null;
 
