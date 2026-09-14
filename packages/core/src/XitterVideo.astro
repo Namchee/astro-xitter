@@ -259,39 +259,15 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 </style>
 
 {interactive && <script>
+  import { fetchVideo } from './video';
+
   // TODO: refactor this to stream, instead of download until finished
   const videos = document.querySelectorAll<HTMLVideoElement>('video[data-video-src]');
   for (const video of videos) {
     const src = video.dataset.videoSrc;
 
-    fetch(src, { referrerPolicy: 'no-referrer' }).then(resp => resp.text()).then(t => console.log(t));
+    fetchVideo(src ?? '');
   }
-
-  interface Variant {
-  bandwidth: number;
-  resolution: [number, number];
-  codecs: string;
-  url: string;
-}
-
-  async function fetchMasterPlaylist(url: string): Promise<Variant[]> {
-    const response = await fetch(url, {
-      referrerPolicy: 'no-referrer',
-    });
-
-    if (!response.ok) {
-      return [];
-    }
-
-    const text = await response.text();
-
-    return parseMasterPlaylist(text, url);
-  }
-
-  function parseMasterPlaylist(text: string, baseUrl: string): Variant[] {
-    const lines = text.split(/\r?\n/v).map(line => line.trim()).filter(Boolean);
-  }
-
 
   const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');
 
