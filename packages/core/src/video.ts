@@ -9,39 +9,72 @@ interface HlsMedia {
   duration: number;
 }
 
-interface PlaylistAttributes {
-  BANDWIDTH: string;
-  RESOLUTION: string;
-  CODECS: string;
-}
-
 interface Variant {
   bandwidth: number;
   resolution: [number, number];
   codecs: string;
+  audioGroup: string | null;
+  url: string;
+}
+
+interface AudioRendition {
+  groupId: string;
+  name: string;
+  language: string | null;
   url: string;
 }
 
 interface MediaPlaylist {
-  playlist: HlsMedia;
+  video: HlsMedia;
+  audio: HlsMedia | null;
   variant: Variant;
 }
 
+interface MasterPlaylist {
+  variants: Variant[];
+  audioRenditions: AudioRendition[];
+}
+
+type Attributes = Record<string, string>;
+
 const LINE_SPLITTER = /\r?\n/v;
 const URI_MATCHER = /URI="(?<uri>[^"]+)"/v;
-const ATTRIBUTE_MATCHER = /(?<key>[-A-Z]+)=(?<value>"[^"]*"|[^,]*)/g;
+/* eslint-disable-next-line regexp/no-super-linear-move */
+const ATTRIBUTE_MATCHER = /(?<key>[\-A-Z]+)=(?<value>"[^"]*"|[^,]*)/gv;
 const PLAYLIST_HEADER = '#EXT-X-STREAM-INF:';
+const MEDIA_HEADER = '#EXT-X-MEDIA:';
+
+// X/Twitter's HLS is demuxed: the master playlist advertises a combined
+// audio + video CODECS string, but every variant points to a video-only media
+// playlist while audio lives in a separate EXT-X-MEDIA rendition.
+const VIDEO_CODEC = /^(?:av01|avc1|avc3|dvh1|dvhe|hev1|hvc1|vp0?9)/iv;
+const AUDIO_CODEC = /^(?:ac-3|alac|ec-3|flac|mp4a|opus)/iv;
+
+// DON'T FETCH ALL SEGMENTS DUH
+const MIN_BUFFER = 5;
+const MAX_BUFFER = 10;
+const MAX_VIDEO_HEIGHT = 720;
 
 export async function streamVideo(
   video: HTMLVideoElement,
   playlistUrl: string,
-) {
-  const { playlist, variant } = await fetchMediaPlaylist(playlistUrl);
+): Promise<void> {
+  const {
+    video: videoMedia,
+    audio,
+    variant,
+  } = await fetchMediaPlaylist(playlistUrl);
 
-  const mime = `video/mp4; codecs="${variant.codecs}"`;
+  const videoCodec = pickCodec(variant.codecs, VIDEO_CODEC);
 
-  if (!MediaSource.isTypeSupported(mime)) {
-    throw new Error(`MSE does not support ${mime}`);
+  if (!videoCodec) {
+    throw new Error(`No video codec found in ${variant.codecs}`);
+  }
+
+  const videoMime = `video/mp4; codecs="${videoCodec}"`;
+
+  if (!MediaSource.isTypeSupported(videoMime)) {
+    throw new Error(`MSE does not support ${videoMime}`);
   }
 
   const mediaSource = new MediaSource();
@@ -53,37 +86,156 @@ export async function streamVideo(
 
   URL.revokeObjectURL(objectUrl);
 
-  const sourceBuffer = mediaSource.addSourceBuffer(mime);
+  const videoBuffer = mediaSource.addSourceBuffer(videoMime);
 
-  await append(
-    sourceBuffer,
-    await fetchBytes(playlist.initSegment),
-  );
+  let audioBuffer: SourceBuffer | null = null;
 
-  for (const segment of playlist.segments) {
-    await append(
-      sourceBuffer,
-      await fetchBytes(segment.url),
-    );
+  if (audio) {
+    const audioCodec = pickCodec(variant.codecs, AUDIO_CODEC);
+    const audioMime = audioCodec
+      ? `audio/mp4; codecs="${audioCodec}"`
+      : null;
+
+    if (audioMime && MediaSource.isTypeSupported(audioMime)) {
+      audioBuffer = mediaSource.addSourceBuffer(audioMime);
+    }
   }
 
-  if (mediaSource.readyState === 'open') {
-    mediaSource.endOfStream();
+  await append(videoBuffer, await fetchBytes(videoMedia.initSegment));
+
+  if (audio && audioBuffer) {
+    await append(audioBuffer, await fetchBytes(audio.initSegment));
   }
+
+  const videoStarts = cumulativeStarts(videoMedia);
+  const audioStarts = audio ? cumulativeStarts(audio) : [];
+
+  let videoIndex = 0;
+  let audioIndex = 0;
+  let failed = false;
+  let pumping = false;
+
+  const isDone = () =>
+    videoIndex >= videoMedia.segments.length
+    && audioIndex >= (audio?.segments.length ?? 0);
+
+  const bufferedAhead = () => {
+    const videoAhead = getBufferedAhead(videoBuffer, video.currentTime);
+    const audioAhead = audioBuffer
+      ? getBufferedAhead(audioBuffer, video.currentTime)
+      : Number.POSITIVE_INFINITY;
+
+    return Math.min(videoAhead, audioAhead);
+  };
+
+  const pump = async () => {
+    if (pumping || failed) {
+      return;
+    }
+
+    pumping = true;
+
+    try {
+      while (!isDone() && bufferedAhead() < MAX_BUFFER) {
+        const nextVideoStart =
+          videoIndex < videoMedia.segments.length
+            ? (videoStarts[videoIndex] ?? Number.POSITIVE_INFINITY)
+            : Number.POSITIVE_INFINITY;
+
+        const nextAudioStart =
+          audio && audioBuffer && audioIndex < audio.segments.length
+            ? (audioStarts[audioIndex] ?? Number.POSITIVE_INFINITY)
+            : Number.POSITIVE_INFINITY;
+
+        // Interleave both renditions by their presentation time so the audio
+        // and video buffers stay roughly in sync.
+        if (nextVideoStart <= nextAudioStart) {
+          const segment = videoMedia.segments[videoIndex];
+
+          if (!segment) {
+            break;
+          }
+
+          await append(videoBuffer, await fetchBytes(segment.url));
+          videoIndex++;
+        } else if (audio && audioBuffer) {
+          const segment = audio.segments[audioIndex];
+
+          if (!segment) {
+            break;
+          }
+
+          await append(audioBuffer, await fetchBytes(segment.url));
+          audioIndex++;
+        } else {
+          break;
+        }
+      }
+
+      if (isDone() && mediaSource.readyState === 'open') {
+        mediaSource.endOfStream();
+      }
+    } finally {
+      pumping = false;
+    }
+  };
+
+  const safePump = async () => {
+    if (failed) {
+      return;
+    }
+
+    try {
+      await pump();
+    } catch (error) {
+      failed = true;
+      console.error('HLS playback error', error);
+    }
+  };
+
+  await safePump();
+
+  const requestMore = () => {
+    if (bufferedAhead() < MIN_BUFFER) {
+      safePump();
+    }
+  };
+
+  video.addEventListener('timeupdate', requestMore);
+  // Seeking outside the buffered range does not fire `timeupdate`, so hook the
+  // seek/stall events too or scrubbing dead-ends on an unfilled buffer.
+  video.addEventListener('seeking', requestMore);
+  video.addEventListener('waiting', requestMore);
 }
 
 async function fetchMediaPlaylist(src: string): Promise<MediaPlaylist> {
-  const variants = await fetchMasterPlaylist(src);
+  const { variants, audioRenditions } = await fetchMasterPlaylist(src);
 
   const variant = variants
-    .filter(({ resolution }) => resolution[1] <= 720)
+    .filter(({ resolution }) => resolution[1] <= MAX_VIDEO_HEIGHT)
     .sort((a, b) => b.resolution[1] - a.resolution[1])[0];
 
   if (!variant) {
     throw new Error('No suitable HLS variant found');
   }
 
-  const response = await fetch(variant.url, {
+  const video = await fetchMediaPlaylistText(variant.url);
+
+  const rendition = variant.audioGroup
+    ? audioRenditions.find(
+      ({ groupId }) => groupId === variant.audioGroup,
+    )
+    : undefined;
+
+  const audio = rendition
+    ? await fetchMediaPlaylistText(rendition.url)
+    : null;
+
+  return { video, audio, variant };
+}
+
+async function fetchMediaPlaylistText(url: string): Promise<HlsMedia> {
+  const response = await fetch(url, {
     referrerPolicy: 'no-referrer',
   });
 
@@ -91,11 +243,9 @@ async function fetchMediaPlaylist(src: string): Promise<MediaPlaylist> {
     throw new Error(`HTTP ${response.status}`);
   }
 
-  const mediaPlaylist = await response.text();
-  return {
-    playlist: parseMediaPlaylist(mediaPlaylist, variant.url),
-    variant: variant,
-  };
+  const text = await response.text();
+
+  return parseMediaPlaylist(text, url);
 }
 
 function parseMediaPlaylist(
@@ -164,13 +314,13 @@ function parseMediaPlaylist(
   };
 }
 
-async function fetchMasterPlaylist(url: string): Promise<Variant[]> {
+async function fetchMasterPlaylist(url: string): Promise<MasterPlaylist> {
   const response = await fetch(url, {
     referrerPolicy: 'no-referrer',
   });
 
   if (!response.ok) {
-    return [];
+    return { variants: [], audioRenditions: [] };
   }
 
   const text = await response.text();
@@ -178,20 +328,43 @@ async function fetchMasterPlaylist(url: string): Promise<Variant[]> {
   return parseMasterPlaylist(text, url);
 }
 
-function parseMasterPlaylist(text: string, baseUrl: string): Variant[] {
-  const lines = text.split(LINE_SPLITTER).map(line => line.trim()).filter(Boolean);
+function parseMasterPlaylist(text: string, baseUrl: string): MasterPlaylist {
+  const lines = text
+    .split(LINE_SPLITTER)
+    .map(line => line.trim())
+    .filter(Boolean);
 
   const variants: Variant[] = [];
+  const audioRenditions: AudioRendition[] = [];
 
   for (let idx = 0; idx < lines.length; idx++) {
     const line = lines[idx];
 
-    if (!line?.startsWith(PLAYLIST_HEADER)) {
+    if (!line) {
+      continue;
+    }
+
+    if (line.startsWith(MEDIA_HEADER)) {
+      const attributes = parseAttributes(line.slice(MEDIA_HEADER.length));
+
+      if (attributes.TYPE === 'AUDIO' && attributes.URI) {
+        audioRenditions.push({
+          groupId: attributes['GROUP-ID'] ?? '',
+          name: attributes.NAME ?? '',
+          language: attributes.LANGUAGE ?? null,
+          url: new URL(attributes.URI, baseUrl).href,
+        });
+      }
+
+      continue;
+    }
+
+    if (!line.startsWith(PLAYLIST_HEADER)) {
       continue;
     }
 
     const attributes = parseAttributes(
-      line?.slice(PLAYLIST_HEADER.length)
+      line.slice(PLAYLIST_HEADER.length),
     );
 
     const url = lines[idx + 1];
@@ -200,24 +373,28 @@ function parseMasterPlaylist(text: string, baseUrl: string): Variant[] {
       continue;
     }
 
-    const [width, height] = attributes.RESOLUTION.split('x').map(Number);
+    const [width, height] = (attributes.RESOLUTION ?? '')
+      .split('x')
+      .map(Number);
 
     variants.push({
-      bandwidth: Number(attributes.BANDWIDTH),
+      bandwidth: Number(attributes.BANDWIDTH ?? 0),
       resolution: [width ?? 0, height ?? 0],
-      codecs: attributes.CODECS,
+      codecs: attributes.CODECS ?? '',
+      audioGroup: attributes.AUDIO ?? null,
       url: new URL(url, baseUrl).href,
     });
   }
 
-  return variants;
+  return { variants, audioRenditions };
 }
 
-function parseAttributes(input: string): PlaylistAttributes {
-  const attributes: Record<string, string> = {};
+function parseAttributes(input: string): Attributes {
+  const attributes: Attributes = {};
 
   for (const match of input.matchAll(ATTRIBUTE_MATCHER)) {
-    const { key, value } = match.groups as { key: string; value: string; };
+    const { key, value } = match.groups as { key?: string; value?: string; };
+
     if (!key || !value) {
       continue;
     }
@@ -225,7 +402,31 @@ function parseAttributes(input: string): PlaylistAttributes {
     attributes[key] = value.replaceAll(/^"|"$/gv, '');
   }
 
-  return attributes as unknown as PlaylistAttributes;
+  return attributes;
+}
+
+function pickCodec(codecs: string, pattern: RegExp): string | null {
+  for (const codec of codecs.split(',')) {
+    const candidate = codec.trim();
+
+    if (candidate && pattern.test(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
+function cumulativeStarts(media: HlsMedia): number[] {
+  const starts: number[] = [];
+  let elapsed = 0;
+
+  for (const segment of media.segments) {
+    starts.push(elapsed);
+    elapsed += segment.duration;
+  }
+
+  return starts;
 }
 
 async function fetchBytes(url: string): Promise<ArrayBuffer> {
@@ -266,9 +467,27 @@ function append(
     } catch (error) {
       sourceBuffer.removeEventListener('updateend', onUpdateEnd);
       sourceBuffer.removeEventListener('error', onError);
-      reject(error);
+      reject(error instanceof Error ? error : new Error(String(error)));
     }
   });
+}
+
+function getBufferedAhead(
+  sourceBuffer: SourceBuffer,
+  currentTime: number,
+): number {
+  const { buffered } = sourceBuffer;
+
+  for (let idx = 0; idx < buffered.length; idx++) {
+    const start = buffered.start(idx);
+    const end = buffered.end(idx);
+
+    if (currentTime >= start && currentTime <= end) {
+      return end - currentTime;
+    }
+  }
+
+  return 0;
 }
 
 function once(

@@ -265,7 +265,9 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
   for (const video of videos) {
     const src = video.dataset.videoSrc;
 
-    streamVideo(video, src ?? '');
+    streamVideo(video, src ?? '').catch(error => {
+      console.error('Failed to stream video', error);
+    });
   }
 
   const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');
@@ -287,7 +289,9 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       }
 
       vid.setAttribute('controls', 'true');
-      vid.play();
+      vid.play().catch(() => {
+        // Ignore autoplay rejections; the source may not be ready yet.
+      });
 
       t.style.opacity = '0';
       t.style.pointerEvents = 'none';
