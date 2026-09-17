@@ -12,7 +12,7 @@ const { tweet } = Astro.props;
 const { content, isTruncated } = processContent(tweet, { interactive: true });
 ---
 
-<div class="astro-xitter-content">
+<div class="astro-xitter-content" lang={tweet.lang} dir="auto">
   <Fragment set:html={content} />
   {
     isTruncated && (

@@ -178,6 +178,7 @@ export interface XitterCard {
 export interface Xitter {
   id_str: string;
   text: string;
+  lang: string;
   in_reply_to_screen_name?: string;
   favorite_count: number;
   created_at: string;
