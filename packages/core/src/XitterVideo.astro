@@ -34,15 +34,22 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     }]}
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`} />
 
+    <div class="astro-xitter-video-play-container">
+      <button class="astro-xitter-video-play-button">
+        <Play class="astro-xitter-video-play-button-icon" />
+      </button>
+    </div>
+
+    {/* A fail-safe, if video streaming fails */}
+    <Link aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`} class="astro-xitter-video-link-overlay" />
+
+    <Link class="astro-xitter-video-link" aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
+      Watch on X
+    </Link>
+
   {
     interactive && (
       <>
-        <div class="astro-xitter-video-play-container">
-          <button class="astro-xitter-video-play-button">
-            <Play class="astro-xitter-video-play-button-icon" />
-          </button>
-        </div>
-
         <Link
           href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
           class="astro-xitter-video-replies"
@@ -51,30 +58,14 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
           View Replies
         </Link>
 
-        <Link class="astro-xitter-video-link" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
-          Watch on X
-        </Link>
-
         <div class="astro-xitter-video-context-menu" aria-hidden="true">
             <button class="astro-xitter-video-context-menu-item astro-xitter-video-context-menu-link-copy" data-video={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
-            Copy Video Address
+                Copy Video Address
             </button>
         </div>
       </>
     )
   }
-
-  {!interactive && <>
-    <Link aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`} class="astro-xitter-video-play-container non-interactive">
-      <div class="astro-xitter-video-play-button non-interactive">
-        <Play class="astro-xitter-video-play-button-icon non-interactive" />
-      </div>
-    </Link>
-
-    <Link class="astro-xitter-video-link" aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
-      Watch on X
-    </Link>
-  </>}
 </div>
 
 <style>
@@ -108,7 +99,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     background: black;
   }
 
-  .astro-xitter-video-play-container {
+  .astro-xitter-video-play-container, .astro-xitter-video-link-overlay {
     width: 100%;
     height: 100%;
 
@@ -117,6 +108,12 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     grid-column-start: 1;
     grid-row-start: 1;
     z-index: 1;
+
+    &[aria-hidden="true"] {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+    }
   }
 
   .astro-xitter-video-play-button {
@@ -170,6 +167,12 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     &:hover,
     &:focus-visible {
       background-color: oklch(25% 0 0 / 80%);
+    }
+
+    &[aria-hidden="true"] {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
     }
   }
 
@@ -265,9 +268,9 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
   for (const video of videos) {
     const src = video.dataset.videoSrc;
 
-    streamVideo(video, src ?? '').catch(error => {
-      console.error('Failed to stream video', error);
-    });
+    const overlay = video.parentElement?.querySelector('.astro-xitter-video-link-overlay');
+
+    streamVideo(video, src ?? '', overlay as HTMLAnchorElement);
   }
 
   const playTrigger = document.querySelectorAll('.astro-xitter-video-play-container');
@@ -276,7 +279,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     trigger.addEventListener('click', () => {
       const t = trigger as HTMLButtonElement;
       const par = trigger.parentElement;
-      if (!par || trigger.classList.contains('non-interactive')) {
+      if (!par) {
         return;
       }
 
@@ -293,26 +296,22 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
         // Ignore autoplay rejections; the source may not be ready yet.
       });
 
-      t.style.opacity = '0';
-      t.style.pointerEvents = 'none';
+      t.setAttribute('aria-hidden', 'true');
 
       if (vidLink) {
         const link = vidLink as HTMLAnchorElement;
 
-        link.style.opacity = '0';
-        link.style.pointerEvents = 'none';
+        link.setAttribute('aria-hidden', 'true');
 
         vid.addEventListener('pause', () => {
           if (!vid.ended) {
             link.textContent = 'Continue watching on X';
-            link.style.opacity = '1';
-            link.style.pointerEvents = 'auto';
+            link.setAttribute('aria-hidden', 'false');
           }
         });
 
         vid.addEventListener('play', () => {
-          link.style.opacity = '0';
-          link.style.pointerEvents = 'none';
+          link.setAttribute('aria-hidden', 'true');
         });
       }
 
@@ -365,10 +364,6 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
   for (const c of videoContainers) {
     const container = c as HTMLDivElement;
-
-    if (container.classList.contains('non-interactive')) {
-      continue;
-    }
 
     container.addEventListener('contextmenu', e => {
       e.preventDefault();

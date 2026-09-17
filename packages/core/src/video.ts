@@ -44,9 +44,6 @@ const ATTRIBUTE_MATCHER = /(?<key>[\-A-Z]+)=(?<value>"[^"]*"|[^,]*)/gv;
 const PLAYLIST_HEADER = '#EXT-X-STREAM-INF:';
 const MEDIA_HEADER = '#EXT-X-MEDIA:';
 
-// X/Twitter's HLS is demuxed: the master playlist advertises a combined
-// audio + video CODECS string, but every variant points to a video-only media
-// playlist while audio lives in a separate EXT-X-MEDIA rendition.
 const VIDEO_CODEC = /^(?:av01|avc1|avc3|dvh1|dvhe|hev1|hvc1|vp0?9)/iv;
 const AUDIO_CODEC = /^(?:ac-3|alac|ec-3|flac|mp4a|opus)/iv;
 
@@ -58,154 +55,149 @@ const MAX_VIDEO_HEIGHT = 720;
 export async function streamVideo(
   video: HTMLVideoElement,
   playlistUrl: string,
+  overlay?: HTMLAnchorElement,
 ): Promise<void> {
-  const {
-    video: videoMedia,
-    audio,
-    variant,
-  } = await fetchMediaPlaylist(playlistUrl);
+  try {
+    const { video: videoMedia, audio, variant } = await fetchMediaPlaylist(playlistUrl);
 
-  const videoCodec = pickCodec(variant.codecs, VIDEO_CODEC);
+    const videoCodec = pickCodec(variant.codecs, VIDEO_CODEC);
 
-  if (!videoCodec) {
-    throw new Error(`No video codec found in ${variant.codecs}`);
-  }
-
-  const videoMime = `video/mp4; codecs="${videoCodec}"`;
-
-  if (!MediaSource.isTypeSupported(videoMime)) {
-    throw new Error(`MSE does not support ${videoMime}`);
-  }
-
-  const mediaSource = new MediaSource();
-  const objectUrl = URL.createObjectURL(mediaSource);
-
-  video.src = objectUrl;
-
-  await once(mediaSource, 'sourceopen');
-
-  URL.revokeObjectURL(objectUrl);
-
-  const videoBuffer = mediaSource.addSourceBuffer(videoMime);
-
-  let audioBuffer: SourceBuffer | null = null;
-
-  if (audio) {
-    const audioCodec = pickCodec(variant.codecs, AUDIO_CODEC);
-    const audioMime = audioCodec
-      ? `audio/mp4; codecs="${audioCodec}"`
-      : null;
-
-    if (audioMime && MediaSource.isTypeSupported(audioMime)) {
-      audioBuffer = mediaSource.addSourceBuffer(audioMime);
-    }
-  }
-
-  await append(videoBuffer, await fetchBytes(videoMedia.initSegment));
-
-  if (audio && audioBuffer) {
-    await append(audioBuffer, await fetchBytes(audio.initSegment));
-  }
-
-  const videoStarts = cumulativeStarts(videoMedia);
-  const audioStarts = audio ? cumulativeStarts(audio) : [];
-
-  let videoIndex = 0;
-  let audioIndex = 0;
-  let failed = false;
-  let pumping = false;
-
-  const isDone = () =>
-    videoIndex >= videoMedia.segments.length
-    && audioIndex >= (audio?.segments.length ?? 0);
-
-  const bufferedAhead = () => {
-    const videoAhead = getBufferedAhead(videoBuffer, video.currentTime);
-    const audioAhead = audioBuffer
-      ? getBufferedAhead(audioBuffer, video.currentTime)
-      : Number.POSITIVE_INFINITY;
-
-    return Math.min(videoAhead, audioAhead);
-  };
-
-  const pump = async () => {
-    if (pumping || failed) {
-      return;
+    if (!videoCodec) {
+      throw new Error(`No video codec found in ${variant.codecs}`);
     }
 
-    pumping = true;
+    const videoMime = `video/mp4; codecs="${videoCodec}"`;
 
-    try {
-      while (!isDone() && bufferedAhead() < MAX_BUFFER) {
-        const nextVideoStart =
-          videoIndex < videoMedia.segments.length
-            ? (videoStarts[videoIndex] ?? Number.POSITIVE_INFINITY)
-            : Number.POSITIVE_INFINITY;
+    if (!MediaSource.isTypeSupported(videoMime)) {
+      throw new Error(`MSE does not support ${videoMime}`);
+    }
 
-        const nextAudioStart =
-          audio && audioBuffer && audioIndex < audio.segments.length
-            ? (audioStarts[audioIndex] ?? Number.POSITIVE_INFINITY)
-            : Number.POSITIVE_INFINITY;
+    const mediaSource = new MediaSource();
+    const objectUrl = URL.createObjectURL(mediaSource);
 
-        // Interleave both renditions by their presentation time so the audio
-        // and video buffers stay roughly in sync.
-        if (nextVideoStart <= nextAudioStart) {
-          const segment = videoMedia.segments[videoIndex];
+    video.src = objectUrl;
 
-          if (!segment) {
+    await once(mediaSource, 'sourceopen');
+
+    URL.revokeObjectURL(objectUrl);
+
+    const videoBuffer = mediaSource.addSourceBuffer(videoMime);
+
+    let audioBuffer: SourceBuffer | null = null;
+
+    if (audio) {
+      const audioCodec = pickCodec(variant.codecs, AUDIO_CODEC);
+      const audioMime = audioCodec ? `audio/mp4; codecs="${audioCodec}"` : null;
+
+      if (audioMime && MediaSource.isTypeSupported(audioMime)) {
+        audioBuffer = mediaSource.addSourceBuffer(audioMime);
+      }
+    }
+
+    await append(videoBuffer, await fetchBytes(videoMedia.initSegment));
+
+    if (audio && audioBuffer) {
+      await append(audioBuffer, await fetchBytes(audio.initSegment));
+    }
+
+    if (overlay) {
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+
+    const videoStarts = cumulativeStarts(videoMedia);
+    const audioStarts = audio ? cumulativeStarts(audio) : [];
+
+    let videoIndex = 0;
+    let audioIndex = 0;
+    let failed = false;
+    let pumping = false;
+
+    const isDone = () => videoIndex >= videoMedia.segments.length && audioIndex >= (audio?.segments.length ?? 0);
+
+    const bufferedAhead = () => {
+      const videoAhead = getBufferedAhead(videoBuffer, video.currentTime);
+      const audioAhead = audioBuffer ? getBufferedAhead(audioBuffer, video.currentTime) : Number.POSITIVE_INFINITY;
+
+      return Math.min(videoAhead, audioAhead);
+    };
+
+    const pump = async () => {
+      if (pumping || failed) {
+        return;
+      }
+
+      pumping = true;
+
+      try {
+        while (!isDone() && bufferedAhead() < MAX_BUFFER) {
+          const nextVideoStart =
+            videoIndex < videoMedia.segments.length
+              ? (videoStarts[videoIndex] ?? Number.POSITIVE_INFINITY)
+              : Number.POSITIVE_INFINITY;
+
+          const nextAudioStart =
+            audio && audioBuffer && audioIndex < audio.segments.length
+              ? (audioStarts[audioIndex] ?? Number.POSITIVE_INFINITY)
+              : Number.POSITIVE_INFINITY;
+
+          if (nextVideoStart <= nextAudioStart) {
+            const segment = videoMedia.segments[videoIndex];
+
+            if (!segment) {
+              break;
+            }
+
+            await append(videoBuffer, await fetchBytes(segment.url));
+            videoIndex++;
+          } else if (audio && audioBuffer) {
+            const segment = audio.segments[audioIndex];
+
+            if (!segment) {
+              break;
+            }
+
+            await append(audioBuffer, await fetchBytes(segment.url));
+            audioIndex++;
+          } else {
             break;
           }
-
-          await append(videoBuffer, await fetchBytes(segment.url));
-          videoIndex++;
-        } else if (audio && audioBuffer) {
-          const segment = audio.segments[audioIndex];
-
-          if (!segment) {
-            break;
-          }
-
-          await append(audioBuffer, await fetchBytes(segment.url));
-          audioIndex++;
-        } else {
-          break;
         }
+
+        if (isDone() && mediaSource.readyState === 'open') {
+          mediaSource.endOfStream();
+        }
+      } finally {
+        pumping = false;
+      }
+    };
+
+    const safePump = async () => {
+      if (failed) {
+        return;
       }
 
-      if (isDone() && mediaSource.readyState === 'open') {
-        mediaSource.endOfStream();
+      try {
+        await pump();
+      } catch {
+        failed = true;
       }
-    } finally {
-      pumping = false;
-    }
-  };
+    };
 
-  const safePump = async () => {
-    if (failed) {
-      return;
-    }
+    await safePump();
 
-    try {
-      await pump();
-    } catch (error) {
-      failed = true;
-      console.error('HLS playback error', error);
-    }
-  };
+    const requestMore = () => {
+      if (bufferedAhead() < MIN_BUFFER) {
+        safePump();
+      }
+    };
 
-  await safePump();
+    video.addEventListener('timeupdate', requestMore);
 
-  const requestMore = () => {
-    if (bufferedAhead() < MIN_BUFFER) {
-      safePump();
-    }
-  };
-
-  video.addEventListener('timeupdate', requestMore);
-  // Seeking outside the buffered range does not fire `timeupdate`, so hook the
-  // seek/stall events too or scrubbing dead-ends on an unfilled buffer.
-  video.addEventListener('seeking', requestMore);
-  video.addEventListener('waiting', requestMore);
+    video.addEventListener('seeking', requestMore);
+    video.addEventListener('waiting', requestMore);
+  } catch (error) {
+    console.error('Failed to play Xitter video:', error);
+  }
 }
 
 async function fetchMediaPlaylist(src: string): Promise<MediaPlaylist> {
@@ -222,14 +214,10 @@ async function fetchMediaPlaylist(src: string): Promise<MediaPlaylist> {
   const video = await fetchMediaPlaylistText(variant.url);
 
   const rendition = variant.audioGroup
-    ? audioRenditions.find(
-      ({ groupId }) => groupId === variant.audioGroup,
-    )
+    ? audioRenditions.find(({ groupId }) => groupId === variant.audioGroup)
     : undefined;
 
-  const audio = rendition
-    ? await fetchMediaPlaylistText(rendition.url)
-    : null;
+  const audio = rendition ? await fetchMediaPlaylistText(rendition.url) : null;
 
   return { video, audio, variant };
 }
@@ -248,10 +236,7 @@ async function fetchMediaPlaylistText(url: string): Promise<HlsMedia> {
   return parseMediaPlaylist(text, url);
 }
 
-function parseMediaPlaylist(
-  text: string,
-  playlistUrl: string,
-): HlsMedia {
+function parseMediaPlaylist(text: string, playlistUrl: string): HlsMedia {
   const lines = text
     .split(LINE_SPLITTER)
     .map(line => line.trim())
@@ -272,18 +257,13 @@ function parseMediaPlaylist(
         throw new Error('Invalid EXT-X-MAP');
       }
 
-      initSegment = new URL(
-        match.groups?.uri ?? '',
-        playlistUrl,
-      ).href;
+      initSegment = new URL(match.groups?.uri ?? '', playlistUrl).href;
 
       continue;
     }
 
     if (line.startsWith('#EXTINF:')) {
-      pendingDuration = Number.parseFloat(
-        line.slice('#EXTINF:'.length).split(',')[0] as string,
-      );
+      pendingDuration = Number.parseFloat(line.slice('#EXTINF:'.length).split(',')[0] as string);
 
       continue;
     }
@@ -363,9 +343,7 @@ function parseMasterPlaylist(text: string, baseUrl: string): MasterPlaylist {
       continue;
     }
 
-    const attributes = parseAttributes(
-      line.slice(PLAYLIST_HEADER.length),
-    );
+    const attributes = parseAttributes(line.slice(PLAYLIST_HEADER.length));
 
     const url = lines[idx + 1];
 
@@ -373,9 +351,7 @@ function parseMasterPlaylist(text: string, baseUrl: string): MasterPlaylist {
       continue;
     }
 
-    const [width, height] = (attributes.RESOLUTION ?? '')
-      .split('x')
-      .map(Number);
+    const [width, height] = (attributes.RESOLUTION ?? '').split('x').map(Number);
 
     variants.push({
       bandwidth: Number(attributes.BANDWIDTH ?? 0),
@@ -393,7 +369,7 @@ function parseAttributes(input: string): Attributes {
   const attributes: Attributes = {};
 
   for (const match of input.matchAll(ATTRIBUTE_MATCHER)) {
-    const { key, value } = match.groups as { key?: string; value?: string; };
+    const { key, value } = match.groups as { key?: string; value?: string };
 
     if (!key || !value) {
       continue;
@@ -441,10 +417,7 @@ async function fetchBytes(url: string): Promise<ArrayBuffer> {
   return response.arrayBuffer();
 }
 
-function append(
-  sourceBuffer: SourceBuffer,
-  data: ArrayBuffer,
-): Promise<void> {
+function append(sourceBuffer: SourceBuffer, data: ArrayBuffer): Promise<void> {
   return new Promise((resolve, reject) => {
     const onUpdateEnd = () => {
       sourceBuffer.removeEventListener('updateend', onUpdateEnd);
@@ -472,10 +445,7 @@ function append(
   });
 }
 
-function getBufferedAhead(
-  sourceBuffer: SourceBuffer,
-  currentTime: number,
-): number {
+function getBufferedAhead(sourceBuffer: SourceBuffer, currentTime: number): number {
   const { buffered } = sourceBuffer;
 
   for (let idx = 0; idx < buffered.length; idx++) {
@@ -490,10 +460,7 @@ function getBufferedAhead(
   return 0;
 }
 
-function once(
-  target: EventTarget,
-  event: string,
-): Promise<void> {
+function once(target: EventTarget, event: string): Promise<void> {
   return new Promise(resolve => {
     target.addEventListener(event, () => resolve(), {
       once: true,
