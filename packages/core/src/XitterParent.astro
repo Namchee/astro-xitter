@@ -293,6 +293,12 @@ const { content } = processContent(tweet, { interactive: true });
     }
   }
 
+  :global(.astro-xitter-container.light) .astro-xitter-parent-profile-verified-badge {
+    &.astro-xitter-parent-profile-verified-personal {
+      color: var(--astro-xitter-blue);
+    }
+  }
+
   :global(.astro-xitter-container.dark) .astro-xitter-parent-profile-verified-badge {
     &.astro-xitter-parent-profile-verified-personal {
       color: var(--astro-xitter-header);

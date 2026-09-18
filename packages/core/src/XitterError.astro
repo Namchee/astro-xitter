@@ -96,7 +96,17 @@ const { status, theme } = Astro.props;
     --astro-xitter-link: color-mix(in oklch, var(--astro-xitter-blue) 65%, white 35%);
   }
 
-  .dark .astro-xitter-error-container {
+  .astro-xitter-error-container.light {
+    --astro-xitter-background: oklch(0.2385 0.0264 248.99);
+    --astro-xitter-header: white;
+    --astro-xitter-content: oklch(96.7% 0.003 264.542);
+    --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
+    --astro-xitter-subheader: oklch(0.6736 0.0244 248.19);
+
+    --astro-xitter-link: color-mix(in oklch, var(--astro-xitter-blue) 65%, white 35%);
+  }
+
+  .astro-xitter-error-container.dark {
     --astro-xitter-background: oklch(0.2385 0.0264 248.99);
     --astro-xitter-header: white;
     --astro-xitter-content: oklch(96.7% 0.003 264.542);
