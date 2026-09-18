@@ -46,6 +46,7 @@ import { Xitter } from 'astro-xitter';
 ### Tweet with Videos
 
 <div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <Xitter id="2093364921073549667" />
   <Xitter id="1732824684683784516" />
 </div>
 
@@ -68,6 +69,20 @@ import { Xitter } from 'astro-xitter';
   <Xitter id="2069960028480586054" />
   <Xitter id="1732827324016476607" />
   <Xitter id="2069267000098955331" />
+</div>
+
+### Forced Theme
+
+<div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <Xitter id="1771177501575753762" theme="light" />
+  <Xitter id="1771177501575753762" theme="dark" />
+</div>
+
+### Arabic and CJK
+
+<div style={{ marginTop: '16px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+  <Xitter id="2100935253334311416" />
+  <Xitter id="2100887684499828819" />
 </div>
 
 ### Zero Client-Side JavaScript
@@ -94,6 +109,5 @@ import { Xitter } from 'astro-xitter';
             &mdash; {tweet.user.name} (@{tweet.user.screen_name})
         </p>
       </div>}
-
   </Xitter>
 </div>
