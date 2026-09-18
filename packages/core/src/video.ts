@@ -48,7 +48,7 @@ const VIDEO_CODEC = /^(?:av01|avc1|avc3|dvh1|dvhe|hev1|hvc1|vp0?9)/iv;
 const AUDIO_CODEC = /^(?:ac-3|alac|ec-3|flac|mp4a|opus)/iv;
 
 // DON'T FETCH ALL SEGMENTS DUH
-const MIN_BUFFER = 5;
+const MIN_BUFFER = 3;
 const MAX_BUFFER = 10;
 const MAX_VIDEO_HEIGHT = 720;
 

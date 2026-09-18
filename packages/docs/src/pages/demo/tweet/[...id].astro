@@ -1,0 +1,45 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { Xitter } from 'astro-xitter';
+
+import TweetIdForm from '../../../components/TweetIdForm.astro';
+
+export const prerender = false;
+
+// A rest parameter matches zero or more path segments, so `/demo/tweet`,
+// `/demo/tweet/123`, and `/demo/tweet/a/b` all land here. Only treat a single
+// numeric segment as a post ID; anything else renders the form.
+const { id } = Astro.params;
+const isValidId = id !== undefined && /^\d+$/v.test(id);
+
+if (id !== undefined && !isValidId) {
+  return new Response(null, { status: 404 });
+}
+
+const title = isValidId ? `Post ${id}` : 'Dynamic Tweet';
+---
+
+<StarlightPage frontmatter={{ title }}>
+  <p>
+    <a href="/demo/showcase/">← Back to the showcase</a>
+  </p>
+
+  {
+    isValidId ? (
+      <>
+        <p>
+          Rendered on demand for post <code>{id}</code>.
+        </p>
+        <Xitter id={id} />
+      </>
+    ) : (
+      <>
+        <p>
+          This page renders a post <strong>on demand</strong> at request time instead of at build time. Enter a post ID
+          below to load it from the X syndication API.
+        </p>
+        <TweetIdForm />
+      </>
+    )
+  }
+</StarlightPage>
