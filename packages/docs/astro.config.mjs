@@ -23,7 +23,7 @@ export default defineConfig({
           items: [
             { autogenerate: { directory: 'demo' } },
             {
-              label: 'Dynamic Tweet',
+              label: 'Dynamic',
               link: '/demo/tweet',
             },
           ],

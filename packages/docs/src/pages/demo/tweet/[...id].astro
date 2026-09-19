@@ -6,40 +6,97 @@ import TweetIdForm from '../../../components/TweetIdForm.astro';
 
 export const prerender = false;
 
-// A rest parameter matches zero or more path segments, so `/demo/tweet`,
-// `/demo/tweet/123`, and `/demo/tweet/a/b` all land here. Only treat a single
-// numeric segment as a post ID; anything else renders the form.
 const { id } = Astro.params;
 const isValidId = id !== undefined && /^\d+$/v.test(id);
 
 if (id !== undefined && !isValidId) {
   return new Response(null, { status: 404 });
 }
-
-const title = isValidId ? `Post ${id}` : 'Dynamic Tweet';
 ---
 
-<StarlightPage frontmatter={{ title }}>
+<StarlightPage frontmatter={{ title: 'Dynamic Tweet Demo' }}>
   <p>
-    <a href="/demo/showcase/">← Back to the showcase</a>
+    This page is a dynamic demo of <code>astro-xitter</code>, where you can request Tweet to be rendered on-demand
+    instead of being statically generated.
   </p>
 
-  {
-    isValidId ? (
-      <>
-        <p>
-          Rendered on demand for post <code>{id}</code>.
-        </p>
-        <Xitter id={id} />
-      </>
-    ) : (
-      <>
-        <p>
-          This page renders a post <strong>on demand</strong> at request time instead of at build time. Enter a post ID
-          below to load it from the X syndication API.
-        </p>
-        <TweetIdForm />
-      </>
-    )
-  }
+  <p>
+    To render a tweet, fill out the following form with the Tweet ID click the <code>Render</code> button. You can also supply
+    it directly in the URL with <code>/demo/tweet/[id].</code>
+  </p>
+
+  <div>
+    <form id="tweet-form" class="astro-xitter-dynamic-demo-form">
+      <div class="astro-xitter-dynamic-demo-form-section">
+        <label for="tweet-id">Post ID*</label>
+
+        <input
+          id="tweet-id"
+          name="id"
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]+"
+          placeholder="e.g. 1771177501575753762"
+          required
+        />
+      </div>
+
+      <button type="submit" class="astro-xitter-dynamic-demo-form-submit"> Render </button>
+    </form>
+  </div>
 </StarlightPage>
+
+<style>
+  .astro-xitter-dynamic-demo-form {
+    margin: 1.5rem 0 0.5rem;
+
+    display: flex;
+    align-items: end;
+    gap: 1rem;
+
+    & :first-child {
+      flex: 1;
+    }
+
+    & .astro-xitter-dynamic-demo-form-submit {
+      margin: 0;
+      margin-bottom: 1px;
+      border-radius: 0.375rem;
+      border: 1px solid var(--sl-color-gray-5);
+
+      padding: 0.4rem 1.25rem;
+    }
+
+    & .astro-xitter-dynamic-demo-form-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    & label {
+      font-weight: 600;
+    }
+
+    & input {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.375rem;
+      background: var(--sl-color-black);
+      color: var(--sl-color-white);
+
+      box-sizing: border-box;
+    }
+  }
+</style>
+
+<script>
+  const form = document.querySelector('#tweet-form');
+
+  form?.addEventListener('submit', event => {
+    event.preventDefault();
+    const id = new FormData(form).get('id')?.toString().trim();
+    if (id) {
+      window.location.href = `/demo/tweet/${encodeURIComponent(id)}`;
+    }
+  });
+</script>
