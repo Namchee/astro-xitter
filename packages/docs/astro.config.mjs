@@ -5,16 +5,17 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  // The docs site is static by default. The Node adapter lets individual
-  // routes opt into on-demand rendering with `export const prerender = false`.
   adapter: node({ mode: 'standalone' }),
   integrations: [
     starlight({
       title: 'Astro Xitter',
-      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+      social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/Namchee/astro-xitter' }],
       sidebar: [
         'getting-started',
-        'guides',
+        {
+          label: 'Guides',
+          items: [{ autogenerate: { directory: 'guides' } }],
+        },
         {
           label: 'Demo',
           items: [
