@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Getting Started
+description: Getting started with Astro Xitter
 ---
 
 import { Xitter } from 'astro-xitter';
@@ -10,41 +10,33 @@ Astro Xitter is a library that provides components for displaying post embeds fr
 
 However unlike using X Publish, all the data fetching and rendering are done in the server-side either statically or on-demand.
 
-This approach eliminates the need to embed an iframe and loading an additional client-side JavaScript, therefore reducing network payload and achieving zero [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls) without additional trickery.
+This approach eliminates the need to embed an iframe and loading an additional client-side JavaScript as the primary rendering method, therefore reducing network payload and achieving zero [Cumulative Layout Shift (CLS)](https://web.dev/articles/cls) without additional trickery.
 
 This project is inspired by and integrates the idea of [`react-tweet`](https://react-tweet.vercel.app/) library.
 
 ## Installation
 
 <Tabs>
-<TabItem label="npm">
-
-```sh
-npm install astro-xitter
-```
-
-</TabItem>
-<TabItem label="pnpm">
-
-```sh
-pnpm add astro-xitter
-```
-
-</TabItem>
-<TabItem label="yarn">
-
-```sh
-yarn add astro-xitter
-```
-
-</TabItem>
-<TabItem label="bun">
-
-```sh
-bun add astro-xitter
-```
-
-</TabItem>
+    <TabItem label="npm">
+        ```sh
+        npm install astro-xitter
+        ```
+    </TabItem>
+    <TabItem label="pnpm">
+        ```sh
+        pnpm add astro-xitter
+        ```
+    </TabItem>
+    <TabItem label="yarn">
+        ```sh
+        yarn add astro-xitter
+        ```
+    </TabItem>
+    <TabItem label="bun">
+        ```sh
+        bun add astro-xitter
+        ```
+    </TabItem>
 </Tabs>
 
 ## Quick Start
@@ -52,32 +44,40 @@ bun add astro-xitter
 You can start embedding tweets in your Astro site using the `Xitter` component by supplying it with tweet ID in both Astro and MDX files.
 
 <Tabs>
-<TabItem label="Astro">
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
 
-```astro
----
-import { Xitter } from 'astro-xitter';
----
+        <Xitter id="20" />
+        ```
+    </TabItem>
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: Title
+        description: Description
+        ---
 
-<Xitter id="20" />
-```
+        import { Xitter } from 'astro-xitter';
 
-</TabItem>
-<TabItem label="MDX">
-
-```mdx
----
-title: Title
-description: Description
----
-
-import { Xitter } from 'astro-xitter';
-
-<Xitter id="20" />
-```
-</TabItem>
+        <Xitter id="20" />
+        ```
+    </TabItem>
 </Tabs>
 
 ## Difference With X Publish
 
-While this library aims to replicate the visual and capability of the official [X Publish](https://publish.x.com/) library, there are some differences between the resulting tweet rendered by the official X Publish library and Astro Xitter:
+While this library aims to replicate the visual appearance and capability of the official [X Publish](https://publish.x.com/) library, there are a few differences between tweets rendered by Astro Xitter and the official implementation:
+
+### User Experience
+
+- The main tweet container is no longer hoverable and cannot be used to navigate directly to the tweet.
+
+### Styling
+
+- **Color Tokens**: While the base color tokens are accurate, state modifiers (such as pseudo-classes and pseudo-elements) may differ slightly. However, they remain closely matched.
+- **Text Color**: The tweet text color is slightly more subdued than the original X Publish implementation, which uses pure black or pure white.
+- **Spacing**: Spacing between certain elements has been increased—notably between the user avatar and profile details, as well as between profile details and tweet text in reply contexts.
+- **Video Controls**: Video player controls rely on native browser styling rather than mimicking the custom appearance of X Publish's video player.
