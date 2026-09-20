@@ -2,3 +2,70 @@
 title: Custom Rendering
 description: Spin up your own render method to create a 100% personalized Tweet embed
 ---
+
+import { Xitter } from 'astro-xitter';
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+While Astro Xitter ships with renderer that mimics the visuals of [X Publish](https://publish.x.com/) as close as possible, it's also possible
+to define how the tweet is rendered if the [styling & theming capabilities](/guides/styling) doesn't fit your intended usage.
+
+Custom rendering method can be provided by passing a render function as the first child of `Xitter` component.
+
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
+
+        <Xitter id="<TWEET_ID>">
+            {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
+              <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
+
+              <p>
+                  &mdash; {tweet.user.name} (@{tweet.user.screen_name})
+              </p>
+            </div>}
+        </Xitter>
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+
+        <Xitter id="<TWEET_ID>">
+            {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
+              <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
+
+              <p>
+                  &mdash; {tweet.user.name} (@{tweet.user.screen_name})
+              </p>
+            </div>}
+        </Xitter>
+        ```
+    </TabItem>
+</Tabs>
+
+The above code will render the following tweet:
+
+<Xitter id="20">
+    {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
+      <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
+
+      <p>
+          &mdash; {tweet.user.name} (@{tweet.user.screen_name})
+      </p>
+    </div>}
+</Xitter>
+
+See the [demo](/demo/showcase) to see this feature in action.
+
+<Aside>
+    You won't get any access to [the predefined CSS Variables](/guides/styling) if you use custom rendering function.
+</Aside>
