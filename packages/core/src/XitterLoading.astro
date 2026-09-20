@@ -78,13 +78,13 @@
     }
   }
 
-  :where(:global([data-theme='light']) .astro-xitter-loading-container),
+  :global(:where([data-theme='light'])) :where(.astro-xitter-loading-container),
   :where(.astro-xitter-loading-container.light) {
     --astro-xitter-background: white;
     --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
   }
 
-  :where(:global([data-theme='dark']) .astro-xitter-loading-container),
+  :global(:where([data-theme='dark'])) :where(.astro-xitter-loading-container),
   :where(.astro-xitter-loading-container.dark) {
     --astro-xitter-background: oklch(0.2385 0.0264 248.99);
     --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
