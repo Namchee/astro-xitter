@@ -110,13 +110,30 @@ import Container from '../../../components/Container.astro';
 ### Custom Renderer
 
 <Container>
-  <Xitter id="20">
-      {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
-        <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
-
-        <p>
-            &mdash; {tweet.user.name} (@{tweet.user.screen_name})
-        </p>
-      </div>}
-  </Xitter>
+    <Xitter id="20">
+      {(tweet, status) =>
+        tweet && status === 200 ? (
+            <article style={{ maxWidth: '620px', width: '100%', overflow: 'hidden', border: '1px solid #26324a', borderRadius: '24px', background: '#0f172a', color: '#e2e8f0', boxShadow: '0 20px 45px rgba(15, 23, 42, 0.18)', fontFamily: 'system-ui, sans-serif', margin: 'auto' }}>
+            <div style={{ height: '6px', background: 'linear-gradient(90deg, #38bdf8, #818cf8, #e879f9)' }} />
+            <div style={{ padding: '24px' }}>
+              <header style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <img src={tweet.user.profile_image_url_https} alt={`${tweet.user.name}'s avatar`} width="52" height="52" style={{ borderRadius: '16px', objectFit: 'cover', background: '#1e293b' }} />
+                <div style={{ minWidth: 0, flex: 1, margin: 0 }}>
+                  <strong>{tweet.user.name}</strong>
+                  <div style={{ color: '#94a3b8', fontSize: '14px' }}>@{tweet.user.screen_name}</div>
+                </div>
+                <span aria-hidden="true" style={{ color: '#7dd3fc', fontSize: '24px' }}>𝕏</span>
+              </header>
+              <p style={{ margin: '24px 0', fontSize: '20px', lineHeight: 1.55, whiteSpace: 'pre-wrap' }}>{tweet.text}</p>
+              <footer style={{ display: 'flex', gap: '20px', color: '#94a3b8', fontSize: '14px' }}>
+                <span>↩ {tweet.conversation_count.toLocaleString()}</span>
+                <span>♥ {tweet.favorite_count.toLocaleString()}</span>
+                <a href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} target="_blank" rel="noreferrer" style={{ marginLeft: 'auto', color: '#7dd3fc' }}>View on X ↗</a>
+              </footer>
+            </div>
+          </article>
+        ) : (
+          <div role="status" style={{ padding: '20px', borderRadius: '20px', background: '#fff1f2', color: '#9f1239' }}>Post unavailable</div>
+        )}
+    </Xitter>
 </Container>
