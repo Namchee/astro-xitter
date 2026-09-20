@@ -1,10 +1,11 @@
 ---
+import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Xitter } from 'astro-xitter';
 
 export const prerender = false;
 
-const { id } = Astro.params;
+const id = Astro.url.searchParams.get('id');
 ---
 
 <StarlightPage frontmatter={{ title: 'Dynamic Tweet Demo' }}>
@@ -15,7 +16,7 @@ const { id } = Astro.params;
 
   <p>
     To render a tweet, fill out the following form with the Tweet ID click the <code>Render</code> button. You can also supply
-    it directly in the URL with <code>/demo/tweet/[id].</code>
+    it directly in the URL with <code>id</code> query parameter. For example, <code>/demo/tweet?id=20</code>.
   </p>
 
   <div>
@@ -40,7 +41,7 @@ const { id } = Astro.params;
   </div>
 
   <div class="astro-xitter-dynamic-demo-result">
-    <h5>Tweet Preview</h5>
+    <AnchorHeading level="5" id="tweet-preview">Tweet Preview</AnchorHeading>
 
     {
       id ? (
@@ -138,7 +139,7 @@ const { id } = Astro.params;
 
       const id = new FormData(target).get('id')?.toString().trim();
       if (id) {
-        window.location.href = `/demo/tweet/${encodeURIComponent(id)}`;
+        window.location.href = `/demo/tweet?id=${encodeURIComponent(id)}`;
       }
     });
   }
