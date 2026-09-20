@@ -1,0 +1,35 @@
+---
+title: Error Handling
+description: Handling error during Tweet embedding process
+---
+
+import { Xitter } from 'astro-xitter';
+import { Aside } from '@astrojs/starlight/components';
+
+import Container from '../../../components/Container.astro';
+
+There are several cases that might cause an error when embedding a tweet using Astro Xitter.
+
+In this case, the `Xitter` component will always render an error state with appropriate
+message. Below are the list of possible errors that might occur when tweet is being fetched:
+
+### Tweet Not Found
+
+<Container>
+    <Xitter id="1" />
+</Container>
+
+### Tweet Deleted
+
+<Container>
+    <Xitter id="123" />
+</Container>
+
+---
+
+Aside from the error above, all other errors will be treated as `Unknown Error` and will be logged to the console via
+`console.error`.
+
+<Aside>
+    If you want to render error in different way, you need to use [Custom Rendering](/guides/custom-rendering/)
+</Aside>

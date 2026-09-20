@@ -36,8 +36,11 @@ try {
     } else {
       status = ErrorCode.Deleted;
     }
+  } else if (status !== ErrorCode.NotFound) {
+    console.error(`Failed to fetch tweet from Twitter API. Response returned ${status}.`);
   }
-} catch {
+} catch (error) {
+  console.error(`Failed to fetch tweet from Twitter API:`, error);
   // Assume Internal Server Error for now
   status = 500;
 }
