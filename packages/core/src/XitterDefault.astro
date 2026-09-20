@@ -64,7 +64,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 </article>
 
 <style>
-  .astro-xitter-container {
+  :where(.astro-xitter-container) {
     --astro-xitter-blue: oklch(0.682 0.158 243.354);
     --astro-xitter-red: oklch(0.63 0.258 4.67);
     --astro-xitter-gray: oklch(0.669 0.035 231.2);
@@ -111,7 +111,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
   }
 
   @media (prefers-color-scheme: dark) {
-    .astro-xitter-container {
+    :where(.astro-xitter-container) {
       --astro-xitter-background: oklch(0.2385 0.0264 248.99);
       --astro-xitter-header: white;
       --astro-xitter-content: oklch(96.7% 0.003 264.542);
@@ -122,7 +122,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     }
   }
 
-  :global([data-theme='light']) .astro-xitter-container {
+  :where(:global([data-theme='light']) .astro-xitter-container) {
     --astro-xitter-background: white;
     --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
     --astro-xitter-content: oklch(0.1884 0.0128 248.51);
@@ -132,7 +132,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     --astro-xitter-link: oklch(0.549044 0.179255 254.7525);
   }
 
-  :global([data-theme='dark']) .astro-xitter-container {
+  :where(:global([data-theme='dark']) .astro-xitter-container) {
     --astro-xitter-background: oklch(0.2385 0.0264 248.99);
     --astro-xitter-header: white;
     --astro-xitter-content: oklch(96.7% 0.003 264.542);
@@ -142,7 +142,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     --astro-xitter-link: color-mix(in oklch, var(--astro-xitter-blue) 65%, white 35%);
   }
 
-  .astro-xitter-container.light {
+  :where(.astro-xitter-container.light) {
     --astro-xitter-background: white;
     --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
     --astro-xitter-content: oklch(0.1884 0.0128 248.51);
@@ -152,7 +152,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     --astro-xitter-link: oklch(0.549044 0.179255 254.7525);
   }
 
-  .astro-xitter-container.dark {
+  :where(.astro-xitter-container.dark) {
     --astro-xitter-background: oklch(0.2385 0.0264 248.99);
     --astro-xitter-header: white;
     --astro-xitter-content: oklch(96.7% 0.003 264.542);
