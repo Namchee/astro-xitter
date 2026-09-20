@@ -4,9 +4,9 @@ description: Apply themes and style Astro Xitter however you wish
 ---
 
 import { Xitter } from "astro-xitter";
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 import Container from '../../../components/Container.astro';
-
 
 ## Theming
 
@@ -17,13 +17,32 @@ Astro Xitter ships with light & dark theme by default and is able to use the app
 
 You can also enforce certain theme by passing the `theme` prop to the `Xitter` component, regardless the media query and `data-theme` attribute condition.
 
-```astro
----
-import { Xitter } from 'astro-xitter';
----
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
 
-<Xitter id="20" theme="light" />
-```
+        <Xitter id="<TWEET_ID>" theme="light" />
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```astro
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+
+        <Xitter id="<TWEET_ID>" theme="light" />
+        ```
+    </TabItem>
+</Tabs>
+
+
 
 which will render:
 
