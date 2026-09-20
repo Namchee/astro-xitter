@@ -11,8 +11,34 @@
         <div class="astro-xitter-loading-profile-follow"></div>
       </div>
     </div>
+  </div>
 
-    <div></div>
+  <div class="astro-xitter-loading-content-container">
+    <div class="astro-xitter-loading-content">
+      <div class="astro-xitter-loading-content-skeleton"></div>
+      <div class="astro-xitter-loading-content-skeleton"></div>
+      <div class="astro-xitter-loading-content-skeleton"></div>
+    </div>
+
+    <div class="astro-xitter-loading-content">
+      <div class="astro-xitter-loading-content-skeleton"></div>
+      <div class="astro-xitter-loading-content-skeleton"></div>
+    </div>
+  </div>
+
+  <div class="astro-xitter-loading-metadata-container">
+    <div class="astro-xitter-loading-metadata"></div>
+    <div class="astro-xitter-loading-privacy-policy"></div>
+  </div>
+
+  <div class="astro-xitter-loading-actions-container">
+    <div class="astro-xitter-loading-action"></div>
+    <div class="astro-xitter-loading-action"></div>
+    <div class="astro-xitter-loading-action"></div>
+  </div>
+
+  <div class="astro-xitter-reply">
+    <div class="astro-xitter-reply-label"></div>
   </div>
 </div>
 
@@ -29,8 +55,7 @@
 
     --astro-xitter-spacing: 0.25rem;
 
-    --astro-xitter-animation-duration: 2s;
-    --astro-xitter-animation-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
+    --astro-xitter-animation: pulse 2s cubic-bezier(0.33, 1, 0.68, 1) infinite;
 
     width: 100%;
     max-width: 550px;
@@ -47,36 +72,49 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    .astro-xitter-container {
+    .astro-xitter-loading-container {
       --astro-xitter-background: oklch(0.2385 0.0264 248.99);
       --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
     }
   }
 
-  :global([data-theme='light']) .astro-xitter-loading-container {
-    --astro-xitter-background: white;
-    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
-  }
-
-  :global([data-theme='dark']) .astro-xitter-loading-container {
-    --astro-xitter-background: oklch(0.2385 0.0264 248.99);
-    --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
-  }
-
+  :global([data-theme='light']) .astro-xitter-loading-container,
   .astro-xitter-loading-container.light {
     --astro-xitter-background: white;
     --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
   }
 
-  .astro-xitter-container.dark {
+  :global([data-theme='dark']) .astro-xitter-loading-container,
+  .astro-xitter-loading-container.dark {
     --astro-xitter-background: oklch(0.2385 0.0264 248.99);
     --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .astro-xitter-container {
-      --astro-xitter-transition-duration: 0ms;
+    .astro-xitter-loading-avatar,
+    .astro-xitter-loading-profile-name,
+    .astro-xitter-loading-profile-screen-name,
+    .astro-xitter-loading-profile-follow,
+    .astro-xitter-loading-content-skeleton,
+    .astro-xitter-loading-metadata,
+    .astro-xitter-loading-privacy-policy,
+    .astro-xitter-loading-action,
+    .astro-xitter-reply-label {
+      animation: none;
     }
+  }
+
+  .astro-xitter-loading-avatar,
+  .astro-xitter-loading-profile-name,
+  .astro-xitter-loading-profile-screen-name,
+  .astro-xitter-loading-profile-follow,
+  .astro-xitter-loading-content-skeleton,
+  .astro-xitter-loading-metadata,
+  .astro-xitter-loading-privacy-policy,
+  .astro-xitter-loading-action,
+  .astro-xitter-reply-label {
+    background-color: var(--astro-xitter-separator);
+    animation: var(--astro-xitter-animation);
   }
 
   .astro-xitter-loading-header {
@@ -89,12 +127,8 @@
   .astro-xitter-loading-avatar {
     border-radius: 9999px;
 
-    background-color: var(--astro-xitter-separator);
-
     width: calc(12 * var(--astro-xitter-spacing));
     height: calc(12 * var(--astro-xitter-spacing));
-
-    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
   }
 
   .astro-xitter-loading-profile {
@@ -109,12 +143,8 @@
   .astro-xitter-loading-profile-name {
     border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    background-color: var(--astro-xitter-separator);
-
     width: calc(40 * var(--astro-xitter-spacing));
     height: calc(4 * var(--astro-xitter-spacing));
-
-    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
   }
 
   .astro-xitter-loading-profile-screen {
@@ -129,23 +159,120 @@
   .astro-xitter-loading-profile-screen-name {
     border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    background-color: var(--astro-xitter-separator);
-
     width: calc(20 * var(--astro-xitter-spacing));
     height: calc(4 * var(--astro-xitter-spacing));
-
-    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
   }
 
   .astro-xitter-loading-profile-follow {
     border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    background-color: var(--astro-xitter-separator);
-
     width: calc(12 * var(--astro-xitter-spacing));
     height: calc(4 * var(--astro-xitter-spacing));
 
-    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
+    margin: 0;
+  }
+
+  .astro-xitter-loading-content-container {
+    display: flex;
+    flex-direction: column;
+
+    gap: calc(2 * var(--astro-xitter-spacing));
+
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-loading-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: calc(2 * var(--astro-xitter-spacing));
+
+    margin-top: calc(5 * var(--astro-xitter-spacing));
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  .astro-xitter-loading-content-skeleton {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    width: 100%;
+    height: calc(5 * var(--astro-xitter-spacing));
+
+    margin: 0;
+
+    &:last-child {
+      width: 80%;
+    }
+  }
+
+  .astro-xitter-loading-metadata-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-loading-metadata {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    width: calc(24 * var(--astro-xitter-spacing));
+    height: calc(3 * var(--astro-xitter-spacing));
+
+    margin: 0;
+  }
+
+  .astro-xitter-loading-privacy-policy {
+    border-radius: 9999px;
+
+    width: calc(5 * var(--astro-xitter-spacing));
+    height: calc(5 * var(--astro-xitter-spacing));
+
+    margin: 0;
+  }
+
+  .astro-xitter-loading-actions-container {
+    border-top: 1px solid var(--astro-xitter-separator);
+
+    margin-top: calc(2 * var(--astro-xitter-spacing));
+    padding-top: calc(2.5 * var(--astro-xitter-spacing));
+
+    display: flex;
+    gap: calc(2 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-loading-action {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    width: calc(16 * var(--astro-xitter-spacing));
+    height: calc(5 * var(--astro-xitter-spacing));
+
+    margin: 0;
+  }
+
+  .astro-xitter-reply {
+    border: 1px solid var(--astro-xitter-separator);
+
+    margin-top: calc(3 * var(--astro-xitter-spacing));
+
+    border-radius: calc(4 * var(--astro-xitter-spacing));
+
+    display: grid;
+    place-items: center;
+
+    padding-top: calc(2 * var(--astro-xitter-spacing));
+    padding-bottom: calc(2 * var(--astro-xitter-spacing));
+
+    width: 100%;
+  }
+
+  .astro-xitter-reply-label {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    width: calc(24 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
 
     margin: 0;
   }

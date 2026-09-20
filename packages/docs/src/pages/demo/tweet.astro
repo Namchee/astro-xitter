@@ -1,7 +1,7 @@
 ---
 import AnchorHeading from '@astrojs/starlight/components/AnchorHeading.astro';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import { Xitter } from 'astro-xitter';
+import { Xitter, XitterLoading } from 'astro-xitter';
 
 export const prerender = false;
 
@@ -45,7 +45,9 @@ const id = Astro.url.searchParams.get('id');
 
     {
       id ? (
-        <Xitter id={id} />
+        <Xitter id={id} server:defer>
+          <XitterLoading slot="fallback" />
+        </Xitter>
       ) : (
         <div class="astro-xitter-dynamic-demo-result-placeholder">
           Tweet will be embedded here once Tweet ID is filled
