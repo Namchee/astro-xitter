@@ -1,0 +1,108 @@
+{
+  "format_on_save": "on",
+  "formatter": "language_server",
+  "code_actions_on_format": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "language_servers": ["!biome", "!oxfmt", "!oxlint", "!typescript-ls"],
+  "languages": {
+    "JavaScript": {
+      "prettier": {
+        "allowed": false
+      },
+      "external": {
+        "command": "pnpm",
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
+      },
+      "language_servers": ["eslint"]
+    },
+    "TypeScript": {
+      "prettier": {
+        "allowed": false
+      },
+      "external": {
+        "command": "pnpm",
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
+      },
+      "language_servers": ["vtsls", "eslint"]
+    },
+    "Astro": {
+      "prettier": {
+        "allowed": false
+      },
+      "external": {
+        "command": "pnpm",
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
+      },
+      "language_servers": ["astro-language-server", "vtsls", "eslint"]
+    },
+    "JSON": {
+      "external": {
+        "command": "pnpm",
+        "arguments": ["exec", "eslint", "--fix", "--stdin", "--stdin-filename", "{buffer_path}"]
+      },
+      "language_servers": ["json-language-server", "vtsls", "eslint"]
+    }
+  },
+  "lsp": {
+    "eslint": {
+      "settings": {
+        "useFlatConfig": true,
+        "workingDirectories": ["./"],
+        "rulesCustomizations": [
+          {
+            "rule": "style/*",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "format/*",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-indent",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-spacing",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-spaces",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-order",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-dangle",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*-newline",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*quotes",
+            "severity": "off",
+            "fixable": true
+          },
+          {
+            "rule": "*semi",
+            "severity": "off",
+            "fixable": true
+          }
+        ]
+      }
+    }
+  }
+}

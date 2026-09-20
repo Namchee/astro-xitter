@@ -1,0 +1,53 @@
+---
+title: Interactivity
+description: Embed tweets with zero client-side JavaScript
+---
+
+import { Xitter } from "astro-xitter";
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Container from '../../../components/Container.astro';
+
+While Astro Xitter ships with JavaScript by default to enable several Interactivity that isn't possible on the server-side,
+it's possible to opt-out of the built-in interactivity features by setting `interactive` prop to `false`.
+
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
+
+        <Xitter id="<TWEET_ID>" interactive={false} />
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+
+        <Xitter id="<TWEET_ID>" interactive={false} />
+        ```
+    </TabItem>
+</Tabs>
+
+The above code will render the following tweet:
+
+<Container>
+    <Xitter id="1732824684683784516" interactive={false} />
+</Container>
+
+Do note however, the following features will not be available if you turned off interactivity:
+
+- Copy Tweet link
+- Videos are completely unplayable and will be redirected to X instead.
+- Videos no longer have context menu
+
+<Aside>
+    The reason why videos require client-side JavaScript is because X is blocking blocking direct media access through raw `<video>` element using HTTP header validation, as explained by [this issue](https://github.com/vercel/react-tweet/issues/212).
+</Aside>
