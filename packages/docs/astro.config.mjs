@@ -21,7 +21,7 @@ export default defineConfig({
           items: [
             { autogenerate: { directory: 'demo' } },
             {
-              label: 'Dynamic',
+              label: 'On Demand',
               link: '/demo/tweet',
             },
           ],
