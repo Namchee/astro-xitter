@@ -3,7 +3,7 @@ title: Showcase
 description: Static Astro Xitter showcase of existing Tweets
 ---
 
-import { Xitter } from 'astro-xitter';
+import { Xitter, XitterLoading } from 'astro-xitter';
 
 import Container from '../../../components/Container.astro';
 
@@ -99,6 +99,12 @@ import Container from '../../../components/Container.astro';
 <Container>
   <Xitter id="1234234512351235234" />
   <Xitter id="123" />
+</Container>
+
+### Loading State
+
+<Container>
+    <XitterLoading />
 </Container>
 
 ### Custom Renderer

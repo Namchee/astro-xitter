@@ -22,6 +22,8 @@ const isVerified =
   <Link title="View Profile on X" href={`https://x.com/${user.screen_name}`} class="astro-xitter-profile-picture">
     <img
       src={user.profile_image_url_https}
+      width={48}
+      height={48}
       class:list={[
         'astro-xitter-profile-avatar',
         {

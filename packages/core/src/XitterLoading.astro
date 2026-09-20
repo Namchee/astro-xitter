@@ -1,0 +1,152 @@
+<div class="astro-xitter-loading-container">
+  <div class="astro-xitter-loading-header">
+    <div class="astro-xitter-loading-avatar"></div>
+
+    <div class="astro-xitter-loading-profile">
+      <div class="astro-xitter-loading-profile-name"></div>
+
+      <div class="astro-xitter-loading-profile-screen">
+        <div class="astro-xitter-loading-profile-screen-name"></div>
+
+        <div class="astro-xitter-loading-profile-follow"></div>
+      </div>
+    </div>
+
+    <div></div>
+  </div>
+</div>
+
+<style>
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  .astro-xitter-loading-container {
+    --astro-xitter-background: white;
+    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+
+    --astro-xitter-spacing: 0.25rem;
+
+    --astro-xitter-animation-duration: 2s;
+    --astro-xitter-animation-easing: cubic-bezier(0.33, 1, 0.68, 1); /* easeOutCubic */
+
+    width: 100%;
+    max-width: 550px;
+    margin: auto;
+
+    box-sizing: border-box;
+
+    padding: calc(3 * var(--astro-xitter-spacing)) calc(4 * var(--astro-xitter-spacing));
+
+    border: 1px solid var(--astro-xitter-separator);
+    border-radius: calc(4 * var(--astro-xitter-spacing));
+
+    background: var(--astro-xitter-background);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .astro-xitter-container {
+      --astro-xitter-background: oklch(0.2385 0.0264 248.99);
+      --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
+    }
+  }
+
+  :global([data-theme='light']) .astro-xitter-loading-container {
+    --astro-xitter-background: white;
+    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+  }
+
+  :global([data-theme='dark']) .astro-xitter-loading-container {
+    --astro-xitter-background: oklch(0.2385 0.0264 248.99);
+    --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
+  }
+
+  .astro-xitter-loading-container.light {
+    --astro-xitter-background: white;
+    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+  }
+
+  .astro-xitter-container.dark {
+    --astro-xitter-background: oklch(0.2385 0.0264 248.99);
+    --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .astro-xitter-container {
+      --astro-xitter-transition-duration: 0ms;
+    }
+  }
+
+  .astro-xitter-loading-header {
+    display: flex;
+    align-items: center;
+
+    gap: calc(2 * var(--astro-xitter-spacing));
+  }
+
+  .astro-xitter-loading-avatar {
+    border-radius: 9999px;
+
+    background-color: var(--astro-xitter-separator);
+
+    width: calc(12 * var(--astro-xitter-spacing));
+    height: calc(12 * var(--astro-xitter-spacing));
+
+    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
+  }
+
+  .astro-xitter-loading-profile {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0;
+
+    gap: var(--astro-xitter-spacing);
+  }
+
+  .astro-xitter-loading-profile-name {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    background-color: var(--astro-xitter-separator);
+
+    width: calc(40 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
+
+    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
+  }
+
+  .astro-xitter-loading-profile-screen {
+    display: flex;
+    align-items: center;
+
+    gap: var(--astro-xitter-spacing);
+
+    margin: 0;
+  }
+
+  .astro-xitter-loading-profile-screen-name {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    background-color: var(--astro-xitter-separator);
+
+    width: calc(20 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
+
+    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
+  }
+
+  .astro-xitter-loading-profile-follow {
+    border-radius: calc(2 * var(--astro-xitter-spacing));
+
+    background-color: var(--astro-xitter-separator);
+
+    width: calc(12 * var(--astro-xitter-spacing));
+    height: calc(4 * var(--astro-xitter-spacing));
+
+    animation: pulse var(--astro-xitter-animation-duration) var(--astro-xitter-animation-easing) infinite;
+
+    margin: 0;
+  }
+</style>
