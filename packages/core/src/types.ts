@@ -175,6 +175,12 @@ export interface XitterCard {
   };
 }
 
+interface XitterTombstoneDetails {
+  entities: XitterEntities;
+  rtl: boolean;
+  text: string;
+}
+
 export interface Xitter {
   id_str: string;
   text: string;
@@ -192,4 +198,8 @@ export interface Xitter {
   parent?: Xitter;
   note_tweet?: FullXitter;
   card?: XitterCard;
+}
+
+export interface XitterTombstone {
+  tombstone: XitterTombstoneDetails;
 }

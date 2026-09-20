@@ -1,6 +1,7 @@
 ---
 import type { Xitter } from './types';
 
+import { ErrorCode } from './const';
 import XitterDefault from './XitterDefault.astro';
 import XitterError from './XitterError.astro';
 
@@ -14,6 +15,8 @@ interface Props {
 
 const { id, theme, interactive = true, locale } = Astro.props;
 
+const hasCustomRenderer = Astro.slots.has('default');
+
 const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
 url.searchParams.set('token', 'x');
@@ -24,11 +27,18 @@ let status = 200;
 try {
   const result = await fetch(url);
   status = result.status;
+
   if (result.ok) {
-    tweet = (await result.json()) as Xitter;
+    const data = await result.json();
+
+    if (hasCustomRenderer || !data.tombstone) {
+      tweet = data;
+    } else {
+      status = ErrorCode.Deleted;
+    }
   }
 } catch {
-  // assume Internal Server Error for now
+  // Assume Internal Server Error for now
   status = 500;
 }
 
@@ -44,7 +54,6 @@ if (!locale) {
   currentLocale ??= 'en-US';
 }
 
-const hasCustomRenderer = Astro.slots.has('default');
 const hasError = !tweet;
 
 const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', [tweet, status]) : null;

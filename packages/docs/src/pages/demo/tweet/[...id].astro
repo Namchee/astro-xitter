@@ -2,16 +2,9 @@
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import { Xitter } from 'astro-xitter';
 
-import TweetIdForm from '../../../components/TweetIdForm.astro';
-
 export const prerender = false;
 
 const { id } = Astro.params;
-const isValidId = id !== undefined && /^\d+$/v.test(id);
-
-if (id !== undefined && !isValidId) {
-  return new Response(null, { status: 404 });
-}
 ---
 
 <StarlightPage frontmatter={{ title: 'Dynamic Tweet Demo' }}>
@@ -27,9 +20,9 @@ if (id !== undefined && !isValidId) {
 
   <div>
     <form id="tweet-form" class="astro-xitter-dynamic-demo-form">
-      <div class="astro-xitter-dynamic-demo-form-section">
-        <label for="tweet-id">Post ID*</label>
+      <label for="tweet-id">Post ID<span class="astro-xitter-dynamic-demo-form-section-label-required">*</span></label>
 
+      <div class="astro-xitter-dynamic-demo-form-section">
         <input
           id="tweet-id"
           name="id"
@@ -38,11 +31,26 @@ if (id !== undefined && !isValidId) {
           pattern="[0-9]+"
           placeholder="e.g. 1771177501575753762"
           required
+          value={id ?? ''}
         />
-      </div>
 
-      <button type="submit" class="astro-xitter-dynamic-demo-form-submit"> Render </button>
+        <button type="submit" class="astro-xitter-dynamic-demo-form-submit"> Render </button>
+      </div>
     </form>
+  </div>
+
+  <div class="astro-xitter-dynamic-demo-result">
+    <h5>Tweet Preview</h5>
+
+    {
+      id ? (
+        <Xitter id={id} />
+      ) : (
+        <div class="astro-xitter-dynamic-demo-result-placeholder">
+          Tweet will be embedded here once Tweet ID is filled
+        </div>
+      )
+    }
   </div>
 </StarlightPage>
 
@@ -51,8 +59,7 @@ if (id !== undefined && !isValidId) {
     margin: 1.5rem 0 0.5rem;
 
     display: flex;
-    align-items: end;
-    gap: 1rem;
+    flex-direction: column;
 
     & :first-child {
       flex: 1;
@@ -64,13 +71,23 @@ if (id !== undefined && !isValidId) {
       border-radius: 0.375rem;
       border: 1px solid var(--sl-color-gray-5);
 
-      padding: 0.4rem 1.25rem;
+      background: var(--sl-color-accent);
+      color: var(--sl-badge-default-text);
+
+      font-weight: 500;
+
+      cursor: pointer;
+
+      padding: 0.5rem 1.5rem;
     }
 
     & .astro-xitter-dynamic-demo-form-section {
       display: flex;
-      flex-direction: column;
       gap: 0.5rem;
+    }
+
+    & .astro-xitter-dynamic-demo-form-section-label-required {
+      color: var(--sl-color-red);
     }
 
     & label {
@@ -87,16 +104,42 @@ if (id !== undefined && !isValidId) {
       box-sizing: border-box;
     }
   }
+
+  .astro-xitter-dynamic-demo-result {
+    margin-top: 4rem;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 1rem;
+  }
+
+  .astro-xitter-dynamic-demo-result-placeholder {
+    width: 100%;
+    height: 100%;
+
+    padding: 2rem;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--sl-color-gray-4);
+  }
 </style>
 
 <script>
   const form = document.querySelector('#tweet-form');
 
-  form?.addEventListener('submit', event => {
-    event.preventDefault();
-    const id = new FormData(form).get('id')?.toString().trim();
-    if (id) {
-      window.location.href = `/demo/tweet/${encodeURIComponent(id)}`;
-    }
-  });
+  if (form) {
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      const target = event.currentTarget as HTMLFormElement;
+
+      const id = new FormData(target).get('id')?.toString().trim();
+      if (id) {
+        window.location.href = `/demo/tweet/${encodeURIComponent(id)}`;
+      }
+    });
+  }
 </script>

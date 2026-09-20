@@ -1,4 +1,6 @@
 ---
+import { ErrorCode } from './const';
+
 interface Props {
   status: number;
 
@@ -6,6 +8,17 @@ interface Props {
 }
 
 const { status, theme } = Astro.props;
+
+const ErrorText = {
+  [ErrorCode.Deleted]: {
+    title: 'Tweet has been deleted',
+    description: 'This tweet has been deleted by the author and cannot be rendered',
+  },
+  [ErrorCode.NotFound]: {
+    title: 'Tweet not found',
+    description: 'The requested tweet could not be found',
+  },
+};
 ---
 
 <div
@@ -18,11 +31,11 @@ const { status, theme } = Astro.props;
   ]}
 >
   <h1 class="astro-xitter-error-title">
-    {status === 404 ? 'Tweet not found' : 'Unknown Error'}
+    {ErrorText[status]?.title ?? 'Unknown Error'}
   </h1>
 
   <p class="astro-xitter-error-description">
-    {status === 404 ? 'The embedded tweet could not be found' : 'Failed to fetch tweet due to unexpected error'}
+    {ErrorText[status]?.description ?? 'Failed to fetch tweet due to unexpected error'}
   </p>
 </div>
 
