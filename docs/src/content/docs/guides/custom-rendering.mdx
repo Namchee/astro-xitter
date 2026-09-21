@@ -66,7 +66,6 @@ The sample code above will render the following tweet:
 
 See the [demo](/demo/showcase) to see this feature in action.
 
-
 ### API Reference
 
 The render function passes 2 parameters:
@@ -93,4 +92,7 @@ Please refer to the [object schema](https://github.com/Namchee/astro-xitter/blob
 
 ### Caveats
 
-While custom rendering
+While custom rendering enables freedom on how should the tweet look like, it does have several caveats:
+
+1. Custom rendering doesn't have access to [CSS variables from the default theme](/guides/styling)
+2. Type information regarding the parameters aren't available in MDX.
