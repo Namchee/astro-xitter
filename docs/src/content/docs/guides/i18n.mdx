@@ -1,0 +1,54 @@
+---
+title: Internationalization
+description: Adapting Astro Xitter UI to your locale
+---
+
+import { Xitter } from 'astro-xitter';
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Container from '../../../components/Container.astro';
+
+Astro Xitter ships with built-in [internationalization](https://developer.mozilla.org/en-US/docs/Glossary/Internationalization) (i18n) which is applied to the following elements:
+
+- Numeric elements, such as like and reply count
+- Date and time, such as tweet creation date
+
+The locale used for i18n is derived from [`Astro.currentLocale`](https://docs.astro.build/en/reference/api-reference/#currentlocale) for static rendering. For [on-demand rendering mode](/guides/on-demand) however, [`Astro.preferredLocale`](https://docs.astro.build/en/reference/api-reference/#preferredlocale) will be prioritized instead of `Astro.currentLocale`.
+
+If both globals are `undefined`, Astro Xitter will resolve locale to `en-US` instead.
+
+Aside from relying on Astro's globals, you can also supply the locale yourself by passing it to the `locale` prop.
+
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
+
+        <Xitter id="<TWEET_ID>" locale="id-ID" />
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+
+        <Xitter id="<TWEET_ID>" locale="id-ID" />
+        ```
+    </TabItem>
+</Tabs>
+
+The above code will render the following tweet. Notice the difference between how the date is displayed and the unit used for like and reply count.
+
+<Container>
+    <Xitter id="20" locale="id-ID" />
+</Container>
+
+The supplied locale must be compatible with [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument) interface.
