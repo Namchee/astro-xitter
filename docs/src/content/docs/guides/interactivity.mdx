@@ -4,7 +4,7 @@ description: Embed tweets with zero client-side JavaScript
 ---
 
 import { Xitter } from "astro-xitter";
-import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 import Container from '../../../components/Container.astro';
 
@@ -47,7 +47,3 @@ Do note however, the following features will not be available if you turned off 
 - Copy Tweet link
 - Videos are completely unplayable and will be redirected to X instead.
 - Videos no longer have context menu
-
-<Aside>
-    The reason why videos require client-side JavaScript is because X is blocking blocking direct media access through raw `<video>` element using HTTP header validation, as explained by [this issue](https://github.com/vercel/react-tweet/issues/212).
-</Aside>
