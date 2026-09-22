@@ -1,11 +1,11 @@
-import node from '@astrojs/node';
+import cloudflare from '@astrojs/cloudflare';
 import starlight from '@astrojs/starlight';
 // @ts-check
 import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-  adapter: node({ mode: 'standalone' }),
+  adapter: cloudflare(),
   integrations: [
     starlight({
       title: 'Astro Xitter',
