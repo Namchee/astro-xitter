@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write packages",
-    "lint": "eslint packages --fix"
+    "lint": "eslint packages --fix",
+    "changeset": "changeset"
   },
   "author": {
     "name": "Cristopher",
