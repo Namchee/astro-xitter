@@ -55,13 +55,18 @@ Custom rendering method can be provided by passing a render function as the firs
 The sample code above will render the following tweet:
 
 <Xitter id="20">
-    {(tweet, status) => <div style={{ padding: '16px', border: '1px solid gray' }}>
-      <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
+    {(tweet, status) =>
+      tweet && status === 200 ? (
+        <div style={{ padding: '16px', border: '1px solid gray' }}>
+          <p style={{ fontFamily: '"Times New Roman"' }}>{tweet.text}</p>
 
-      <p>
-          &mdash; {tweet.user.name} (@{tweet.user.screen_name})
-      </p>
-    </div>}
+          <p>
+            &mdash; {tweet.user.name} (@{tweet.user.screen_name})
+          </p>
+        </div>
+      ) : (
+        <div role="status">Post unavailable</div>
+      )}
 </Xitter>
 
 See the [demo](/demo/showcase) to see this feature in action.
