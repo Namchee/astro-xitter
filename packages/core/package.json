@@ -50,5 +50,9 @@
   "peerDependencies": {
     "astro": ">=5.0.0"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  }
 }
