@@ -57,7 +57,7 @@ importers:
         specifier: ^7.3.1
         version: 7.3.1(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(@types/node@24.13.3)(jiti@2.7.0)(yaml@2.9.0)
       astro-xitter:
-        specifier: file:../packages/core
+        specifier: workspace:*
         version: link:../packages/core
       sharp:
         specifier: ^0.35.3
