@@ -48,7 +48,7 @@ jobs:
           pnpm --dir docs build
 
       - name: Test npm publish
-        run: npm publish --dry-run
+        run: cd packages/core && npm publish --dry-run
 
       - name: Create release pull request or publish packages
         id: changesets
