@@ -6,8 +6,9 @@ on:
       - master
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
+  pull-requests: write
 
 concurrency:
   group: release
@@ -30,15 +31,20 @@ jobs:
           version: 10.26.0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
+      - name: Ensure npm that supports trusted publishing
+        run: npm install -g npm@11.5.1
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+
 
       - name: Run checks
         run: |
