@@ -34,7 +34,6 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
       - name: Ensure npm that supports trusted publishing
