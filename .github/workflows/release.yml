@@ -18,7 +18,6 @@ jobs:
   release:
     name: Release packages
     runs-on: ubuntu-latest
-    environment: npm
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -43,8 +42,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-
 
       - name: Run checks
         run: |
