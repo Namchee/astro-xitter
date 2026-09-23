@@ -7,6 +7,7 @@
     "format": "prettier --write packages",
     "lint": "eslint packages --fix",
     "docs:dev": "pnpm --filter=docs run dev",
+    "docs:build": "pnpm --filter=docs run build",
     "changeset": "changeset"
   },
   "author": {
