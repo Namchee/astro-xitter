@@ -47,6 +47,9 @@ jobs:
           pnpm lint
           pnpm --dir docs build
 
+      - name: Test npm publish
+        run: npm publish --dry-run
+
       - name: Create release pull request or publish packages
         id: changesets
         uses: changesets/action@v2
