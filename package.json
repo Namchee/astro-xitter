@@ -8,7 +8,9 @@
     "lint": "eslint packages --fix",
     "docs:dev": "pnpm --filter=docs run dev",
     "docs:build": "pnpm --filter=docs run build",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "release": "changeset publish",
+    "version": "changeset version"
   },
   "author": {
     "name": "Cristopher",
