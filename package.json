@@ -1,5 +1,6 @@
 {
   "name": "root",
+  "private": true,
   "version": "0.0.0",
   "description": "Astro Xitter monorepo",
   "type": "module",
@@ -8,6 +9,7 @@
     "lint": "eslint packages --fix",
     "docs:dev": "pnpm --filter=docs run dev",
     "docs:build": "pnpm --filter=docs run build",
+    "docs:deploy": "pnpm --filter=docs wrangler deploy",
     "changeset": "changeset",
     "release": "changeset publish",
     "version": "changeset version"
