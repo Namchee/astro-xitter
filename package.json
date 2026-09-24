@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write packages",
-    "lint": "eslint packages --fix",
+    "lint": "eslint packages",
+    "lint:fix": "eslint packages --fix",
     "docs:dev": "pnpm --filter=docs run dev",
     "docs:build": "pnpm --filter=docs run build",
     "docs:deploy": "pnpm --filter=docs wrangler deploy",
