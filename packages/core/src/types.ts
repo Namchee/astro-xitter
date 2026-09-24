@@ -203,3 +203,16 @@ export interface Xitter {
 export interface XitterTombstone {
   tombstone: XitterTombstoneDetails;
 }
+
+type MaybePromise<T> = T | PromiseLike<T>;
+
+export interface XitterCache {
+  get: (id: string) => MaybePromise<Xitter | undefined>;
+
+  set: (
+    id: string,
+    entry: Xitter,
+  ) => MaybePromise<void>;
+
+  delete?: (id: string) => MaybePromise<void>;
+}
