@@ -1,6 +1,8 @@
 ---
 import type { Xitter } from './types';
 
+import { Image } from 'astro:assets';
+
 import Link from './Link.astro';
 
 interface Props {
@@ -37,7 +39,14 @@ const photos = tweet.photos ?? [];
         ]}
         href={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
       >
-        <img src={p.url} draggable="true" class="astro-xitter-photo" />
+        <Image
+          width={p.width}
+          height={p.height}
+          alt={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
+          src={p.url}
+          draggable="true"
+          class="astro-xitter-photo"
+        />
       </Link>
     ))
   }
