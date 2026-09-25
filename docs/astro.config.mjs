@@ -1,5 +1,6 @@
 import cloudflare from '@astrojs/cloudflare';
 import starlight from '@astrojs/starlight';
+import mermaid from 'astro-mermaid';
 // @ts-check
 import { defineConfig } from 'astro/config';
 
@@ -27,6 +28,10 @@ export default defineConfig({
           ],
         },
       ],
+    }),
+    mermaid({
+      theme: 'neutral',
+      autoTheme: true
     }),
   ],
 });
