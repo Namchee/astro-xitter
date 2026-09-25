@@ -1,6 +1,8 @@
 ---
 import type { Xitter } from './types';
 
+import { Image } from 'astro:assets';
+
 import { XitterUserVerifiedType } from './const';
 import { processContent } from './content';
 import Verified from './icons/Verified.astro';
@@ -26,8 +28,11 @@ const { content } = processContent(tweet);
 <article class="astro-xitter-quote-container">
   <Link title="View Post" href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}>
     <div class="astro-xitter-quote-heading">
-      <img
+      <Image
         src={user.profile_image_url_https}
+        width={20}
+        height={20}
+        alt={user.name}
         class:list={[
           'astro-xitter-quote-avatar',
           {

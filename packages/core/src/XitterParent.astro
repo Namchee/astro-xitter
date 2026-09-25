@@ -1,6 +1,8 @@
 ---
 import type { Xitter } from './types';
 
+import { Image } from 'astro:assets';
+
 import { XitterUserVerifiedType } from './const';
 import { processContent } from './content';
 import Verified from './icons/Verified.astro';
@@ -34,8 +36,11 @@ const { content } = processContent(tweet, { interactive: true });
       href={`https://x.com/${user.screen_name}`}
       class="astro-xitter-parent-profile-picture"
     >
-      <img
+      <Image
         src={user.profile_image_url_https}
+        alt={user.name}
+        width={48}
+        height={48}
         class:list={[
           'astro-xitter-parent-profile-avatar',
           {
@@ -78,7 +83,13 @@ const { content } = processContent(tweet, { interactive: true });
 
           {
             user.highlighted_label?.badge?.url && (
-              <img src={user.highlighted_label.badge.url} class="astro-xitter-parent-profile-highlighted-label" />
+              <Image
+                width={20}
+                height={20}
+                src={user.highlighted_label.badge.url}
+                alt={user.highlighted_label.badgeType ?? 'Verified Badge'}
+                class="astro-xitter-parent-profile-highlighted-label"
+              />
             )
           }
         </Link>
