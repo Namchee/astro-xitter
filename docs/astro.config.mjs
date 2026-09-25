@@ -29,4 +29,7 @@ export default defineConfig({
       ],
     }),
   ],
+  image: {
+    domains: ['pbs.twimg.com'],
+  },
 });
