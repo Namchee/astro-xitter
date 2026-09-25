@@ -1,5 +1,5 @@
 ---
-import type { Xitter } from './types';
+import type { Xitter, XitterCache } from './types';
 
 import { ErrorCode } from './const';
 import XitterDefault from './XitterDefault.astro';
@@ -11,9 +11,10 @@ interface Props {
   theme?: 'light' | 'dark';
   interactive?: boolean;
   locale?: Intl.LocalesArgument;
+  cache?: XitterCache;
 }
 
-const { id, theme, interactive = true, locale } = Astro.props;
+const { id, theme, interactive = true, locale, cache } = Astro.props;
 
 const hasCustomRenderer = Astro.slots.has('default');
 
@@ -24,29 +25,70 @@ url.searchParams.set('token', 'x');
 let tweet: Xitter | null = null;
 let status = 200;
 
-try {
-  const result = await fetch(url, {
-    headers: {
-      'User-Agent': 'astro-xitter',
-    },
-  });
-  status = result.status;
-
-  if (result.ok) {
-    const data = await result.json();
-
-    if (hasCustomRenderer || !data.tombstone) {
-      tweet = data;
-    } else {
-      status = ErrorCode.Deleted;
-    }
-  } else if (status !== ErrorCode.NotFound) {
-    console.error(`Failed to fetch tweet from Twitter API. Response returned ${status}.`);
+async function getCachedTweet() {
+  if (!cache) {
+    return undefined;
   }
-} catch (error) {
-  console.error(`Failed to fetch tweet from Twitter API:`, error);
-  // Assume Internal Server Error for now
-  status = 500;
+
+  try {
+    return await cache.get(id);
+  } catch (error) {
+    console.error(`Failed to read tweet from cache:`, error);
+    return undefined;
+  }
+}
+
+async function setCachedTweet(data: Xitter) {
+  try {
+    await cache?.set(id, data);
+  } catch (error) {
+    console.error(`Failed to write tweet to cache:`, error);
+  }
+}
+
+async function deleteCachedTweet() {
+  try {
+    await cache?.delete?.(id);
+  } catch (error) {
+    console.error(`Failed to delete tweet from cache:`, error);
+  }
+}
+
+const cached = await getCachedTweet();
+
+if (cached) {
+  tweet = cached;
+  status = 200;
+} else {
+  try {
+    const result = await fetch(url, {
+      headers: {
+        'User-Agent': 'astro-xitter',
+      },
+    });
+    status = result.status;
+
+    if (result.ok) {
+      const data = await result.json();
+
+      if (hasCustomRenderer || !data.tombstone) {
+        tweet = data;
+
+        if (!data.tombstone) {
+          await setCachedTweet(data);
+        }
+      } else {
+        status = ErrorCode.Deleted;
+        await deleteCachedTweet();
+      }
+    } else if (status !== ErrorCode.NotFound) {
+      console.error(`Failed to fetch tweet from Twitter API. Response returned ${status}.`);
+    }
+  } catch (error) {
+    console.error(`Failed to fetch tweet from Twitter API:`, error);
+    // Assume Internal Server Error for now
+    status = 500;
+  }
 }
 
 let currentLocale = locale;

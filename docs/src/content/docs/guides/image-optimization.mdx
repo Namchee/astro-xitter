@@ -1,0 +1,27 @@
+---
+title: Image Optimization
+description: Optimize image assets rendered by Astro Xitter
+---
+
+import { Xitter } from 'astro-xitter';
+import { Aside } from '@astrojs/starlight/components';
+
+Astro Xitter provides optional image media optimization using the [Astro's `Image` component](https://docs.astro.build/en/reference/modules/astro-assets/#image). The optimization is applied to the following component:
+
+1. User Avatar
+2. User Organization Logo
+3. Tweet Photos
+
+<Aside>
+    For more information regarding the details of the optimization, please refer to the [official Astro `Image` guidelines](-https://docs.astro.build/en/guides/images/).
+</Aside>
+
+To opt-in to the optimization, set the `image` property of your Astro application configuration to accept remote images from `pbs.twimg.com`
+
+```ts
+export default defineConfig({
+  image: {
+    domains: ["pbs.twimg.com"],
+  }
+});
+```

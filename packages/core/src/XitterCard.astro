@@ -1,6 +1,8 @@
 ---
 import type { Xitter } from './types';
 
+import { Image } from 'astro:assets';
+
 import Link from './Link.astro';
 
 interface Props {
@@ -18,10 +20,10 @@ const description = values?.description?.string_value;
 {
   tweet.quoted_tweet ? null : (
     <Link href={tweet.card?.url} class="astro-xitter-card-container">
-      <img
-        src={photo?.url}
-        width={photo?.width}
-        height={photo?.height}
+      <Image
+        src={photo?.url ?? ''}
+        width={Number(photo?.width)}
+        height={Number(photo?.height)}
         alt={photo?.alt}
         title={photo?.alt}
         class="astro-xitter-card-image"

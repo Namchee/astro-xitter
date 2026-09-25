@@ -1,6 +1,8 @@
 ---
 import type { Xitter } from './types';
 
+import { Image } from 'astro:assets';
+
 import { XitterUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
 import Link from './Link.astro';
@@ -20,7 +22,7 @@ const isVerified =
 
 <div class="astro-xitter-header-container">
   <Link title="View Profile on X" href={`https://x.com/${user.screen_name}`} class="astro-xitter-profile-picture">
-    <img
+    <Image
       src={user.profile_image_url_https}
       width={48}
       height={48}
@@ -30,6 +32,7 @@ const isVerified =
           'astro-xitter-profile-avatar-square': user.profile_image_shape === 'Square',
         },
       ]}
+      alt={user.name}
     />
   </Link>
 
@@ -60,7 +63,13 @@ const isVerified =
 
       {
         user.highlighted_label?.badge?.url && (
-          <img src={user.highlighted_label.badge.url} class="astro-xitter-profile-highlighted-label" />
+          <Image
+            alt={user.highlighted_label.badgeType ?? 'Verified Badge'}
+            src={user.highlighted_label.badge.url}
+            width={16}
+            height={16}
+            class="astro-xitter-profile-highlighted-label"
+          />
         )
       }
     </Link>
