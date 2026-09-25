@@ -34,4 +34,7 @@ export default defineConfig({
       autoTheme: true
     }),
   ],
+  image: {
+    domains: ['pbs.twimg.com'],
+  },
 });
