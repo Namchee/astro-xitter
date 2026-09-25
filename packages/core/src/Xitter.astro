@@ -25,7 +25,11 @@ let tweet: Xitter | null = null;
 let status = 200;
 
 try {
-  const result = await fetch(url);
+  const result = await fetch(url, {
+    headers: {
+      'User-Agent': 'astro-xitter',
+    },
+  });
   status = result.status;
 
   if (result.ok) {
