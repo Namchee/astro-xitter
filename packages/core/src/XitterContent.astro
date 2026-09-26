@@ -1,15 +1,18 @@
 ---
-import type { Xitter } from './types';
+import type { Xitter, XitterHost } from './types';
 
 import { processContent } from './content';
+import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
+
+  host: XitterHost;
 }
 
-const { tweet } = Astro.props;
-const { content, isTruncated } = processContent(tweet, { interactive: true });
+const { tweet, host } = Astro.props;
+const { content, isTruncated } = processContent(tweet, { interactive: true, host: host });
 ---
 
 <div class="astro-xitter-content" lang={tweet.lang} dir="auto">
@@ -18,10 +21,7 @@ const { content, isTruncated } = processContent(tweet, { interactive: true });
     isTruncated && (
       <>
         {'... '}
-        <Link
-          class="astro-xitter-content-truncated-notice astro-xitter-link"
-          href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
-        >
+        <Link class="astro-xitter-content-truncated-notice astro-xitter-link" href={resolveTweetLink(tweet, host)}>
           Show More
         </Link>
       </>

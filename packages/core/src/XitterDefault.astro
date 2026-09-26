@@ -2,7 +2,9 @@
 import type { Xitter, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
+import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
+import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 import XitterActions from './XitterActions.astro';
 import XitterCard from './XitterCard.astro';
@@ -38,25 +40,25 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     },
   ]}
 >
-  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} />}
+  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} host={host} />}
 
-  <XitterHeader tweet={tweet} />
+  <XitterHeader tweet={tweet} host={host} />
 
-  <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-badge">
-    <X />
+  <Link href={resolveTweetLink(tweet, host)} class="astro-xitter-badge">
+    {host.type === 'twitter' ? <X /> : <Nitter />}
   </Link>
 
-  <XitterContent tweet={tweet} />
+  <XitterContent tweet={tweet} host={host} />
 
-  {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />}
+  {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
 
-  {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} />}
+  {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} host={host} />}
 
   {tweet.card && <XitterCard tweet={tweet} />}
 
-  <XitterMetadata tweet={tweet} locale={locale} />
+  <XitterMetadata tweet={tweet} locale={locale} host={host} />
 
   <XitterActions tweet={tweet} interactive={interactive} locale={locale} host={host} />
 

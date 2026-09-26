@@ -1,7 +1,8 @@
-import type { Hashtag, Symbol, Url, UserMention, Xitter } from './types';
+import type { Hashtag, Symbol, Url, UserMention, Xitter, XitterHost } from './types';
 
 interface ContentPipelineOptions {
   interactive?: boolean;
+  host?: XitterHost;
 }
 
 export function processContent(tweet: Xitter, options?: ContentPipelineOptions) {
@@ -41,7 +42,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
       }
       case 'mention': {
         const { screen_name } = entity as UserMention;
-        replacement = `<a href="https://x.com/${screen_name}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">@${screen_name}</a>`;
+        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/${screen_name}` : `https://x.com/${screen_name}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">@${screen_name}</a>`;
         if (!options?.interactive) {
           replacement = `@${screen_name}`;
         }
@@ -55,7 +56,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
       }
       case 'hashtag': {
         const { text } = entity as Hashtag;
-        replacement = `<a href="https://x.com/hashtag/${text}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">#${text}</a>`;
+        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/hashtag/${text}` : `https://x.com/hashtag/${text}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">#${text}</a>`;
         if (!options?.interactive) {
           replacement = `#${text}`;
         }
@@ -64,7 +65,7 @@ export function processContent(tweet: Xitter, options?: ContentPipelineOptions) 
       }
       case 'symbol': {
         const { text } = entity as Symbol;
-        replacement = `<a href="https://x.com/search?q=%24${text}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">$${text}</a>`;
+        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/search?q=%24${text}` : `https://x.com/search?q=%24${text}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">$${text}</a>`;
         if (!options?.interactive) {
           replacement = `$${text}`;
         }

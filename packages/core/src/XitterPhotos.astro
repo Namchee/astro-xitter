@@ -1,18 +1,19 @@
 ---
-import type { Xitter } from './types';
+import type { Xitter, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
+import { resolvePhotoLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
   tweet: Xitter;
 
+  host: XitterHost;
   quote?: boolean;
 }
 
-const { tweet, quote } = Astro.props;
-const user = tweet.user;
+const { tweet, quote, host } = Astro.props;
 const photos = tweet.photos ?? [];
 ---
 
@@ -37,12 +38,12 @@ const photos = tweet.photos ?? [];
             'astro-xitter-photo-link-bento': (photos.length === 3 && i === 0) || photos.length === 2,
           },
         ]}
-        href={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
+        href={resolvePhotoLink(tweet, host, i)}
       >
         <Image
           width={p.width}
           height={p.height}
-          alt={`https://x.com/${user.screen_name}/status/${tweet.id_str}/photo/${i + 1}`}
+          alt={resolvePhotoLink(tweet, host, i)}
           src={p.url}
           draggable="true"
           class="astro-xitter-photo"
