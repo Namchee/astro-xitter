@@ -7,6 +7,7 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   adapter: cloudflare({ prerenderEnvironment: 'node' }),
+  session: false,
   integrations: [
     starlight({
       title: 'Astro Xitter',
@@ -34,7 +35,4 @@ export default defineConfig({
       autoTheme: true
     }),
   ],
-  image: {
-    domains: ['pbs.twimg.com'],
-  },
 });
