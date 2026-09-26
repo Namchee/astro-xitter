@@ -1,10 +1,16 @@
 import type { TweetUserVerifiedType } from './const';
 
+/**
+ * A video variant with its MIME type and source URL.
+ */
 interface TweetVideoVariant {
   type: string;
   src: string;
 }
 
+/**
+ * Video metadata and available playback variants.
+ */
 interface TweetVideo {
   aspectRatio: [number, number];
   contentType: string;
@@ -13,17 +19,29 @@ interface TweetVideo {
   variants: TweetVideoVariant[];
 }
 
+/**
+ * A reference to a complete tweet.
+ */
 interface FullTweet {
   id: string;
 }
 
+/**
+ * The start and end positions of an entity in tweet text.
+ */
 type Indices = [number, number];
 
+/**
+ * A hashtag found in tweet text.
+ */
 export interface Hashtag {
   indices: Indices;
   text: string;
 }
 
+/**
+ * A user mention found in tweet text.
+ */
 export interface UserMention {
   id_str: string;
   indices: Indices;
@@ -31,6 +49,9 @@ export interface UserMention {
   screen_name: string;
 }
 
+/**
+ * A media URL included in tweet text.
+ */
 export interface Media {
   display_url: string;
   expanded_url: string;
@@ -38,6 +59,9 @@ export interface Media {
   url: string;
 }
 
+/**
+ * A URL found in tweet text.
+ */
 export interface Url {
   display_url: string;
   expanded_url: string;
@@ -45,11 +69,17 @@ export interface Url {
   url: string;
 }
 
+/**
+ * A cashtag found in tweet text.
+ */
 export interface Symbol {
   indices: Indices;
   text: string;
 }
 
+/**
+ * Entities detected in a tweet.
+ */
 interface TweetEntities {
   hashtags?: Hashtag[];
   urls?: Url[];
@@ -58,12 +88,18 @@ interface TweetEntities {
   media?: Media[];
 }
 
+/**
+ * Image metadata for a highlighted user label.
+ */
 interface TweetBadge {
   url?: string;
   width?: number;
   height?: number;
 }
 
+/**
+ * A label highlighted on a user's profile.
+ */
 interface TweetHighlightedLabel {
   description: string;
   url?: string;
@@ -71,6 +107,9 @@ interface TweetHighlightedLabel {
   badgeType?: string;
 }
 
+/**
+ * The author of a tweet.
+ */
 export interface TweetUser {
   id: string;
   name: string;
@@ -83,6 +122,9 @@ export interface TweetUser {
   highlighted_label?: TweetHighlightedLabel;
 }
 
+/**
+ * A photo attached to a tweet.
+ */
 export interface TweetPhoto {
   backgroundColor?: {
     red: number;
@@ -101,11 +143,17 @@ export interface TweetPhoto {
   height: number;
 }
 
+/**
+ * A string value in a Twitter card.
+ */
 export interface StringValue {
   type: 'STRING';
   string_value: string;
 }
 
+/**
+ * An image value in a Twitter card.
+ */
 export interface ImageValue {
   type: 'IMAGE';
   image_value: {
@@ -116,6 +164,9 @@ export interface ImageValue {
   };
 }
 
+/**
+ * A user value in a Twitter card.
+ */
 export interface UserValue {
   type: 'USER';
   user_value: {
@@ -124,8 +175,14 @@ export interface UserValue {
   };
 }
 
+/**
+ * A value used by a Twitter card binding.
+ */
 export type BindingValue = StringValue | ImageValue | UserValue;
 
+/**
+ * Platform and audience information for a Twitter card.
+ */
 export interface TwitterCardPlatform {
   platform: {
     device: {
@@ -138,6 +195,9 @@ export interface TwitterCardPlatform {
   };
 }
 
+/**
+ * A Twitter card attached to a tweet.
+ */
 export interface TweetCard {
   card_platform: TwitterCardPlatform;
   name: 'summary_large_image' | string;
@@ -175,6 +235,9 @@ export interface TweetCard {
   };
 }
 
+/**
+ * Details explaining why a tweet is unavailable.
+ */
 interface TweetTombstoneDetails {
   entities: TweetEntities;
   rtl: boolean;
@@ -206,21 +269,36 @@ export interface Tweet {
   card?: TweetCard;
 }
 
+/**
+ * An unavailable tweet and the reason it cannot be displayed.
+ */
 export interface TweetTombstone {
   tombstone: TweetTombstoneDetails;
 }
 
+/**
+ * A supported host for fetching tweet data.
+ */
 export type XitterHost = TwitterHost | NitterHost;
 
+/**
+ * The official Twitter host configuration.
+ */
 interface TwitterHost {
   type: 'twitter';
 };
 
+/**
+ * A Nitter instance host configuration.
+ */
 interface NitterHost {
   type: 'nitter';
   origin: string;
 }
 
+/**
+ * A value that may be returned synchronously or asynchronously.
+ */
 type MaybePromise<T> = T | PromiseLike<T>;
 
 /**
