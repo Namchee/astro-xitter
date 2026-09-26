@@ -1,5 +1,5 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
@@ -7,7 +7,7 @@ import { resolvePhotoLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   host: XitterHost;
   quote?: boolean;

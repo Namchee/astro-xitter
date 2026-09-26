@@ -1,5 +1,5 @@
 ---
-import type { Xitter, XitterCache, XitterHost } from './types';
+import type { Tweet, XitterCache, XitterHost } from './types';
 
 import { ErrorCode } from './const';
 import XitterDefault from './XitterDefault.astro';
@@ -23,7 +23,7 @@ const url = new URL('/tweet-result', 'https://cdn.syndication.twimg.com/');
 url.searchParams.set('id', id);
 url.searchParams.set('token', 'x');
 
-let tweet: Xitter | null = null;
+let tweet: Tweet | null = null;
 let status = 200;
 
 async function getCachedTweet() {
@@ -39,7 +39,7 @@ async function getCachedTweet() {
   }
 }
 
-async function setCachedTweet(data: Xitter) {
+async function setCachedTweet(data: Tweet) {
   try {
     await cache?.set(id, data);
   } catch (error) {

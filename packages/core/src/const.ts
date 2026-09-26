@@ -1,12 +1,7 @@
-export const XitterUserVerifiedType = {
+export const TweetUserVerifiedType = {
   Business: 'Business',
   Government: 'Government',
 } as const;
-
-export const HostLabelMap = {
-  x: 'X',
-  nitter: 'Nitter',
-};
 
 export const NumberFormatterOptions: Intl.NumberFormatOptions = {
   style: 'decimal',

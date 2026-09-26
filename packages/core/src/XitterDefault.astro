@@ -1,5 +1,5 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
 import Nitter from './icons/Nitter.astro';
@@ -17,7 +17,7 @@ import XitterQuote from './XitterQuote.astro';
 import XitterVideo from './XitterVideo.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   interactive: boolean;
   locale: Intl.LocalesArgument;

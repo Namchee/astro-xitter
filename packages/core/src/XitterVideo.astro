@@ -1,12 +1,12 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import Play from './icons/Play.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   host: XitterHost;
   interactive: boolean;

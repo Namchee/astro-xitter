@@ -1,15 +1,15 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { XitterUserVerifiedType } from './const';
+import { TweetUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   host: XitterHost;
 }
@@ -58,10 +58,10 @@ const isVerified =
             class:list={[
               'astro-xitter-profile-verified-badge',
               {
-                'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+                'astro-xitter-profile-verified-government': user.verified_type === TweetUserVerifiedType.Government,
                 'astro-xitter-profile-verified-personal':
-                  user.verified_type !== XitterUserVerifiedType.Business &&
-                  user.verified_type !== XitterUserVerifiedType.Government,
+                  user.verified_type !== TweetUserVerifiedType.Business &&
+                  user.verified_type !== TweetUserVerifiedType.Government,
               },
             ]}
           />

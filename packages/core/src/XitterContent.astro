@@ -1,12 +1,12 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { processContent } from './content';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   host: XitterHost;
 }

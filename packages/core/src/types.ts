@@ -1,19 +1,19 @@
-import type { XitterUserVerifiedType } from './const';
+import type { TweetUserVerifiedType } from './const';
 
-interface XitterVideoVariant {
+interface TweetVideoVariant {
   type: string;
   src: string;
 }
 
-interface XitterVideo {
+interface TweetVideo {
   aspectRatio: [number, number];
   contentType: string;
   durationMs?: number;
   poster: string;
-  variants: XitterVideoVariant[];
+  variants: TweetVideoVariant[];
 }
 
-interface FullXitter {
+interface FullTweet {
   id: string;
 }
 
@@ -50,7 +50,7 @@ export interface Symbol {
   text: string;
 }
 
-interface XitterEntities {
+interface TweetEntities {
   hashtags?: Hashtag[];
   urls?: Url[];
   user_mentions?: UserMention[];
@@ -58,20 +58,20 @@ interface XitterEntities {
   media?: Media[];
 }
 
-interface XitterBadge {
+interface TweetBadge {
   url?: string;
   width?: number;
   height?: number;
 }
 
-interface XitterHighlightedLabel {
+interface TweetHighlightedLabel {
   description: string;
   url?: string;
-  badge?: XitterBadge;
+  badge?: TweetBadge;
   badgeType?: string;
 }
 
-export interface XitterUser {
+export interface TweetUser {
   id: string;
   name: string;
   screen_name: string;
@@ -79,11 +79,11 @@ export interface XitterUser {
   profile_image_url_https: string;
   is_blue_verified: boolean;
   verified: boolean;
-  verified_type?: (typeof XitterUserVerifiedType)[keyof typeof XitterUserVerifiedType];
-  highlighted_label?: XitterHighlightedLabel;
+  verified_type?: (typeof TweetUserVerifiedType)[keyof typeof TweetUserVerifiedType];
+  highlighted_label?: TweetHighlightedLabel;
 }
 
-export interface XitterPhoto {
+export interface TweetPhoto {
   backgroundColor?: {
     red: number;
     green: number;
@@ -138,7 +138,7 @@ export interface TwitterCardPlatform {
   };
 }
 
-export interface XitterCard {
+export interface TweetCard {
   card_platform: TwitterCardPlatform;
   name: 'summary_large_image' | string;
   url: string;
@@ -175,33 +175,39 @@ export interface XitterCard {
   };
 }
 
-interface XitterTombstoneDetails {
-  entities: XitterEntities;
+interface TweetTombstoneDetails {
+  entities: TweetEntities;
   rtl: boolean;
   text: string;
 }
 
-export interface Xitter {
+/**
+ * Represents a full tweet data fetched from Twitter's API.
+ *
+ * Contains user profile, the tweet itself, attachments, and other metadata such as
+ * parent tweet, quote, etc.
+ */
+export interface Tweet {
   id_str: string;
   text: string;
   lang: string;
   in_reply_to_screen_name?: string;
   favorite_count: number;
   created_at: string;
-  entities: XitterEntities;
-  user: XitterUser;
-  photos?: XitterPhoto[];
-  video?: XitterVideo;
+  entities: TweetEntities;
+  user: TweetUser;
+  photos?: TweetPhoto[];
+  video?: TweetVideo;
   conversation_count: number;
   news_action_type: string;
-  quoted_tweet?: Xitter;
-  parent?: Xitter;
-  note_tweet?: FullXitter;
-  card?: XitterCard;
+  quoted_tweet?: Tweet;
+  parent?: Tweet;
+  note_tweet?: FullTweet;
+  card?: TweetCard;
 }
 
-export interface XitterTombstone {
-  tombstone: XitterTombstoneDetails;
+export interface TweetTombstone {
+  tombstone: TweetTombstoneDetails;
 }
 
 export type XitterHost = TwitterHost | NitterHost;
@@ -217,12 +223,23 @@ interface NitterHost {
 
 type MaybePromise<T> = T | PromiseLike<T>;
 
+/**
+ * A cache interface for Astro Xitter caching mechanism.
+ *
+ * The interface itself only requires 2 methods to be implemented:
+ * `get` which should return a `Tweet` object and
+ * `set` which should put a `Tweet` object to cache.
+ *
+ * The `delete` method is used to enfore 'refresh' when tweet is deleted / made private.
+ *
+ * Astro Xitter **does not** handle TTL, the consumer must handle it themselves.
+ */
 export interface XitterCache {
-  get: (id: string) => MaybePromise<Xitter | undefined>;
+  get: (id: string) => MaybePromise<Tweet | undefined>;
 
   set: (
     id: string,
-    entry: Xitter,
+    entry: Tweet,
   ) => MaybePromise<void>;
 
   delete?: (id: string) => MaybePromise<void>;

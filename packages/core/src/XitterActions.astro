@@ -1,5 +1,5 @@
 ---
-import type { Xitter, XitterHost } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
 import Chain from './icons/Chain.astro';
@@ -10,7 +10,7 @@ import { resolveTweetLink } from './link';
 import XitterActionWrapper from './XitterActionWrapper.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   interactive: boolean;
   locale: Intl.LocalesArgument;

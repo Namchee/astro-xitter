@@ -1,11 +1,11 @@
-import type { Hashtag, Symbol, Url, UserMention, Xitter, XitterHost } from './types';
+import type { Hashtag, Symbol, Tweet, Url, UserMention, XitterHost } from './types';
 
 interface ContentPipelineOptions {
   interactive?: boolean;
   host?: XitterHost;
 }
 
-export function processContent(tweet: Xitter, options?: ContentPipelineOptions) {
+export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
   const isTruncated = !!tweet.note_tweet;
 
   let content = tweet.text;
