@@ -1,17 +1,20 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { XitterUserVerifiedType } from './const';
+import { TweetUserVerifiedType } from './const';
 import Verified from './icons/Verified.astro';
+import { resolveUserProfile } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
+
+  host: XitterHost;
 }
 
-const { tweet } = Astro.props;
+const { tweet, host } = Astro.props;
 const user = tweet.user;
 
 const isVerified =
@@ -21,7 +24,11 @@ const isVerified =
 ---
 
 <div class="astro-xitter-header-container">
-  <Link title="View Profile on X" href={`https://x.com/${user.screen_name}`} class="astro-xitter-profile-picture">
+  <Link
+    title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+    href={resolveUserProfile(tweet, host)}
+    class="astro-xitter-profile-picture"
+  >
     <Image
       src={user.profile_image_url_https}
       width={48}
@@ -38,9 +45,9 @@ const isVerified =
 
   <div class="astro-xitter-profile">
     <Link
-      title="View Profile on X"
+      title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
       class="astro-xitter-profile-name astro-xitter-link"
-      href={`https://x.com/${user.screen_name}`}
+      href={resolveUserProfile(tweet, host)}
     >
       {user.name}
 
@@ -51,10 +58,10 @@ const isVerified =
             class:list={[
               'astro-xitter-profile-verified-badge',
               {
-                'astro-xitter-profile-verified-government': user.verified_type === XitterUserVerifiedType.Government,
+                'astro-xitter-profile-verified-government': user.verified_type === TweetUserVerifiedType.Government,
                 'astro-xitter-profile-verified-personal':
-                  user.verified_type !== XitterUserVerifiedType.Business &&
-                  user.verified_type !== XitterUserVerifiedType.Government,
+                  user.verified_type !== TweetUserVerifiedType.Business &&
+                  user.verified_type !== TweetUserVerifiedType.Government,
               },
             ]}
           />
@@ -76,22 +83,28 @@ const isVerified =
 
     <div class="astro-xitter-profile-screen">
       <Link
-        title="View Profile on X"
-        href={`https://x.com/${user.screen_name}`}
+        title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+        href={resolveUserProfile(tweet, host)}
         class="astro-xitter-profile-screen-name astro-xitter-link"
       >
         @{user.screen_name}
       </Link>
 
-      <span class="astro-xitter-profile-separator">&middot;</span>
+      {
+        host.type === 'twitter' && (
+          <>
+            <span class="astro-xitter-profile-separator">&middot;</span>
 
-      <Link
-        class="astro-xitter-profile-screen-follow astro-xitter-link"
-        title="View Profile on X"
-        href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
-      >
-        Follow
-      </Link>
+            <Link
+              class="astro-xitter-profile-screen-follow astro-xitter-link"
+              title="View Profile on X"
+              href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
+            >
+              Follow
+            </Link>
+          </>
+        )
+      }
     </div>
   </div>
 </div>

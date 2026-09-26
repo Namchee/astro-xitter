@@ -1,0 +1,27 @@
+---
+import type { XitterHost } from './types';
+
+import Link from './Link.astro';
+
+interface Props {
+  host: XitterHost;
+  class: string;
+  title: string;
+
+  href: string;
+}
+
+const { host, class: className, title, href } = Astro.props;
+---
+
+{
+  host.type === 'twitter' ? (
+    <Link class:list={className} title={title} href={href}>
+      <slot />
+    </Link>
+  ) : (
+    <div class:list={[className, 'astro-xitter-non-interactive']} title={title}>
+      <slot />
+    </div>
+  )
+}

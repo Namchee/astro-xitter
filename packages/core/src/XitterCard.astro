@@ -1,12 +1,12 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet } from './types';
 
 import { Image } from 'astro:assets';
 
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 }
 
 const { tweet } = Astro.props;

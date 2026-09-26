@@ -1,30 +1,33 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
 import Chain from './icons/Chain.astro';
 import Checkmark from './icons/Checkmark.astro';
 import Heart from './icons/Heart.astro';
 import Reply from './icons/Reply.astro';
-import Link from './Link.astro';
+import { resolveTweetLink } from './link';
+import XitterActionWrapper from './XitterActionWrapper.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
+  host: XitterHost;
 }
 
-const { tweet, interactive, locale } = Astro.props;
+const { tweet, interactive, locale, host } = Astro.props;
 
 const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 ---
 
 <div class="astro-xitter-actions-container">
-  <Link
+  <XitterActionWrapper
     title="Like this Tweet"
     class="astro-xitter-actions-link"
     href={`https://x.com/intent/like?tweet_id=${tweet.id_str}`}
+    host={host}
   >
     <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-like-container">
       <Heart class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-like" />
@@ -33,26 +36,27 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-like">
       {format(tweet.favorite_count)}
     </span>
-  </Link>
+  </XitterActionWrapper>
 
-  <Link
+  <XitterActionWrapper
     title="Reply this Tweet"
     class="astro-xitter-actions-link"
     href={`https://x.com/intent/tweet?in_reply_to=${tweet.id_str}`}
+    host={host}
   >
     <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-reply-container">
       <Reply class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-reply" />
     </div>
 
     <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-reply">
-      Reply
+      {host.type === 'twitter' ? 'Reply' : format(tweet.conversation_count)}
     </span>
-  </Link>
+  </XitterActionWrapper>
 
   {interactive && <button
     title="Share this Tweet"
     class="astro-xitter-actions-link astro-xitter-actions-copy-button"
-    data-tweet={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+    data-tweet={resolveTweetLink(tweet, host)}
   >
     <div
       class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container"
@@ -87,6 +91,8 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     align-items: center;
     gap: var(--astro-xitter-spacing);
 
+    margin: 0;
+
     & .astro-xitter-actions-link-icon-like {
         color: var(--astro-xitter-red);
     }
@@ -107,7 +113,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
         margin-left: calc(-1 * var(--astro-xitter-spacing));
     }
 
-    &:hover, &:focus-visible {
+    &:not(.astro-xitter-non-interactive):hover, &:not(.astro-xitter-non-interactive):focus-visible {
         & > .astro-xitter-actions-link-icon-like-container {
             background-color: color-mix(in oklch, var(--astro-xitter-red) 10%, transparent);
         }

@@ -1,17 +1,19 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import Info from './icons/Info.astro';
+import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
+  host: XitterHost;
   locale: Intl.LocalesArgument;
 }
 
-const { tweet, locale } = Astro.props;
-const { user, created_at, id_str } = tweet;
+const { tweet, locale, host } = Astro.props;
+const { created_at } = tweet;
 ---
 
 <div class="astro-xitter-metadata-container">
@@ -25,7 +27,7 @@ const { user, created_at, id_str } = tweet;
         month: 'short',
         year: 'numeric',
       })}`}
-    href={`https://x.com/${user.screen_name}/status/${id_str}`}
+    href={resolveTweetLink(tweet, host)}
     class="astro-xitter-metadata astro-xitter-link"
   >
     {
@@ -44,9 +46,13 @@ const { user, created_at, id_str } = tweet;
     }
   </Link>
 
-  <Link href="https://help.x.com/en/x-for-websites-ads-info-and-privacy" class="astro-xitter-metadata-help">
-    <Info class="astro-xitter-metadata-help-icon" />
-  </Link>
+  {
+    host.type === 'twitter' && (
+      <Link href="https://help.x.com/en/x-for-websites-ads-info-and-privacy" class="astro-xitter-metadata-help">
+        <Info class="astro-xitter-metadata-help-icon" />
+      </Link>
+    )
+  }
 </div>
 
 <style>
@@ -54,6 +60,8 @@ const { user, created_at, id_str } = tweet;
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    min-height: calc(8 * var(--astro-xitter-spacing));
 
     font-size: var(--astro-xitter-text-sm);
 

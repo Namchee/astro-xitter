@@ -1,0 +1,86 @@
+---
+title: Nitter
+description: Using Nitter to provide better user experience for non logged-in users.
+---
+
+import { Xitter } from 'astro-xitter';
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+import Container from '../../../components/Container.astro';
+
+Astro Xitter primarily uses X / Twitter as the front-end for tweet data. By default, links, hashtags, mentions, and media such as images and videos will redirect to X / Twitter when visited.
+
+However, Astro Xitter also supports [Nitter](https://github.com/zedeus/nitter) as an alternative front-end for tweet-related references and media. The main advantage of using Nitter is better
+user experience for non logged-in user, as X / Twitter forces user to sign-in if they want to see further replies and retweets.
+
+To use Nitter front-end, pass the `host` prop to `Xitter` component.
+
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        ---
+
+        <Xitter id="<TWEET_ID>" host={{ type: 'nitter', origin: '<NITTER_HOST>' }} />
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+
+        <Xitter id="<TWEET_ID>" host={{ type: 'nitter', origin: '<NITTER_HOST>' }} />
+        ```
+    </TabItem>
+</Tabs>
+
+The above tweet will render the following tweet.
+
+<Container>
+    <Xitter id="20" host={{ type: 'nitter', origin: 'https://nitter.miningtcup.me' }} />
+</Container>
+
+<Aside>
+    Nitter and its instances have [faced legal action from X Corp](https://techcrunch.com/2026/08/25/x-sends-cease-and-desist-to-open-source-project-nitter-over-alleged-scraping/), and the availability of individual instances may change without notice.
+
+    Astro Xitter does not operate or endorse any particular Nitter instance. If the instance you configure is unavailable or rate-limited, references and media using that instance may stop working unexpectedly.
+</Aside>
+
+## API Reference
+
+The `host` prop accepts an object matching the following schema:
+
+```ts
+type XitterHost = TwitterHost | NitterHost;
+
+interface TwitterHost {
+  type: 'twitter';
+}
+
+interface NitterHost {
+  type: 'nitter';
+  origin: string;
+}
+```
+
+`XitterHost` is a union type that supports both X / Twitter and Nitter as link destinations.
+
+For Nitter, `origin` should be a [URL origin](https://developer.mozilla.org/en-US/docs/Web/API/URL/origin) pointing to the Nitter instance you want to use. Trailing slash should be omitted.
+
+If you're using X / Twitter front-end, you can safely omit the `host` prop entirely. The `TwitterHost` variant does not require any additional configuration and primarily exists to provide explicit typing and type completion.
+
+## Comparison With X / Twitter Front-end
+
+While using Nitter host provides similar UI experience, it does contain several differences aside from references and media being redirected to a Nitter instance:
+
+1. The top right logo is replaced with Nitter logo
+2. `Watch on X` badge on video media is removed
+3. `Follow` button is removed
+4. Like and reply button is not interactive
+5. `View Replies` is removed

@@ -1,32 +1,34 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { XitterUserVerifiedType } from './const';
+import { TweetUserVerifiedType } from './const';
 import { processContent } from './content';
 import Verified from './icons/Verified.astro';
+import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 import XitterPhotos from './XitterPhotos.astro';
 import XitterVideo from './XitterVideo.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
+  host: XitterHost;
   interactive: boolean;
 }
 
-const { tweet, interactive } = Astro.props;
+const { tweet, interactive, host } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
-const { content } = processContent(tweet);
+const { content } = processContent(tweet, { host });
 ---
 
 <article class="astro-xitter-quote-container">
-  <Link title="View Post" href={`https://x.com/${user.screen_name}/status/${tweet.id_str}`}>
+  <Link title="View Post" href={resolveTweetLink(tweet, host)}>
     <div class="astro-xitter-quote-heading">
       <Image
         src={user.profile_image_url_https}
@@ -52,13 +54,12 @@ const { content } = processContent(tweet);
               class:list={[
                 'astro-xitter-quote-profile-verified-badge',
                 {
-                  'astro-xitter-quote-profile-verified-business':
-                    user.verified_type === XitterUserVerifiedType.Business,
+                  'astro-xitter-quote-profile-verified-business': user.verified_type === TweetUserVerifiedType.Business,
                   'astro-xitter-quote-profile-verified-government':
-                    user.verified_type === XitterUserVerifiedType.Government,
+                    user.verified_type === TweetUserVerifiedType.Government,
                   'astro-xitter-quote-profile-verified-personal':
-                    user.verified_type !== XitterUserVerifiedType.Business &&
-                    user.verified_type !== XitterUserVerifiedType.Government,
+                    user.verified_type !== TweetUserVerifiedType.Business &&
+                    user.verified_type !== TweetUserVerifiedType.Government,
                 },
               ]}
             />
@@ -90,9 +91,9 @@ const { content } = processContent(tweet);
     </p>
   </Link>
 
-  {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote />}
+  {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote />}
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote host={host} />}
 </article>
 
 <style>

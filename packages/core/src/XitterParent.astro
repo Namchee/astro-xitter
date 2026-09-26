@@ -1,24 +1,26 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { XitterUserVerifiedType } from './const';
+import { TweetUserVerifiedType } from './const';
 import { processContent } from './content';
 import Verified from './icons/Verified.astro';
+import { resolveUserProfile } from './link';
 import Link from './Link.astro';
 import XitterPhotos from './XitterPhotos.astro';
 import XitterQuote from './XitterQuote.astro';
 import XitterVideo from './XitterVideo.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
+  host: XitterHost;
   interactive: boolean;
   locale: Intl.LocalesArgument;
 }
 
-const { tweet, interactive, locale } = Astro.props;
+const { tweet, interactive, locale, host } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
@@ -26,14 +28,14 @@ const isVerified =
 
 const created_at = new Date(tweet.created_at);
 
-const { content } = processContent(tweet, { interactive: true });
+const { content } = processContent(tweet, { interactive: true, host: host });
 ---
 
 <div class="astro-xitter-parent-container">
   <div class="astro-xitter-parent-profile-picture-container">
     <Link
-      title="View Profile on X"
-      href={`https://x.com/${user.screen_name}`}
+      title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+      href={resolveUserProfile(tweet, host)}
       class="astro-xitter-parent-profile-picture"
     >
       <Image
@@ -57,9 +59,9 @@ const { content } = processContent(tweet, { interactive: true });
     <div class="astro-xitter-parent-profile">
       <div class="astro-xitter-parent-profile-metadata">
         <Link
-          title="View Profile on X"
+          title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+          href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-name astro-xitter-link"
-          href={`https://x.com/${user.screen_name}`}
         >
           {user.name}
 
@@ -71,10 +73,10 @@ const { content } = processContent(tweet, { interactive: true });
                   'astro-xitter-parent-profile-verified-badge',
                   {
                     'astro-xitter-parent-profile-verified-government':
-                      user.verified_type === XitterUserVerifiedType.Government,
+                      user.verified_type === TweetUserVerifiedType.Government,
                     'astro-xitter-parent-profile-verified-personal':
-                      user.verified_type !== XitterUserVerifiedType.Business &&
-                      user.verified_type !== XitterUserVerifiedType.Government,
+                      user.verified_type !== TweetUserVerifiedType.Business &&
+                      user.verified_type !== TweetUserVerifiedType.Government,
                   },
                 ]}
               />
@@ -107,22 +109,28 @@ const { content } = processContent(tweet, { interactive: true });
 
       <div class="astro-xitter-parent-profile-screen">
         <Link
-          title="View Profile on X"
-          href={`https://x.com/${user.screen_name}`}
+          title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+          href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-screen-name astro-xitter-link"
         >
           @{user.screen_name}
         </Link>
 
-        <span class="astro-xitter-parent-profile-separator">&middot;</span>
+        {
+          host.type === 'twitter' && (
+            <>
+              <span class="astro-xitter-parent-profile-separator">&middot;</span>
 
-        <Link
-          class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
-          title="View Profile on X"
-          href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
-        >
-          Follow
-        </Link>
+              <Link
+                class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
+                title="View Profile on X"
+                href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
+              >
+                Follow
+              </Link>
+            </>
+          )
+        }
       </div>
     </div>
 
@@ -130,11 +138,11 @@ const { content } = processContent(tweet, { interactive: true });
       <Fragment set:html={content} />
     </div>
 
-    {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} />}
+    {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-    {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} />}
+    {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
 
-    {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} />}
+    {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} host={host} />}
   </div>
 </div>
 

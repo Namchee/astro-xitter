@@ -1,14 +1,14 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 
-import type { XitterUser } from '../types';
+import type { TweetUser } from '../types';
 
 import VerifiedBusiness from './VerifiedBusiness.astro';
 import VerifiedGovernment from './VerifiedGovernment.astro';
 import VerifiedPersonal from './VerifiedPersonal.astro';
 
 interface Props extends HTMLAttributes<'svg'> {
-  type: XitterUser['verified_type'];
+  type: TweetUser['verified_type'];
 }
 
 const { type, ...props } = Astro.props;

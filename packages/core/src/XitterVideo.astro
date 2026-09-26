@@ -1,17 +1,19 @@
 ---
-import type { Xitter } from './types';
+import type { Tweet, XitterHost } from './types';
 
 import Play from './icons/Play.astro';
+import { resolveTweetLink } from './link';
 import Link from './Link.astro';
 
 interface Props {
-  tweet: Xitter;
+  tweet: Tweet;
 
+  host: XitterHost;
   interactive: boolean;
   quote?: boolean;
 }
 
-const { tweet, interactive, quote } = Astro.props;
+const { tweet, interactive, quote, host } = Astro.props;
 
 const video = tweet.video?.variants
   .filter(variant => variant.type === 'application/x-mpegURL')[0]?.src!;
@@ -41,17 +43,17 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     </div>
 
     {/* A fail-safe, if video streaming fails */}
-    <Link aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`} class="astro-xitter-video-link-overlay" />
+    <Link aria-label={host.type === 'twitter' ? 'Watch video on X' : 'Watch video'} href={host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url} class="astro-xitter-video-link-overlay" />
 
-    <Link class="astro-xitter-video-link" aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
+    {host.type === 'twitter' && <Link class="astro-xitter-video-link" aria-label="Watch video on X" href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
       Watch on X
-    </Link>
+    </Link>}
 
   {
     interactive && (
       <>
         <Link
-          href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`}
+          href={resolveTweetLink(tweet, host)}
           class="astro-xitter-video-replies"
           aria-hidden="true"
         >
@@ -59,7 +61,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
         </Link>
 
         <div class="astro-xitter-video-context-menu" aria-hidden="true">
-            <button class="astro-xitter-video-context-menu-item astro-xitter-video-context-menu-link-copy" data-video={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}>
+            <button class="astro-xitter-video-context-menu-item astro-xitter-video-context-menu-link-copy" data-video={host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url}>
                 Copy Video Address
             </button>
         </div>
