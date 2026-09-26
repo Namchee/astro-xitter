@@ -204,6 +204,17 @@ export interface XitterTombstone {
   tombstone: XitterTombstoneDetails;
 }
 
+export type XitterHost = TwitterHost | NitterHost;
+
+interface TwitterHost {
+  type: 'twitter';
+};
+
+interface NitterHost {
+  type: 'nitter';
+  origin: string;
+}
+
 type MaybePromise<T> = T | PromiseLike<T>;
 
 export interface XitterCache {

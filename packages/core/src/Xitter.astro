@@ -1,5 +1,5 @@
 ---
-import type { Xitter, XitterCache } from './types';
+import type { Xitter, XitterCache, XitterHost } from './types';
 
 import { ErrorCode } from './const';
 import XitterDefault from './XitterDefault.astro';
@@ -8,13 +8,14 @@ import XitterError from './XitterError.astro';
 interface Props {
   id: string;
 
+  host?: XitterHost;
   theme?: 'light' | 'dark';
   interactive?: boolean;
   locale?: Intl.LocalesArgument;
   cache?: XitterCache;
 }
 
-const { id, theme, interactive = true, locale, cache } = Astro.props;
+const { id, theme, interactive = true, locale, cache, host } = Astro.props;
 
 const hasCustomRenderer = Astro.slots.has('default');
 
@@ -118,6 +119,7 @@ const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', 
       tweet={tweet}
       locale={currentLocale}
       interactive={interactive}
+      {...(host === undefined ? { host: { type: 'twitter' } } : { host })}
       {...(theme === undefined ? {} : { theme })}
     />
   )

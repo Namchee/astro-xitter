@@ -1,5 +1,5 @@
 ---
-import type { Xitter } from './types';
+import type { Xitter, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
 import X from './icons/X.astro';
@@ -19,10 +19,12 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
+  host: XitterHost;
+
   theme?: 'light' | 'dark';
 }
 
-const { tweet, theme, interactive, locale } = Astro.props;
+const { tweet, theme, interactive, locale, host } = Astro.props;
 
 const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 ---
@@ -56,11 +58,15 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
   <XitterMetadata tweet={tweet} locale={locale} />
 
-  <XitterActions tweet={tweet} interactive={interactive} locale={locale} />
+  <XitterActions tweet={tweet} interactive={interactive} locale={locale} host={host} />
 
-  <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
-    {tweet.conversation_count > 0 ? `Read ${format(tweet.conversation_count)} replies` : 'Read more on X'}
-  </Link>
+  {
+    host.type === 'twitter' && (
+      <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
+        {tweet.conversation_count > 0 ? `Read ${format(tweet.conversation_count)} replies` : 'Read more on X'}
+      </Link>
+    )
+  }
 </article>
 
 <style>
