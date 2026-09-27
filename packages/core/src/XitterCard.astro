@@ -25,7 +25,7 @@ const description = values?.description?.string_value;
           src={photo?.url ?? ''}
           width={Number(photo?.width)}
           height={Number(photo?.height)}
-          alt={photo?.alt ?? ''}
+          alt={photo?.alt ?? title ?? ''}
           title={photo?.alt}
           class="astro-xitter-card-image"
         />
