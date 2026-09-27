@@ -22,11 +22,11 @@ const description = values?.description?.string_value;
     <Link href={tweet.card?.url} class="astro-xitter-card-container">
       {photo && (
         <Image
-          src={photo.url}
-          width={photo.width}
-          height={photo.height}
-          alt={photo.alt ?? ''}
-          title={photo.alt}
+          src={photo?.url ?? ''}
+          width={Number(photo?.width)}
+          height={Number(photo?.height)}
+          alt={photo?.alt ?? ''}
+          title={photo?.alt}
           class="astro-xitter-card-image"
         />
       )}
