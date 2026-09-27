@@ -1,5 +1,11 @@
 # astro-xitter
 
+## 1.2.1
+
+### Patch Changes
+
+- [#11](https://github.com/Namchee/astro-xitter/pull/11) [`74efbe0`](https://github.com/Namchee/astro-xitter/commit/74efbe01ae2976df709e61b63b6e82b060f4ac4f) Thanks [@Namchee](https://github.com/Namchee)! - Coalesce possible empty `alt` value in cards
+
 ## 1.2.0
 
 ### Minor Changes
