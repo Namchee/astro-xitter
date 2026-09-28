@@ -35,4 +35,11 @@ export default defineConfig({
       autoTheme: true
     }),
   ],
+  vite: {
+    server: {
+      fs: {
+        strict: false,
+      },
+    },
+  },
 });
