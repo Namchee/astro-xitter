@@ -36,14 +36,14 @@ const { content, isTruncated } = processContent(tweet, { interactive: true, host
     margin-top: calc(3 * var(--astro-xitter-spacing));
 
     font-size: var(--astro-xitter-text-lg);
-    line-height: calc(5 * var(--astro-xitter-spacing) / var(--astro-xitter-text-md));
+    line-height: var(--astro-xitter-text-line-height);
   }
 
   .astro-xitter-content-truncated-notice {
     color: var(--astro-xitter-link);
 
     font-size: var(--astro-xitter-text-lg);
-    line-height: 1.3;
+    line-height: var(--astro-xitter-text-line-height);
 
     &:hover,
     &:focus-visible {
