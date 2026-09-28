@@ -1,5 +1,11 @@
 # astro-xitter
 
+## 1.2.2
+
+### Patch Changes
+
+- [#13](https://github.com/Namchee/astro-xitter/pull/13) [`c74f4a2`](https://github.com/Namchee/astro-xitter/commit/c74f4a27acb6612a0125640934d767f86cf2f96b) Thanks [@Namchee](https://github.com/Namchee)! - Add :global selector to action link to prevent broken styles
+
 ## 1.2.1
 
 ### Patch Changes
