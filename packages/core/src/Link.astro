@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'astro/types';
 
 type Props = HTMLAttributes<'a'>;
 
-const { rel, ...props } = Astro.props;
+const { rel, class: className, ...props } = Astro.props;
 
 let target = '_self';
 
@@ -16,7 +16,7 @@ if (props.href?.toString().startsWith('http')) {
   rel={['noopener noreferrer', rel].filter(Boolean).join(' ')}
   target={target}
   data-astro-prefetch={target === '_self' ? true : false}
-  class:list={['astro-xitter-link', props.class]}
+  class:list={['astro-xitter-link', className]}
   {...props}
 >
   <slot />
