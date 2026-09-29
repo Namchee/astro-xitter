@@ -1,6 +1,6 @@
 {
   "name": "astro-xitter",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Embed Xitter Post in Your Astro Site",
   "type": "module",
   "exports": {
