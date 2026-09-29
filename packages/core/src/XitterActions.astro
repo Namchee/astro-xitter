@@ -74,6 +74,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
 </div>
 
 <style>
+  @layer astro-xitter {
 .astro-xitter-actions-container {
     margin-top: var(--astro-xitter-spacing);
 
@@ -217,6 +218,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
         }
     }
 }
+  }
 </style>
 
 {interactive && <script>

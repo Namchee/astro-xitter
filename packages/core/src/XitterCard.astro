@@ -43,6 +43,7 @@ const description = values?.description?.string_value;
 }
 
 <style>
+  @layer astro-xitter {
   .astro-xitter-card-container {
     margin-top: calc(3 * var(--astro-xitter-spacing));
 
@@ -125,5 +126,6 @@ const description = values?.description?.string_value;
     &:focus-visible {
       background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
     }
+  }
   }
 </style>
