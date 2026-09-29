@@ -1,5 +1,11 @@
 # astro-xitter
 
+## 1.2.3
+
+### Patch Changes
+
+- [#15](https://github.com/Namchee/astro-xitter/pull/15) [`c109280`](https://github.com/Namchee/astro-xitter/commit/c10928077476f389f1fbc19660ee7b642f9d2f23) Thanks [@Namchee](https://github.com/Namchee)! - Introduce custom CSS layer for lower specificity
+
 ## 1.2.2
 
 ### Patch Changes
