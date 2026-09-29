@@ -97,6 +97,7 @@ const { content } = processContent(tweet, { host });
 </article>
 
 <style>
+  @layer astro-xitter {
   .astro-xitter-quote-container {
     border: 1px solid var(--astro-xitter-separator);
     border-radius: calc(4 * var(--astro-xitter-spacing));
@@ -274,5 +275,6 @@ const { content } = processContent(tweet, { host });
     &:focus-visible {
       background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
     }
+  }
   }
 </style>

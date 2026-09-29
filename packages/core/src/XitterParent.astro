@@ -147,6 +147,7 @@ const { content } = processContent(tweet, { interactive: true, host: host });
 </div>
 
 <style>
+  @layer astro-xitter {
   .astro-xitter-parent-container {
     display: flex;
     align-items: stretch;
@@ -322,5 +323,6 @@ const { content } = processContent(tweet, { interactive: true, host: host });
     &.astro-xitter-parent-profile-verified-personal {
       color: var(--astro-xitter-header);
     }
+  }
   }
 </style>

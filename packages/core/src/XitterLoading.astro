@@ -43,54 +43,68 @@
 </div>
 
 <style>
-  @keyframes pulse {
-    50% {
-      opacity: 0.5;
+  @layer astro-xitter {
+    @keyframes pulse {
+      50% {
+        opacity: 0.5;
+      }
     }
-  }
 
-  :where(.astro-xitter-loading-container) {
-    --astro-xitter-background: white;
-    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+    .astro-xitter-loading-container {
+      --astro-xitter-background: white;
+      --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
 
-    --astro-xitter-spacing: 0.25rem;
+      --astro-xitter-spacing: 0.25rem;
 
-    --astro-xitter-animation: pulse 2s cubic-bezier(0.33, 1, 0.68, 1) infinite;
+      --astro-xitter-animation: pulse 2s cubic-bezier(0.33, 1, 0.68, 1) infinite;
 
-    width: 100%;
-    max-width: 550px;
-    margin: auto;
+      width: 100%;
+      max-width: 550px;
+      margin: auto;
 
-    box-sizing: border-box;
+      box-sizing: border-box;
 
-    padding: calc(3 * var(--astro-xitter-spacing)) calc(4 * var(--astro-xitter-spacing));
+      padding: calc(3 * var(--astro-xitter-spacing)) calc(4 * var(--astro-xitter-spacing));
 
-    border: 1px solid var(--astro-xitter-separator);
-    border-radius: calc(4 * var(--astro-xitter-spacing));
+      border: 1px solid var(--astro-xitter-separator);
+      border-radius: calc(4 * var(--astro-xitter-spacing));
 
-    background: var(--astro-xitter-background);
-  }
+      background: var(--astro-xitter-background);
+    }
 
-  @media (prefers-color-scheme: dark) {
-    :where(.astro-xitter-loading-container) {
+    @media (prefers-color-scheme: dark) {
+      .astro-xitter-loading-container {
+        --astro-xitter-background: oklch(0.2385 0.0264 248.99);
+        --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
+      }
+    }
+
+    :global([data-theme='light']) .astro-xitter-loading-container,
+    .astro-xitter-loading-container.light {
+      --astro-xitter-background: white;
+      --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
+    }
+
+    :global([data-theme='dark']) .astro-xitter-loading-container,
+    .astro-xitter-loading-container.dark {
       --astro-xitter-background: oklch(0.2385 0.0264 248.99);
       --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
     }
-  }
 
-  :global(:where([data-theme='light'])) :where(.astro-xitter-loading-container),
-  :where(.astro-xitter-loading-container.light) {
-    --astro-xitter-background: white;
-    --astro-xitter-separator: oklch(0.8791 0.0129 228.95);
-  }
+    @media (prefers-reduced-motion: reduce) {
+      .astro-xitter-loading-avatar,
+      .astro-xitter-loading-profile-name,
+      .astro-xitter-loading-profile-screen-name,
+      .astro-xitter-loading-profile-follow,
+      .astro-xitter-loading-content-skeleton,
+      .astro-xitter-loading-metadata,
+      .astro-xitter-loading-privacy-policy,
+      .astro-xitter-loading-action,
+      .astro-xitter-reply-label {
+        animation: none;
+      }
+    }
 
-  :global(:where([data-theme='dark'])) :where(.astro-xitter-loading-container),
-  :where(.astro-xitter-loading-container.dark) {
-    --astro-xitter-background: oklch(0.2385 0.0264 248.99);
-    --astro-xitter-separator: oklch(0.4347 0.0354 248.65);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
     .astro-xitter-loading-avatar,
     .astro-xitter-loading-profile-name,
     .astro-xitter-loading-profile-screen-name,
@@ -100,180 +114,168 @@
     .astro-xitter-loading-privacy-policy,
     .astro-xitter-loading-action,
     .astro-xitter-reply-label {
-      animation: none;
+      background-color: var(--astro-xitter-separator);
+      animation: var(--astro-xitter-animation);
     }
-  }
 
-  .astro-xitter-loading-avatar,
-  .astro-xitter-loading-profile-name,
-  .astro-xitter-loading-profile-screen-name,
-  .astro-xitter-loading-profile-follow,
-  .astro-xitter-loading-content-skeleton,
-  .astro-xitter-loading-metadata,
-  .astro-xitter-loading-privacy-policy,
-  .astro-xitter-loading-action,
-  .astro-xitter-reply-label {
-    background-color: var(--astro-xitter-separator);
-    animation: var(--astro-xitter-animation);
-  }
+    .astro-xitter-loading-header {
+      display: flex;
+      align-items: center;
 
-  .astro-xitter-loading-header {
-    display: flex;
-    align-items: center;
+      gap: calc(2 * var(--astro-xitter-spacing));
+    }
 
-    gap: calc(2 * var(--astro-xitter-spacing));
-  }
+    .astro-xitter-loading-avatar {
+      border-radius: 9999px;
 
-  .astro-xitter-loading-avatar {
-    border-radius: 9999px;
+      width: calc(12 * var(--astro-xitter-spacing));
+      height: calc(12 * var(--astro-xitter-spacing));
+    }
 
-    width: calc(12 * var(--astro-xitter-spacing));
-    height: calc(12 * var(--astro-xitter-spacing));
-  }
+    .astro-xitter-loading-profile {
+      display: flex;
+      flex-direction: column;
 
-  .astro-xitter-loading-profile {
-    display: flex;
-    flex-direction: column;
+      margin: 0;
 
-    margin: 0;
+      gap: var(--astro-xitter-spacing);
+    }
 
-    gap: var(--astro-xitter-spacing);
-  }
+    .astro-xitter-loading-profile-name {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
 
-  .astro-xitter-loading-profile-name {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+      width: calc(40 * var(--astro-xitter-spacing));
+      height: calc(4 * var(--astro-xitter-spacing));
+    }
 
-    width: calc(40 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
-  }
+    .astro-xitter-loading-profile-screen {
+      display: flex;
+      align-items: center;
 
-  .astro-xitter-loading-profile-screen {
-    display: flex;
-    align-items: center;
+      gap: var(--astro-xitter-spacing);
 
-    gap: var(--astro-xitter-spacing);
-
-    margin: 0;
-  }
-
-  .astro-xitter-loading-profile-screen-name {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
-
-    width: calc(20 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
-  }
-
-  .astro-xitter-loading-profile-follow {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
-
-    width: calc(12 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
-
-    margin: 0;
-  }
-
-  .astro-xitter-loading-content-container {
-    display: flex;
-    flex-direction: column;
-
-    gap: calc(2 * var(--astro-xitter-spacing));
-
-    margin-top: calc(3 * var(--astro-xitter-spacing));
-  }
-
-  .astro-xitter-loading-content {
-    display: flex;
-    flex-direction: column;
-
-    gap: calc(2 * var(--astro-xitter-spacing));
-
-    margin-top: calc(5 * var(--astro-xitter-spacing));
-
-    &:first-child {
       margin: 0;
     }
-  }
 
-  .astro-xitter-loading-content-skeleton {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+    .astro-xitter-loading-profile-screen-name {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    width: 100%;
-    height: calc(5 * var(--astro-xitter-spacing));
-
-    margin: 0;
-
-    &:last-child {
-      width: 80%;
+      width: calc(20 * var(--astro-xitter-spacing));
+      height: calc(4 * var(--astro-xitter-spacing));
     }
-  }
 
-  .astro-xitter-loading-metadata-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    .astro-xitter-loading-profile-follow {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    margin-top: calc(3 * var(--astro-xitter-spacing));
-  }
+      width: calc(12 * var(--astro-xitter-spacing));
+      height: calc(4 * var(--astro-xitter-spacing));
 
-  .astro-xitter-loading-metadata {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+      margin: 0;
+    }
 
-    width: calc(24 * var(--astro-xitter-spacing));
-    height: calc(3 * var(--astro-xitter-spacing));
+    .astro-xitter-loading-content-container {
+      display: flex;
+      flex-direction: column;
 
-    margin: 0;
-  }
+      gap: calc(2 * var(--astro-xitter-spacing));
 
-  .astro-xitter-loading-privacy-policy {
-    border-radius: 9999px;
+      margin-top: calc(3 * var(--astro-xitter-spacing));
+    }
 
-    width: calc(5 * var(--astro-xitter-spacing));
-    height: calc(5 * var(--astro-xitter-spacing));
+    .astro-xitter-loading-content {
+      display: flex;
+      flex-direction: column;
 
-    margin: 0;
-  }
+      gap: calc(2 * var(--astro-xitter-spacing));
 
-  .astro-xitter-loading-actions-container {
-    border-top: 1px solid var(--astro-xitter-separator);
+      margin-top: calc(5 * var(--astro-xitter-spacing));
 
-    margin-top: calc(2 * var(--astro-xitter-spacing));
-    padding-top: calc(2.5 * var(--astro-xitter-spacing));
+      &:first-child {
+        margin: 0;
+      }
+    }
 
-    display: flex;
-    gap: calc(2 * var(--astro-xitter-spacing));
-  }
+    .astro-xitter-loading-content-skeleton {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
 
-  .astro-xitter-loading-action {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+      width: 100%;
+      height: calc(5 * var(--astro-xitter-spacing));
 
-    width: calc(16 * var(--astro-xitter-spacing));
-    height: calc(5 * var(--astro-xitter-spacing));
+      margin: 0;
 
-    margin: 0;
-  }
+      &:last-child {
+        width: 80%;
+      }
+    }
 
-  .astro-xitter-reply {
-    border: 1px solid var(--astro-xitter-separator);
+    .astro-xitter-loading-metadata-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    margin-top: calc(3 * var(--astro-xitter-spacing));
+      margin-top: calc(3 * var(--astro-xitter-spacing));
+    }
 
-    border-radius: calc(4 * var(--astro-xitter-spacing));
+    .astro-xitter-loading-metadata {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
 
-    display: grid;
-    place-items: center;
+      width: calc(24 * var(--astro-xitter-spacing));
+      height: calc(3 * var(--astro-xitter-spacing));
 
-    padding-top: calc(2 * var(--astro-xitter-spacing));
-    padding-bottom: calc(2 * var(--astro-xitter-spacing));
+      margin: 0;
+    }
 
-    width: 100%;
-  }
+    .astro-xitter-loading-privacy-policy {
+      border-radius: 9999px;
 
-  .astro-xitter-reply-label {
-    border-radius: calc(2 * var(--astro-xitter-spacing));
+      width: calc(5 * var(--astro-xitter-spacing));
+      height: calc(5 * var(--astro-xitter-spacing));
 
-    width: calc(24 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
+      margin: 0;
+    }
 
-    margin: 0;
+    .astro-xitter-loading-actions-container {
+      border-top: 1px solid var(--astro-xitter-separator);
+
+      margin-top: calc(2 * var(--astro-xitter-spacing));
+      padding-top: calc(2.5 * var(--astro-xitter-spacing));
+
+      display: flex;
+      gap: calc(2 * var(--astro-xitter-spacing));
+    }
+
+    .astro-xitter-loading-action {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
+
+      width: calc(16 * var(--astro-xitter-spacing));
+      height: calc(5 * var(--astro-xitter-spacing));
+
+      margin: 0;
+    }
+
+    .astro-xitter-reply {
+      border: 1px solid var(--astro-xitter-separator);
+
+      margin-top: calc(3 * var(--astro-xitter-spacing));
+
+      border-radius: calc(4 * var(--astro-xitter-spacing));
+
+      display: grid;
+      place-items: center;
+
+      padding-top: calc(2 * var(--astro-xitter-spacing));
+      padding-bottom: calc(2 * var(--astro-xitter-spacing));
+
+      width: 100%;
+    }
+
+    .astro-xitter-reply-label {
+      border-radius: calc(2 * var(--astro-xitter-spacing));
+
+      width: calc(24 * var(--astro-xitter-spacing));
+      height: calc(4 * var(--astro-xitter-spacing));
+
+      margin: 0;
+    }
   }
 </style>

@@ -30,6 +30,7 @@ const { content, isTruncated } = processContent(tweet, { interactive: true, host
 </div>
 
 <style>
+  @layer astro-xitter {
   .astro-xitter-content {
     white-space: pre-wrap;
     color: var(--astro-xitter-content);
@@ -58,5 +59,6 @@ const { content, isTruncated } = processContent(tweet, { interactive: true, host
     &:focus-visible {
       text-decoration-color: var(--astro-xitter-link);
     }
+  }
   }
 </style>

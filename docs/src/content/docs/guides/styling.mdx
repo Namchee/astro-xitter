@@ -52,6 +52,35 @@ which will render:
 
 Aside from light & dark theme, you can customize Astro Xitter further using CSS variables.
 
+The component styles are placed inside the `astro-xitter` [CSS `@layer`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@layer).
+CSS variables are scoped to the `.astro-xitter-container` class.
+
+You can override the variables from your own stylesheet by targeting the class itself:
+
+```css
+.astro-xitter-container {
+  --astro-xitter-background: blue;
+  --astro-xitter-content: red;
+}
+```
+
+Because the component styles are layered, normal declarations in your stylesheet take precedence without needing to reference the `astro-xitter` layer.
+
+If you want to customize only one instance, use a wrapper element and target the parent element instead using nesting selector:
+
+```astro
+<div class="custom-xitter">
+  <Xitter id="<TWEET_ID>" />
+</div>
+
+<style>
+.custom-xitter .astro-xitter-container {
+  --astro-xitter-background: blue;
+  --astro-xitter-content: red;
+}
+</style>
+```
+
 Below are the list of available CSS variables that Astro Xitter uses:
 
 ### Color Tokens
