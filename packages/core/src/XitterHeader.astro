@@ -111,134 +111,134 @@ const isVerified =
 
 <style>
   @layer astro-xitter {
-  .astro-xitter-header-container {
-    display: flex;
-    align-items: center;
-    gap: calc(2 * var(--astro-xitter-spacing));
+    .astro-xitter-header-container {
+      display: flex;
+      align-items: center;
+      gap: calc(2 * var(--astro-xitter-spacing));
 
-    margin: 0;
-  }
-
-  .astro-xitter-profile-picture {
-    flex-shrink: 0;
-  }
-
-  .astro-xitter-profile-avatar {
-    filter: brightness(1);
-    transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
-    border-radius: 9999px;
-
-    &:hover,
-    &:focus {
-      filter: brightness(0.9);
+      margin: 0;
     }
 
-    &.astro-xitter-profile-avatar-square {
-      border-radius: var(--astro-xitter-spacing);
-    }
-  }
-
-  .astro-xitter-profile {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: var(--astro-xitter-spacing);
-  }
-
-  .astro-xitter-profile-name {
-    font-weight: 600;
-    color: var(--astro-xitter-header);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--astro-xitter-spacing);
-
-    line-height: 1.25;
-
-    width: fit-content;
-
-    &:hover,
-    &:focus-visible {
-      text-decoration-color: var(--astro-xitter-header);
-    }
-  }
-
-  .astro-xitter-profile-verified-badge {
-    flex-shrink: 0;
-    width: calc(4.5 * var(--astro-xitter-spacing));
-    height: auto;
-
-    &.astro-xitter-profile-verified-government {
-      color: var(--astro-xitter-gray);
+    .astro-xitter-profile-picture {
+      flex-shrink: 0;
     }
 
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-blue);
+    .astro-xitter-profile-avatar {
+      filter: brightness(1);
+      transition: filter var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+      border-radius: 9999px;
+
+      &:hover,
+      &:focus {
+        filter: brightness(0.9);
+      }
+
+      &.astro-xitter-profile-avatar-square {
+        border-radius: var(--astro-xitter-spacing);
+      }
     }
-  }
 
-  .astro-xitter-profile-screen {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-    gap: var(--astro-xitter-spacing);
-    color: var(--astro-xitter-subheader);
-  }
-
-  .astro-xitter-profile-screen-name {
-    color: var(--astro-xitter-subheader);
-  }
-
-  .astro-xitter-profile-screen-follow {
-    font-weight: 600;
-    color: var(--astro-xitter-link);
-
-    &:hover,
-    &:focus-visible {
-      text-decoration-color: var(--astro-xitter-link);
+    .astro-xitter-profile {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--astro-xitter-spacing);
     }
-  }
 
-  .astro-xitter-profile-highlighted-label {
-    box-sizing: border-box;
+    .astro-xitter-profile-name {
+      font-weight: 600;
+      color: var(--astro-xitter-header);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--astro-xitter-spacing);
 
-    width: calc(4 * var(--astro-xitter-spacing));
-    height: calc(4 * var(--astro-xitter-spacing));
+      line-height: 1.25;
 
-    border: 1px solid var(--astro-xitter-separator);
+      width: fit-content;
 
-    margin: 0;
-  }
+      &:hover,
+      &:focus-visible {
+        text-decoration-color: var(--astro-xitter-header);
+      }
+    }
 
-  @media (prefers-color-scheme: dark) {
     .astro-xitter-profile-verified-badge {
+      flex-shrink: 0;
+      width: calc(4.5 * var(--astro-xitter-spacing));
+      height: auto;
+
+      &.astro-xitter-profile-verified-government {
+        color: var(--astro-xitter-gray);
+      }
+
+      &.astro-xitter-profile-verified-personal {
+        color: var(--astro-xitter-blue);
+      }
+    }
+
+    .astro-xitter-profile-screen {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      gap: var(--astro-xitter-spacing);
+      color: var(--astro-xitter-subheader);
+    }
+
+    .astro-xitter-profile-screen-name {
+      color: var(--astro-xitter-subheader);
+    }
+
+    .astro-xitter-profile-screen-follow {
+      font-weight: 600;
+      color: var(--astro-xitter-link);
+
+      &:hover,
+      &:focus-visible {
+        text-decoration-color: var(--astro-xitter-link);
+      }
+    }
+
+    .astro-xitter-profile-highlighted-label {
+      box-sizing: border-box;
+
+      width: calc(4 * var(--astro-xitter-spacing));
+      height: calc(4 * var(--astro-xitter-spacing));
+
+      border: 1px solid var(--astro-xitter-separator);
+
+      margin: 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .astro-xitter-profile-verified-badge {
+        &.astro-xitter-profile-verified-personal {
+          color: var(--astro-xitter-header);
+        }
+      }
+    }
+
+    :global([data-theme='light']) .astro-xitter-profile-verified-badge {
+      &.astro-xitter-profile-verified-personal {
+        color: var(--astro-xitter-blue);
+      }
+    }
+
+    :global([data-theme='dark']) .astro-xitter-profile-verified-badge {
       &.astro-xitter-profile-verified-personal {
         color: var(--astro-xitter-header);
       }
     }
-  }
 
-  :global([data-theme='light']) .astro-xitter-profile-verified-badge {
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-blue);
+    :global(.astro-xitter-container.light) .astro-xitter-profile-verified-badge {
+      &.astro-xitter-profile-verified-personal {
+        color: var(--astro-xitter-blue);
+      }
     }
-  }
 
-  :global([data-theme='dark']) .astro-xitter-profile-verified-badge {
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-header);
+    :global(.astro-xitter-container.dark) .astro-xitter-profile-verified-badge {
+      &.astro-xitter-profile-verified-personal {
+        color: var(--astro-xitter-header);
+      }
     }
-  }
-
-  :global(.astro-xitter-container.light) .astro-xitter-profile-verified-badge {
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-blue);
-    }
-  }
-
-  :global(.astro-xitter-container.dark) .astro-xitter-profile-verified-badge {
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-header);
-    }
-  }
   }
 </style>

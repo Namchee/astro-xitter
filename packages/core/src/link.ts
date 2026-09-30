@@ -1,4 +1,4 @@
-import type { Tweet, XitterHost } from "./types";
+import type { Tweet, XitterHost } from './types';
 
 /**
  * Resolve link to Tweet / status relative with the host.

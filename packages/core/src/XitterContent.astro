@@ -31,34 +31,34 @@ const { content, isTruncated } = processContent(tweet, { interactive: true, host
 
 <style>
   @layer astro-xitter {
-  .astro-xitter-content {
-    white-space: pre-wrap;
-    color: var(--astro-xitter-content);
-    margin-top: calc(3 * var(--astro-xitter-spacing));
+    .astro-xitter-content {
+      white-space: pre-wrap;
+      color: var(--astro-xitter-content);
+      margin-top: calc(3 * var(--astro-xitter-spacing));
 
-    font-size: var(--astro-xitter-text-lg);
-    line-height: var(--astro-xitter-text-line-height);
-  }
-
-  .astro-xitter-content-truncated-notice {
-    color: var(--astro-xitter-link);
-
-    font-size: var(--astro-xitter-text-lg);
-    line-height: var(--astro-xitter-text-line-height);
-
-    &:hover,
-    &:focus-visible {
-      text-decoration-color: var(--astro-xitter-link);
+      font-size: var(--astro-xitter-text-lg);
+      line-height: var(--astro-xitter-text-line-height);
     }
-  }
 
-  :global(.astro-xitter-content-link) {
-    color: var(--astro-xitter-link);
+    .astro-xitter-content-truncated-notice {
+      color: var(--astro-xitter-link);
 
-    &:hover,
-    &:focus-visible {
-      text-decoration-color: var(--astro-xitter-link);
+      font-size: var(--astro-xitter-text-lg);
+      line-height: var(--astro-xitter-text-line-height);
+
+      &:hover,
+      &:focus-visible {
+        text-decoration-color: var(--astro-xitter-link);
+      }
     }
-  }
+
+    :global(.astro-xitter-content-link) {
+      color: var(--astro-xitter-link);
+
+      &:hover,
+      &:focus-visible {
+        text-decoration-color: var(--astro-xitter-link);
+      }
+    }
   }
 </style>

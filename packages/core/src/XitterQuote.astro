@@ -98,183 +98,183 @@ const { content } = processContent(tweet, { host });
 
 <style>
   @layer astro-xitter {
-  .astro-xitter-quote-container {
-    border: 1px solid var(--astro-xitter-separator);
-    border-radius: calc(4 * var(--astro-xitter-spacing));
-
-    overflow: hidden;
-
-    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
-
-    margin-top: calc(3 * var(--astro-xitter-spacing));
-
-    background-color: transparent;
-    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
-
-    border-collapse: collapse;
-
-    position: relative;
-
-    &:hover,
-    &:focus-visible {
-      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
-    }
-  }
-
-  .astro-xitter-quote-heading {
-    line-height: 1;
-
-    display: flex;
-    align-items: center;
-    gap: calc(2 * var(--astro-xitter-spacing));
-
-    padding-top: calc(3 * var(--astro-xitter-spacing));
-    padding-left: calc(3 * var(--astro-xitter-spacing));
-    padding-right: calc(3 * var(--astro-xitter-spacing));
-  }
-
-  .astro-xitter-quote-avatar {
-    width: calc(5 * var(--astro-xitter-spacing));
-    height: calc(5 * var(--astro-xitter-spacing));
-
-    border-radius: 9999px;
-
-    flex-shrink: 0;
-
-    &.astro-xitter-quote-avatar-square {
-      border-radius: calc(4 * var(--astro-xitter-spacing));
-    }
-  }
-
-  .astro-xitter-quote-profile {
-    display: flex;
-    align-items: center;
-
-    line-height: 1;
-
-    margin: 0;
-  }
-
-  .astro-xitter-quote-profile-screen {
-    display: flex;
-    align-items: center;
-    line-height: 1;
-    gap: var(--astro-xitter-spacing);
-    color: var(--astro-xitter-subheader);
-
-    margin: 0;
-  }
-
-  .astro-xitter-quote-profile-name {
-    font-weight: 600;
-    font-size: var(--astro-xitter-text-sm);
-    color: var(--astro-xitter-header);
-
-    margin-right: calc(0.5 * var(--astro-xitter-spacing));
-  }
-
-  .astro-xitter-quote-profile-verified-badge {
-    flex-shrink: 0;
-    width: calc(4.5 * var(--astro-xitter-spacing));
-    height: auto;
-
-    &.astro-xitter-profile-verified-government {
-      color: var(--astro-xitter-gray);
-    }
-
-    &.astro-xitter-profile-verified-personal {
-      color: var(--astro-xitter-blue);
-    }
-  }
-
-  .astro-xitter-quote-profile-screen-name {
-    color: var(--astro-xitter-subheader);
-
-    font-size: var(--astro-xitter-text-sm);
-    line-height: 1;
-
-    margin-left: var(--astro-xitter-spacing);
-    maring-right: var(--astro-xitter-spacing);
-  }
-
-  .astro-xitter-quote-profile-created-at {
-    color: var(--astro-xitter-subheader);
-
-    font-size: var(--astro-xitter-text-sm);
-    line-height: 1;
-  }
-
-  .astro-xitter-quote-content {
-    white-space: pre-wrap;
-    line-height: var(--astro-xitter-text-line-height);
-    font-size: var(--astro-xitter-text-md);
-
-    margin-top: var(--astro-xitter-spacing);
-    margin-bottom: calc(3 * var(--astro-xitter-spacing));
-
-    color: var(--astro-xitter-content);
-
-    padding-left: calc(3 * var(--astro-xitter-spacing));
-    padding-right: calc(3 * var(--astro-xitter-spacing));
-
-    &.astro-xitter-quote-content-last {
-      padding-bottom: calc(3 * var(--astro-xitter-spacing));
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
     .astro-xitter-quote-container {
+      border: 1px solid var(--astro-xitter-separator);
+      border-radius: calc(4 * var(--astro-xitter-spacing));
+
+      overflow: hidden;
+
+      transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+      margin-top: calc(3 * var(--astro-xitter-spacing));
+
+      background-color: transparent;
+      transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+
+      border-collapse: collapse;
+
+      position: relative;
+
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+      }
+    }
+
+    .astro-xitter-quote-heading {
+      line-height: 1;
+
+      display: flex;
+      align-items: center;
+      gap: calc(2 * var(--astro-xitter-spacing));
+
+      padding-top: calc(3 * var(--astro-xitter-spacing));
+      padding-left: calc(3 * var(--astro-xitter-spacing));
+      padding-right: calc(3 * var(--astro-xitter-spacing));
+    }
+
+    .astro-xitter-quote-avatar {
+      width: calc(5 * var(--astro-xitter-spacing));
+      height: calc(5 * var(--astro-xitter-spacing));
+
+      border-radius: 9999px;
+
+      flex-shrink: 0;
+
+      &.astro-xitter-quote-avatar-square {
+        border-radius: calc(4 * var(--astro-xitter-spacing));
+      }
+    }
+
+    .astro-xitter-quote-profile {
+      display: flex;
+      align-items: center;
+
+      line-height: 1;
+
+      margin: 0;
+    }
+
+    .astro-xitter-quote-profile-screen {
+      display: flex;
+      align-items: center;
+      line-height: 1;
+      gap: var(--astro-xitter-spacing);
+      color: var(--astro-xitter-subheader);
+
+      margin: 0;
+    }
+
+    .astro-xitter-quote-profile-name {
+      font-weight: 600;
+      font-size: var(--astro-xitter-text-sm);
+      color: var(--astro-xitter-header);
+
+      margin-right: calc(0.5 * var(--astro-xitter-spacing));
+    }
+
+    .astro-xitter-quote-profile-verified-badge {
+      flex-shrink: 0;
+      width: calc(4.5 * var(--astro-xitter-spacing));
+      height: auto;
+
+      &.astro-xitter-profile-verified-government {
+        color: var(--astro-xitter-gray);
+      }
+
+      &.astro-xitter-profile-verified-personal {
+        color: var(--astro-xitter-blue);
+      }
+    }
+
+    .astro-xitter-quote-profile-screen-name {
+      color: var(--astro-xitter-subheader);
+
+      font-size: var(--astro-xitter-text-sm);
+      line-height: 1;
+
+      margin-left: var(--astro-xitter-spacing);
+      maring-right: var(--astro-xitter-spacing);
+    }
+
+    .astro-xitter-quote-profile-created-at {
+      color: var(--astro-xitter-subheader);
+
+      font-size: var(--astro-xitter-text-sm);
+      line-height: 1;
+    }
+
+    .astro-xitter-quote-content {
+      white-space: pre-wrap;
+      line-height: var(--astro-xitter-text-line-height);
+      font-size: var(--astro-xitter-text-md);
+
+      margin-top: var(--astro-xitter-spacing);
+      margin-bottom: calc(3 * var(--astro-xitter-spacing));
+
+      color: var(--astro-xitter-content);
+
+      padding-left: calc(3 * var(--astro-xitter-spacing));
+      padding-right: calc(3 * var(--astro-xitter-spacing));
+
+      &.astro-xitter-quote-content-last {
+        padding-bottom: calc(3 * var(--astro-xitter-spacing));
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .astro-xitter-quote-container {
+        &:hover,
+        &:focus-visible {
+          background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
+        }
+      }
+    }
+
+    :global([data-theme='dark']) .astro-xitter-quote-profile-verified-badge {
+      &.astro-xitter-quote-profile-verified-personal {
+        color: var(--astro-xitter-header);
+      }
+    }
+
+    :global([data-theme='light']) .astro-xitter-quote-profile-verified-badge {
+      &.astro-xitter-quote-profile-verified-personal {
+        color: var(--astro-xitter-blue);
+      }
+    }
+
+    :global(.astro-xitter-container.dark) .astro-xitter-quote-profile-verified-badge {
+      &.astro-xitter-quote-profile-verified-personal {
+        color: var(--astro-xitter-header);
+      }
+    }
+
+    :global([data-theme='dark']) .astro-xitter-quote-container {
       &:hover,
       &:focus-visible {
         background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
       }
     }
-  }
 
-  :global([data-theme='dark']) .astro-xitter-quote-profile-verified-badge {
-    &.astro-xitter-quote-profile-verified-personal {
-      color: var(--astro-xitter-header);
+    :global([data-theme='light']) .astro-xitter-quote-container {
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+      }
     }
-  }
 
-  :global([data-theme='light']) .astro-xitter-quote-profile-verified-badge {
-    &.astro-xitter-quote-profile-verified-personal {
-      color: var(--astro-xitter-blue);
+    :global(.astro-xitter-container.light) .astro-xitter-quote-container {
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
+      }
     }
-  }
 
-  :global(.astro-xitter-container.dark) .astro-xitter-quote-profile-verified-badge {
-    &.astro-xitter-quote-profile-verified-personal {
-      color: var(--astro-xitter-header);
+    :global(.astro-xitter-container.dark) .astro-xitter-quote-container {
+      &:hover,
+      &:focus-visible {
+        background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
+      }
     }
-  }
-
-  :global([data-theme='dark']) .astro-xitter-quote-container {
-    &:hover,
-    &:focus-visible {
-      background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
-    }
-  }
-
-  :global([data-theme='light']) .astro-xitter-quote-container {
-    &:hover,
-    &:focus-visible {
-      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
-    }
-  }
-
-  :global(.astro-xitter-container.light) .astro-xitter-quote-container {
-    &:hover,
-    &:focus-visible {
-      background-color: color-mix(in oklch, var(--astro-xitter-background) 97.5%, black);
-    }
-  }
-
-  :global(.astro-xitter-container.dark) .astro-xitter-quote-container {
-    &:hover,
-    &:focus-visible {
-      background-color: color-mix(in oklch, var(--astro-xitter-background) 95%, white);
-    }
-  }
   }
 </style>
