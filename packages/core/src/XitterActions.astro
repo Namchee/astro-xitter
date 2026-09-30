@@ -53,171 +53,166 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
     </span>
   </XitterActionWrapper>
 
-  {interactive && <button
-    title="Share this Tweet"
-    class="astro-xitter-actions-link astro-xitter-actions-copy-button"
-    data-tweet={resolveTweetLink(tweet, host)}
-  >
-    <div
-      class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container"
-    >
-      <Chain
-        class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-copy"
-      />
-      <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check hidden" />
-    </div>
+  {
+    interactive && (
+      <button
+        title="Share this Tweet"
+        class="astro-xitter-actions-link astro-xitter-actions-copy-button"
+        data-tweet={resolveTweetLink(tweet, host)}
+      >
+        <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container">
+          <Chain class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-copy" />
+          <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check hidden" />
+        </div>
 
-    <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">
-      Copy Link
-    </span>
-  </button>}
+        <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">Copy Link</span>
+      </button>
+    )
+  }
 </div>
 
 <style>
   @layer astro-xitter {
-.astro-xitter-actions-container {
-    margin-top: var(--astro-xitter-spacing);
+    .astro-xitter-actions-container {
+      margin-top: var(--astro-xitter-spacing);
 
-    padding-top: var(--astro-xitter-spacing);
+      padding-top: var(--astro-xitter-spacing);
 
-    display: flex;
-    align-items: center;
-    gap: calc(5 * var(--astro-xitter-spacing));
+      display: flex;
+      align-items: center;
+      gap: calc(5 * var(--astro-xitter-spacing));
 
-    border-top: 1px solid var(--astro-xitter-separator);
-}
+      border-top: 1px solid var(--astro-xitter-separator);
+    }
 
-:global(.astro-xitter-actions-link) {
-    display: flex;
-    align-items: center;
-    gap: var(--astro-xitter-spacing);
+    :global(.astro-xitter-actions-link) {
+      display: flex;
+      align-items: center;
+      gap: var(--astro-xitter-spacing);
 
-    margin: 0;
+      margin: 0;
 
-    & .astro-xitter-actions-link-icon-like {
+      & .astro-xitter-actions-link-icon-like {
         color: var(--astro-xitter-red);
-    }
+      }
 
-    & .astro-xitter-actions-link-icon-reply {
+      & .astro-xitter-actions-link-icon-reply {
         color: var(--astro-xitter-blue);
-    }
+      }
 
-    & .astro-xitter-actions-link-icon-copy {
+      & .astro-xitter-actions-link-icon-copy {
         color: var(--astro-xitter-subheader);
-    }
+      }
 
-    & .astro-xitter-actions-link-icon-check {
+      & .astro-xitter-actions-link-icon-check {
         color: var(--astro-xitter-subheader);
-    }
+      }
 
-    &:first-child {
+      &:first-child {
         margin-left: calc(-1 * var(--astro-xitter-spacing));
-    }
+      }
 
-    &:not(.astro-xitter-non-interactive):hover, &:not(.astro-xitter-non-interactive):focus-visible {
+      &:not(.astro-xitter-non-interactive):not(:disabled):hover,
+      &:not(.astro-xitter-non-interactive):not(:disabled):focus-visible {
         & > .astro-xitter-actions-link-icon-like-container {
-            background-color: color-mix(in oklch, var(--astro-xitter-red) 10%, transparent);
+          background-color: color-mix(in oklch, var(--astro-xitter-red) 10%, transparent);
         }
 
         & > .astro-xitter-actions-link-label-like {
-            color: var(--astro-xitter-red);
-            text-decoration-color: var(--astro-xitter-red);
+          color: var(--astro-xitter-red);
+          text-decoration-color: var(--astro-xitter-red);
         }
 
         & > .astro-xitter-actions-link-icon-reply-container {
-            background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
+          background-color: color-mix(in oklch, var(--astro-xitter-blue) 10%, transparent);
         }
 
         & > .astro-xitter-actions-link-label-reply {
-            color: var(--astro-xitter-blue);
-            text-decoration-color: var(--astro-xitter-blue);
+          color: var(--astro-xitter-blue);
+          text-decoration-color: var(--astro-xitter-blue);
         }
 
         & > .astro-xitter-actions-link-icon-copy-container {
-            background-color: color-mix(in oklch, var(--astro-xitter-green) 10%, transparent);
+          background-color: color-mix(in oklch, var(--astro-xitter-green) 10%, transparent);
         }
 
         & .astro-xitter-actions-link-icon-copy {
-            color: var(--astro-xitter-green);
+          color: var(--astro-xitter-green);
         }
 
         & .astro-xitter-actions-link-label-copy {
-            color: var(--astro-xitter-green);
-            text-decoration-color: var(--astro-xitter-green);
+          color: var(--astro-xitter-green);
+          text-decoration-color: var(--astro-xitter-green);
         }
+      }
     }
-}
 
-.astro-xitter-actions-link-icon-container {
-    width: calc(8 * var(--astro-xitter-spacing));
-    height: calc(8 * var(--astro-xitter-spacing));
+    .astro-xitter-actions-link-icon-container {
+      width: calc(8 * var(--astro-xitter-spacing));
+      height: calc(8 * var(--astro-xitter-spacing));
 
-    display: grid;
-    place-items: center;
+      display: grid;
+      place-items: center;
 
-    border-radius: 9999px;
-    background-color: transparent;
+      border-radius: 9999px;
+      background-color: transparent;
 
-    transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
-}
+      transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+    }
 
-.astro-xitter-actions-link-icon {
-    flex-shrink: 0;
+    .astro-xitter-actions-link-icon {
+      flex-shrink: 0;
 
-    width: calc(5 * var(--astro-xitter-spacing));
-    height: auto;
+      width: calc(5 * var(--astro-xitter-spacing));
+      height: auto;
 
-    transition: color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
+      transition: color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
 
-    margin: 0;
+      margin: 0;
 
-    &.hidden {
+      &.hidden {
         display: none;
+      }
     }
-}
 
-.astro-xitter-actions-link-label {
-    font-weight: 600;
-    font-size: var(--astro-xitter-text-sm);
-    line-height: calc(4 * var(--astro-xitter-spacing));
+    .astro-xitter-actions-link-label {
+      font-weight: 600;
+      font-size: var(--astro-xitter-text-sm);
+      line-height: calc(4 * var(--astro-xitter-spacing));
 
-    color: var(--astro-xitter-subheader);
+      color: var(--astro-xitter-subheader);
 
-    text-decoration: underline;
-    text-decoration-color: transparent;
+      text-decoration: underline;
+      text-decoration-color: transparent;
 
-    transition: text-decoration-color 0ms var(--astro-xitter-easing-timing);
-}
+      transition: text-decoration-color 0ms var(--astro-xitter-easing-timing);
+    }
 
-.astro-xitter-actions-copy-button {
-    cursor: pointer;
+    .astro-xitter-actions-copy-button {
+      cursor: pointer;
 
-    display: flex;
-    align-items: center;
+      display: flex;
+      align-items: center;
 
-    background: transparent;
-    border: none;
-    outline: none;
+      background: transparent;
+      border: none;
+      outline: none;
 
-    padding: 0;
+      padding: 0;
 
-    &:disabled {
+      &:disabled {
         cursor: default;
 
-        & > .astro-xitter-actions-link-copy-icon {
-            stroke: var(--astro-xitter-subheader);
-        }
-
         & > .astro-xitter-actions-link-label {
-            color: var(--astro-xitter-subheader);
-            text-decoration-color: transparent;
+          color: var(--astro-xitter-subheader);
+          text-decoration-color: transparent;
         }
 
         & > .astro-xitter-actions-link-icon-container {
-            background: transparent;
+          background-color: transparent;
         }
+      }
     }
-}
   }
 </style>
 

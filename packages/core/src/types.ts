@@ -286,7 +286,7 @@ export type XitterHost = TwitterHost | NitterHost;
  */
 interface TwitterHost {
   type: 'twitter';
-};
+}
 
 /**
  * A Nitter instance host configuration.
@@ -315,10 +315,7 @@ type MaybePromise<T> = T | PromiseLike<T>;
 export interface XitterCache {
   get: (id: string) => MaybePromise<Tweet | undefined>;
 
-  set: (
-    id: string,
-    entry: Tweet,
-  ) => MaybePromise<void>;
+  set: (id: string, entry: Tweet) => MaybePromise<void>;
 
   delete?: (id: string) => MaybePromise<void>;
 }

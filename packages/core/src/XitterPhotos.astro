@@ -55,55 +55,55 @@ const photos = tweet.photos ?? [];
 
 <style>
   @layer astro-xitter {
-  .astro-xitter-photo-container {
-    display: grid;
-    gap: calc(0.5 * var(--astro-xitter-spacing));
+    .astro-xitter-photo-container {
+      display: grid;
+      gap: calc(0.5 * var(--astro-xitter-spacing));
 
-    overflow: hidden;
-    width: 100%;
-    aspect-ratio: 16 / 9;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 16 / 9;
 
-    margin-top: calc(3 * var(--astro-xitter-spacing));
-    border-radius: calc(4 * var(--astro-xitter-spacing));
+      margin-top: calc(3 * var(--astro-xitter-spacing));
+      border-radius: calc(4 * var(--astro-xitter-spacing));
 
-    border: 1px solid var(--astro-xitter-separator);
+      border: 1px solid var(--astro-xitter-separator);
 
-    &.astro-xitter-photo-container-one {
-      grid-template-columns: repeat(1, minmax(0, 1fr));
+      &.astro-xitter-photo-container-one {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+      }
+
+      &.astro-xitter-photo-container-two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      &.astro-xitter-photo-container-bento {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+      }
+
+      &.astro-xitter-quote-photo-container {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
+      }
     }
 
-    &.astro-xitter-photo-container-two {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+    .astro-xitter-photo-link-one {
+      grid-row: span 2;
+      grid-column: span 2;
     }
 
-    &.astro-xitter-photo-container-bento {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: repeat(2, minmax(0, 1fr));
+    .astro-xitter-photo-link-bento {
+      grid-row: span 2;
     }
 
-    &.astro-xitter-quote-photo-container {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-
-      border-left: 0;
-      border-right: 0;
-      border-bottom: 0;
+    .astro-xitter-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-  }
-
-  .astro-xitter-photo-link-one {
-    grid-row: span 2;
-    grid-column: span 2;
-  }
-
-  .astro-xitter-photo-link-bento {
-    grid-row: span 2;
-  }
-
-  .astro-xitter-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
   }
 </style>

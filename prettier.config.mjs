@@ -1,4 +1,5 @@
 const config = {
+  plugins: ['prettier-plugin-astro'],
   trailingComma: 'all',
   printWidth: 120,
   useTabs: false,
