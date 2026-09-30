@@ -1,5 +1,11 @@
 # astro-xitter
 
+## 1.2.4
+
+### Patch Changes
+
+- [#17](https://github.com/Namchee/astro-xitter/pull/17) [`6b99650`](https://github.com/Namchee/astro-xitter/commit/6b99650aee2b017a9b113863f1aac8a3f80195a5) Thanks [@Namchee](https://github.com/Namchee)! - Deliberately avoid targeting disabled button for action link styling
+
 ## 1.2.3
 
 ### Patch Changes
