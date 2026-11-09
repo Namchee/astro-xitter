@@ -90,3 +90,12 @@ export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
     isTruncated: isTruncated,
   };
 }
+
+export function resolveWritingDirection(locale: Intl.LocalesArgument): 'ltr' | 'rtl' {
+  const tag = Array.isArray(locale) ? locale[0] : String(locale);
+  try {
+    return new Intl.Locale(tag).getTextInfo().direction ?? 'ltr';
+  } catch {
+    return 'ltr';
+  }
+}

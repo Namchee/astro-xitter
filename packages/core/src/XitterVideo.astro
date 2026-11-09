@@ -104,12 +104,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       margin-top: calc(3 * var(--astro-xitter-spacing));
 
       &.astro-xitter-quote-video-container {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
 
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
+        border-inline: 0;
+        border-block-end: 0;
       }
     }
 
@@ -173,7 +172,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       position: absolute;
       z-index: 1;
       top: calc(3 * var(--astro-xitter-spacing));
-      right: calc(3 * var(--astro-xitter-spacing));
+      inset-inline-end: calc(3 * var(--astro-xitter-spacing));
 
       background-color: color-mix(in oklch, black 80%, transparent);
       transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
@@ -203,6 +202,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     .astro-xitter-video-context-menu {
       position: fixed;
       top: 0;
+      /* physical on purpose: positioned from clientX/clientY, which are viewport-relative */
       left: 0;
       z-index: 9999;
       background: var(--astro-xitter-background);
@@ -251,6 +251,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     .astro-xitter-video-replies {
       position: absolute;
       top: 50%;
+      /* physical on purpose: paired with translateX(-50%) centering, and transforms are direction-agnostic */
       left: 50%;
       transform: translateX(-50%) translateY(-100%);
 

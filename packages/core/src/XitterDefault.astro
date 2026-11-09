@@ -2,6 +2,7 @@
 import type { Tweet, XitterHost } from './types';
 
 import { NumberFormatterOptions } from './const';
+import { resolveWritingDirection } from './content';
 import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
 import { resolveTweetLink } from './link';
@@ -24,15 +25,6 @@ interface Props {
   host: XitterHost;
 
   theme?: 'light' | 'dark';
-}
-
-function resolveWritingDirection(locale: Intl.LocalesArgument): 'ltr' | 'rtl' {
-  const tag = Array.isArray(locale) ? locale[0] : String(locale);
-  try {
-    return new Intl.Locale(tag).getTextInfo().direction ?? 'ltr';
-  } catch {
-    return 'ltr';
-  }
 }
 
 const { tweet, theme, interactive, locale, host } = Astro.props;
@@ -65,7 +57,11 @@ const dir = resolveWritingDirection(locale);
 
   {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
 
-  {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} host={host} />}
+  {
+    tweet.quoted_tweet && (
+      <XitterQuote locale={locale} tweet={tweet.quoted_tweet} interactive={interactive} host={host} />
+    )
+  }
 
   {tweet.card && <XitterCard tweet={tweet} />}
 
@@ -217,7 +213,7 @@ const dir = resolveWritingDirection(locale);
     .astro-xitter-badge {
       position: absolute;
       top: calc(3 * var(--astro-xitter-spacing));
-      right: calc(4 * var(--astro-xitter-spacing));
+      inset-inline-end: calc(4 * var(--astro-xitter-spacing));
     }
   }
 </style>

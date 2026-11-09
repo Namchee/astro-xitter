@@ -4,7 +4,7 @@ import type { Tweet, XitterHost } from './types';
 import { Image } from 'astro:assets';
 
 import { TweetUserVerifiedType } from './const';
-import { processContent } from './content';
+import { processContent, resolveWritingDirection } from './content';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -29,9 +29,10 @@ const isVerified =
 const created_at = new Date(tweet.created_at);
 
 const { content } = processContent(tweet, { interactive: true, host: host });
+const dir = resolveWritingDirection(locale);
 ---
 
-<div class="astro-xitter-parent-container">
+<div class="astro-xitter-parent-container" dir={dir}>
   <div class="astro-xitter-parent-profile-picture-container">
     <Link
       title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
@@ -142,7 +143,11 @@ const { content } = processContent(tweet, { interactive: true, host: host });
 
     {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
 
-    {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} host={host} />}
+    {
+      tweet.quoted_tweet && (
+        <XitterQuote locale={locale} tweet={tweet.quoted_tweet} interactive={interactive} host={host} />
+      )
+    }
   </div>
 </div>
 
@@ -200,7 +205,7 @@ const { content } = processContent(tweet, { interactive: true, host: host });
       flex: 1;
 
       margin: 0;
-      margin-left: calc(2 * var(--astro-xitter-spacing));
+      margin-inline-start: calc(2 * var(--astro-xitter-spacing));
       margin-bottom: calc(3 * var(--astro-xitter-spacing));
     }
 

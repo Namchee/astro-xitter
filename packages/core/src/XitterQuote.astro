@@ -4,7 +4,7 @@ import type { Tweet, XitterHost } from './types';
 import { Image } from 'astro:assets';
 
 import { TweetUserVerifiedType } from './const';
-import { processContent } from './content';
+import { processContent, resolveWritingDirection } from './content';
 import Verified from './icons/Verified.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -14,20 +14,23 @@ import XitterVideo from './XitterVideo.astro';
 interface Props {
   tweet: Tweet;
 
+  locale: Intl.LocalesArgument;
+
   host: XitterHost;
   interactive: boolean;
 }
 
-const { tweet, interactive, host } = Astro.props;
+const { tweet, interactive, host, locale } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
 const { content } = processContent(tweet, { host });
+const dir = resolveWritingDirection(locale);
 ---
 
-<article class="astro-xitter-quote-container">
+<article class="astro-xitter-quote-container" dir={dir}>
   <Link title="View Post" href={resolveTweetLink(tweet, host)}>
     <div class="astro-xitter-quote-heading">
       <Image
@@ -129,8 +132,7 @@ const { content } = processContent(tweet, { host });
       gap: calc(2 * var(--astro-xitter-spacing));
 
       padding-top: calc(3 * var(--astro-xitter-spacing));
-      padding-left: calc(3 * var(--astro-xitter-spacing));
-      padding-right: calc(3 * var(--astro-xitter-spacing));
+      padding-inline: calc(3 * var(--astro-xitter-spacing));
     }
 
     .astro-xitter-quote-avatar {
@@ -170,7 +172,7 @@ const { content } = processContent(tweet, { host });
       font-size: var(--astro-xitter-text-sm);
       color: var(--astro-xitter-header);
 
-      margin-right: calc(0.5 * var(--astro-xitter-spacing));
+      margin-inline-end: calc(0.5 * var(--astro-xitter-spacing));
     }
 
     .astro-xitter-quote-profile-verified-badge {
@@ -193,8 +195,8 @@ const { content } = processContent(tweet, { host });
       font-size: var(--astro-xitter-text-sm);
       line-height: 1;
 
-      margin-left: var(--astro-xitter-spacing);
-      maring-right: var(--astro-xitter-spacing);
+      margin-inline-start: var(--astro-xitter-spacing);
+      margin-inline-end: var(--astro-xitter-spacing);
     }
 
     .astro-xitter-quote-profile-created-at {
@@ -214,8 +216,7 @@ const { content } = processContent(tweet, { host });
 
       color: var(--astro-xitter-content);
 
-      padding-left: calc(3 * var(--astro-xitter-spacing));
-      padding-right: calc(3 * var(--astro-xitter-spacing));
+      padding-inline: calc(3 * var(--astro-xitter-spacing));
 
       &.astro-xitter-quote-content-last {
         padding-bottom: calc(3 * var(--astro-xitter-spacing));
