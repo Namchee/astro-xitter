@@ -26,9 +26,19 @@ interface Props {
   theme?: 'light' | 'dark';
 }
 
+function resolveWritingDirection(locale: Intl.LocalesArgument): 'ltr' | 'rtl' {
+  const tag = Array.isArray(locale) ? locale[0] : String(locale);
+  try {
+    return new Intl.Locale(tag).getTextInfo().direction ?? 'ltr';
+  } catch {
+    return 'ltr';
+  }
+}
+
 const { tweet, theme, interactive, locale, host } = Astro.props;
 
 const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
+const dir = resolveWritingDirection(locale);
 ---
 
 <article
@@ -39,6 +49,7 @@ const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
       light: theme === 'light',
     },
   ]}
+  dir={dir}
 >
   {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} host={host} />}
 
