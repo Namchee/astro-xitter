@@ -1,7 +1,7 @@
 ---
 import type { Tweet, XitterHost } from './types';
 
-import { NumberFormatterOptions } from './const';
+import { createNumberFormatter } from './format';
 import Chain from './icons/Chain.astro';
 import Checkmark from './icons/Checkmark.astro';
 import Heart from './icons/Heart.astro';
@@ -14,12 +14,13 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
+  numberingSystem?: string;
   host: XitterHost;
 }
 
-const { tweet, interactive, locale, host } = Astro.props;
+const { tweet, interactive, locale, numberingSystem, host } = Astro.props;
 
-const { format } = new Intl.NumberFormat(locale, NumberFormatterOptions);
+const { format } = createNumberFormatter(locale, { numberingSystem });
 ---
 
 <div class="astro-xitter-actions-container">

@@ -5,6 +5,7 @@ import { Image } from 'astro:assets';
 
 import { TweetUserVerifiedType } from './const';
 import { processContent, resolveWritingDirection } from './content';
+import { createDateFormatter } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -18,9 +19,10 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
+  numberingSystem?: string;
 }
 
-const { tweet, interactive, host, locale } = Astro.props;
+const { tweet, interactive, host, locale, numberingSystem } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
@@ -28,6 +30,7 @@ const isVerified =
 
 const { content } = processContent(tweet, { host });
 const dir = resolveWritingDirection(locale);
+const dateFormat = createDateFormatter(locale, { numberingSystem });
 ---
 
 <article class="astro-xitter-quote-container" dir={dir}>
@@ -77,13 +80,7 @@ const dir = resolveWritingDirection(locale);
           <span class="astro-xitter-quote-profile-separator">&middot;</span>
 
           <span class="astro-xitter-quote-profile-created-at">
-            {
-              new Date(tweet.created_at).toLocaleString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })
-            }
+            {dateFormat.format(new Date(tweet.created_at))}
           </span>
         </div>
       </div>

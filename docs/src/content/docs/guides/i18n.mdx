@@ -52,3 +52,33 @@ The above code will render the following tweet. Notice the difference between ho
 </Container>
 
 The supplied locale must be compatible with [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument) interface.
+
+## Numbering System
+
+Some locales use non-Latin digits, such as Arabic-Indic (`٠١٢٣٤٥٦٧٨٩`) for Arabic or Eastern Arabic-Indic (`۰۱۲۳۴۵۶۷۸۹`) for Persian. The default digit set comes from the [CLDR](https://cldr.unicode.org/) data bundled with your runtime, and that default is **not stable across ICU versions**: recent CLDR releases resolve `ar` to Latin digits, while older ones resolve it to Arabic-Indic. The rendered output can therefore differ between your local machine, CI, and production.
+
+Pass `numberingSystem` to pin the digit set:
+
+```astro
+<Xitter id="<TWEET_ID>" locale="ar" numberingSystem="arab" />
+```
+
+It is forwarded to the [`numberingSystem`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#numberingsystem) option of both `Intl.NumberFormat` and `Intl.DateTimeFormat`, so counts and dates always agree. Common values are `arab`, `arabext`, `deva`, and `latn`; run `Intl.supportedValuesOf('numberingSystem')` for the full list supported by your runtime.
+
+When the prop is omitted, the runtime's CLDR default is used.
+
+:::caution
+`numberingSystem` only changes the digits. The calendar and month names still follow the locale, so `ar-SA` may render Hijri dates (`١٤ ربيع الآخر ١٤٤٨ هـ`) on runtimes that default to `islamic-umalqura`.
+:::
+
+## Hour Cycle
+
+The 12-hour or 24-hour clock is also taken from the locale, and CLDR does not always agree with X. Japanese, for example, resolves to the 24-hour clock (`17:00`), while X displays `午後5:00`.
+
+Pass `hourCycle` to override it:
+
+```astro
+<Xitter id="<TWEET_ID>" locale="ja" hourCycle="h12" />
+```
+
+Accepted values are `h11`, `h12`, `h23`, and `h24`. When omitted, the locale's preferred cycle is used.

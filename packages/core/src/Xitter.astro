@@ -1,7 +1,9 @@
 ---
+import type { HourCycle } from './format';
 import type { Tweet, XitterCache, XitterHost } from './types';
 
 import { ErrorCode } from './const';
+import { localeFormatProps } from './format';
 import XitterDefault from './XitterDefault.astro';
 import XitterError from './XitterError.astro';
 
@@ -12,10 +14,12 @@ interface Props {
   theme?: 'light' | 'dark';
   interactive?: boolean;
   locale?: Intl.LocalesArgument;
+  numberingSystem?: string;
+  hourCycle?: HourCycle;
   cache?: XitterCache;
 }
 
-const { id, theme, interactive = true, locale, cache, host } = Astro.props;
+const { id, theme, interactive = true, locale, numberingSystem, hourCycle, cache, host } = Astro.props;
 
 const hasCustomRenderer = Astro.slots.has('default');
 
@@ -120,6 +124,7 @@ const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', 
       locale={currentLocale}
       interactive={interactive}
       {...(host === undefined ? { host: { type: 'twitter' } } : { host })}
+      {...localeFormatProps({ numberingSystem, hourCycle })}
       {...(theme === undefined ? {} : { theme })}
     />
   )
