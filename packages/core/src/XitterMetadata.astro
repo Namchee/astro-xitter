@@ -1,5 +1,4 @@
 ---
-import type { HourCycle } from './format';
 import type { Tweet, XitterHost } from './types';
 
 import { createDateFormatter, createTimeFormatter } from './format';
@@ -12,16 +11,14 @@ interface Props {
 
   host: XitterHost;
   locale: Intl.LocalesArgument;
-  numberingSystem?: string;
-  hourCycle?: HourCycle;
 }
 
-const { tweet, locale, numberingSystem, hourCycle, host } = Astro.props;
+const { tweet, locale, host } = Astro.props;
 const { created_at } = tweet;
 
 const created = new Date(created_at);
-const time = createTimeFormatter(locale, { numberingSystem, hourCycle }).format(created);
-const date = createDateFormatter(locale, { numberingSystem }).format(created);
+const time = createTimeFormatter(locale).format(created);
+const date = createDateFormatter(locale).format(created);
 ---
 
 <div class="astro-xitter-metadata-container">

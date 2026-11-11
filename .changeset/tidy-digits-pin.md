@@ -1,5 +1,5 @@
 ---
-'astro-xitter': minor
+'astro-xitter': patch
 ---
 
-Add `numberingSystem` and `hourCycle` props to pin the digit set and clock used for counts and dates, and stop zero-padding the hour to match X's time format
+Honor the locale for quoted tweet dates, and drop the leading zero from formatted times to match X

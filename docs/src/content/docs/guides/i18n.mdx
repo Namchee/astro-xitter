@@ -53,32 +53,22 @@ The above code will render the following tweet. Notice the difference between ho
 
 The supplied locale must be compatible with [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument) interface.
 
-## Numbering System
+## Digits and Clock
 
-Some locales use non-Latin digits, such as Arabic-Indic (`٠١٢٣٤٥٦٧٨٩`) for Arabic or Eastern Arabic-Indic (`۰۱۲۳۴۵۶۷۸۹`) for Persian. The default digit set comes from the [CLDR](https://cldr.unicode.org/) data bundled with your runtime, and that default is **not stable across ICU versions**: recent CLDR releases resolve `ar` to Latin digits, while older ones resolve it to Arabic-Indic. The rendered output can therefore differ between your local machine, CI, and production.
+The digit set and the 12 or 24-hour clock are taken from the locale's [CLDR](https://cldr.unicode.org/) data, and that data does not always match X: recent CLDR releases resolve `ar` to Latin digits and `ja` to the 24-hour clock (`17:00`), while X renders Arabic-Indic digits and `午後5:00`.
 
-Pass `numberingSystem` to pin the digit set:
+Since `locale` accepts any [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument), a specific behaviour can be requested with a [Unicode locale extension](https://www.unicode.org/reports/tr35/#Unicode_locale_identifier) rather than a dedicated prop:
 
 ```astro
-<Xitter id="<TWEET_ID>" locale="ar" numberingSystem="arab" />
+<Xitter id="<TWEET_ID>" locale="ar-u-nu-arab" />
+<Xitter id="<TWEET_ID>" locale="ja-u-hc-h12" />
 ```
 
-It is forwarded to the [`numberingSystem`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#numberingsystem) option of both `Intl.NumberFormat` and `Intl.DateTimeFormat`, so counts and dates always agree. Common values are `arab`, `arabext`, `deva`, and `latn`; run `Intl.supportedValuesOf('numberingSystem')` for the full list supported by your runtime.
+- `-u-nu-` selects the [numbering system](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#numberingsystem), such as `arab`, `arabext`, `deva`, or `latn`.
+- `-u-hc-` selects the [hour cycle](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#hourcycle): `h11`, `h12`, `h23`, or `h24`.
 
-When the prop is omitted, the runtime's CLDR default is used.
+Because both counts and dates share the same formatter configuration, the chosen digits apply to both. Extensions can be combined in one tag, and the writing direction is still resolved from the base language, so `ar-u-nu-arab` keeps rendering right-to-left.
 
 :::caution
-`numberingSystem` only changes the digits. The calendar and month names still follow the locale, so `ar-SA` may render Hijri dates (`١٤ ربيع الآخر ١٤٤٨ هـ`) on runtimes that default to `islamic-umalqura`.
+The calendar is selected the same way, with `-u-ca-` — for example `ar-SA-u-ca-gregory`. Without it, `ar-SA` may render Hijri dates (`١٤ ربيع الآخر ١٤٤٨ هـ`) on runtimes that default to `islamic-umalqura`.
 :::
-
-## Hour Cycle
-
-The 12-hour or 24-hour clock is also taken from the locale, and CLDR does not always agree with X. Japanese, for example, resolves to the 24-hour clock (`17:00`), while X displays `午後5:00`.
-
-Pass `hourCycle` to override it:
-
-```astro
-<Xitter id="<TWEET_ID>" locale="ja" hourCycle="h12" />
-```
-
-Accepted values are `h11`, `h12`, `h23`, and `h24`. When omitted, the locale's preferred cycle is used.

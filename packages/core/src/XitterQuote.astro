@@ -19,10 +19,9 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
-  numberingSystem?: string;
 }
 
-const { tweet, interactive, host, locale, numberingSystem } = Astro.props;
+const { tweet, interactive, host, locale } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
@@ -30,7 +29,7 @@ const isVerified =
 
 const { content } = processContent(tweet, { host });
 const dir = resolveWritingDirection(locale);
-const dateFormat = createDateFormatter(locale, { numberingSystem });
+const dateFormat = createDateFormatter(locale);
 ---
 
 <article class="astro-xitter-quote-container" dir={dir}>

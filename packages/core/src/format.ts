@@ -1,32 +1,13 @@
 import { NumberFormatterOptions } from './const';
 
 /**
- * Digit set used to render numbers and dates.
+ * Locale-aware formatters used across the component tree.
  *
- * The runtime picks a default from CLDR, but that default is not stable across
- * ICU versions: Node 24+ (CLDR 48) resolves `ar` to `latn`, while older ICU
- * resolves it to `arab`. Pass this value to pin the output, e.g. `arab` for
- * Arabic-Indic digits, `arabext` for Eastern Arabic-Indic / Persian digits, or
- * `latn` for Western digits.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#numberingsystem
+ * The digit set and the hour cycle are intentionally left to the locale, so
+ * they follow the {@link https://cldr.unicode.org/ CLDR} data bundled with the
+ * runtime. Callers that need a specific one can ask for it with a Unicode
+ * locale extension, e.g. `ar-u-nu-arab` or `ja-u-hc-h12`.
  */
-export type NumberingSystem = string;
-
-/**
- * Hour cycle used to render the time.
- *
- * CLDR's choice does not always match X: `ja` resolves to `h23` (`17:00`), while
- * X renders `午後5:00`. Pass `h12` to match X.
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat#hourcycle
- */
-export type HourCycle = 'h11' | 'h12' | 'h23' | 'h24';
-
-export interface LocaleFormatOptions {
-  numberingSystem?: NumberingSystem;
-  hourCycle?: HourCycle;
-}
 
 const TimeFormatOptions = {
   hour: 'numeric',
@@ -39,44 +20,14 @@ const DateFormatOptions = {
   year: 'numeric',
 } as const satisfies Intl.DateTimeFormatOptions;
 
-/**
- * Drops unset options so they are absent rather than `undefined`.
- *
- * `exactOptionalPropertyTypes` treats the two differently, and `Intl` throws a
- * `RangeError` for an empty numbering system while silently ignoring unknown
- * values.
- */
-export function localeFormatProps(options: LocaleFormatOptions): LocaleFormatOptions {
-  const props: LocaleFormatOptions = {};
-
-  if (options.numberingSystem) {
-    props.numberingSystem = options.numberingSystem;
-  }
-
-  if (options.hourCycle) {
-    props.hourCycle = options.hourCycle;
-  }
-
-  return props;
+export function createNumberFormatter(locale: Intl.LocalesArgument): Intl.NumberFormat {
+  return new Intl.NumberFormat(locale, NumberFormatterOptions);
 }
 
-export function createNumberFormatter(
-  locale: Intl.LocalesArgument,
-  options: LocaleFormatOptions = {},
-): Intl.NumberFormat {
-  return new Intl.NumberFormat(locale, { ...NumberFormatterOptions, ...localeFormatProps(options) });
+export function createTimeFormatter(locale: Intl.LocalesArgument): Intl.DateTimeFormat {
+  return new Intl.DateTimeFormat(locale, TimeFormatOptions);
 }
 
-export function createTimeFormatter(
-  locale: Intl.LocalesArgument,
-  options: LocaleFormatOptions = {},
-): Intl.DateTimeFormat {
-  return new Intl.DateTimeFormat(locale, { ...TimeFormatOptions, ...localeFormatProps(options) });
-}
-
-export function createDateFormatter(
-  locale: Intl.LocalesArgument,
-  options: LocaleFormatOptions = {},
-): Intl.DateTimeFormat {
-  return new Intl.DateTimeFormat(locale, { ...DateFormatOptions, ...localeFormatProps(options) });
+export function createDateFormatter(locale: Intl.LocalesArgument): Intl.DateTimeFormat {
+  return new Intl.DateTimeFormat(locale, DateFormatOptions);
 }

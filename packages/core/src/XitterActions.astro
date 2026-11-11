@@ -14,13 +14,12 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
-  numberingSystem?: string;
   host: XitterHost;
 }
 
-const { tweet, interactive, locale, numberingSystem, host } = Astro.props;
+const { tweet, interactive, locale, host } = Astro.props;
 
-const { format } = createNumberFormatter(locale, { numberingSystem });
+const { format } = createNumberFormatter(locale);
 ---
 
 <div class="astro-xitter-actions-container">

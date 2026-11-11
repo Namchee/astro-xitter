@@ -1,9 +1,8 @@
 ---
-import type { HourCycle } from './format';
 import type { Tweet, XitterHost } from './types';
 
 import { resolveWritingDirection } from './content';
-import { createNumberFormatter, localeFormatProps } from './format';
+import { createNumberFormatter } from './format';
 import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
 import { resolveTweetLink } from './link';
@@ -23,16 +22,14 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
-  numberingSystem?: string;
-  hourCycle?: HourCycle;
   host: XitterHost;
 
   theme?: 'light' | 'dark';
 }
 
-const { tweet, theme, interactive, locale, numberingSystem, hourCycle, host } = Astro.props;
+const { tweet, theme, interactive, locale, host } = Astro.props;
 
-const { format } = createNumberFormatter(locale, { numberingSystem });
+const { format } = createNumberFormatter(locale);
 const dir = resolveWritingDirection(locale);
 ---
 
@@ -46,17 +43,7 @@ const dir = resolveWritingDirection(locale);
   ]}
   dir={dir}
 >
-  {
-    tweet.parent && (
-      <XitterParent
-        tweet={tweet.parent}
-        interactive={interactive}
-        locale={locale}
-        host={host}
-        {...localeFormatProps({ numberingSystem })}
-      />
-    )
-  }
+  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} host={host} />}
 
   <XitterHeader tweet={tweet} host={host} />
 
@@ -72,27 +59,15 @@ const dir = resolveWritingDirection(locale);
 
   {
     tweet.quoted_tweet && (
-      <XitterQuote
-        locale={locale}
-        tweet={tweet.quoted_tweet}
-        interactive={interactive}
-        host={host}
-        {...localeFormatProps({ numberingSystem })}
-      />
+      <XitterQuote locale={locale} tweet={tweet.quoted_tweet} interactive={interactive} host={host} />
     )
   }
 
   {tweet.card && <XitterCard tweet={tweet} />}
 
-  <XitterMetadata tweet={tweet} locale={locale} host={host} {...localeFormatProps({ numberingSystem, hourCycle })} />
+  <XitterMetadata tweet={tweet} locale={locale} host={host} />
 
-  <XitterActions
-    tweet={tweet}
-    interactive={interactive}
-    locale={locale}
-    host={host}
-    {...localeFormatProps({ numberingSystem })}
-  />
+  <XitterActions tweet={tweet} interactive={interactive} locale={locale} host={host} />
 
   {
     host.type === 'twitter' && (

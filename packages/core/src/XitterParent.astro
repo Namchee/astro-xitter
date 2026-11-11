@@ -5,7 +5,7 @@ import { Image } from 'astro:assets';
 
 import { TweetUserVerifiedType } from './const';
 import { processContent, resolveWritingDirection } from './content';
-import { createDateFormatter, localeFormatProps } from './format';
+import { createDateFormatter } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -19,17 +19,16 @@ interface Props {
   host: XitterHost;
   interactive: boolean;
   locale: Intl.LocalesArgument;
-  numberingSystem?: string;
 }
 
-const { tweet, interactive, locale, numberingSystem, host } = Astro.props;
+const { tweet, interactive, locale, host } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
 const created_at = new Date(tweet.created_at);
-const dateFormat = createDateFormatter(locale, { numberingSystem });
+const dateFormat = createDateFormatter(locale);
 
 const { content } = processContent(tweet, { interactive: true, host: host });
 const dir = resolveWritingDirection(locale);
@@ -142,13 +141,7 @@ const dir = resolveWritingDirection(locale);
 
     {
       tweet.quoted_tweet && (
-        <XitterQuote
-          locale={locale}
-          tweet={tweet.quoted_tweet}
-          interactive={interactive}
-          host={host}
-          {...localeFormatProps({ numberingSystem })}
-        />
+        <XitterQuote locale={locale} tweet={tweet.quoted_tweet} interactive={interactive} host={host} />
       )
     }
   </div>
