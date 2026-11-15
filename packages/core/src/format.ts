@@ -1,13 +1,6 @@
-import { NumberFormatterOptions } from './const';
+import type { PluralTranslation, XitterHost } from './types';
 
-/**
- * Locale-aware formatters used across the component tree.
- *
- * The digit set and the hour cycle are intentionally left to the locale, so
- * they follow the {@link https://cldr.unicode.org/ CLDR} data bundled with the
- * runtime. Callers that need a specific one can ask for it with a Unicode
- * locale extension, e.g. `ar-u-nu-arab` or `ja-u-hc-h12`.
- */
+import { HostLabelMap, NumberFormatterOptions } from './const';
 
 const TimeFormatOptions = {
   hour: 'numeric',
@@ -30,4 +23,23 @@ export function createTimeFormatter(locale: Intl.LocalesArgument): Intl.DateTime
 
 export function createDateFormatter(locale: Intl.LocalesArgument): Intl.DateTimeFormat {
   return new Intl.DateTimeFormat(locale, DateFormatOptions);
+}
+
+export function createLabelFormatter(host: XitterHost): (template: string) => string {
+  const brand = HostLabelMap[host.type];
+
+  return template => template.replace('{host}', brand);
+}
+
+export function createPluralFormatter(
+  locale: Intl.LocalesArgument,
+  translations: PluralTranslation,
+): (count: number, formatted: string) => string {
+  const rules = new Intl.PluralRules(locale);
+
+  return (count, formatted) => {
+    const template = translations[rules.select(count)] ?? translations.other;
+
+    return template.replace('{count}', formatted);
+  };
 }

@@ -1,5 +1,5 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
@@ -19,9 +19,10 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
+  translations: Translation;
 }
 
-const { tweet, interactive, host, locale } = Astro.props;
+const { tweet, interactive, host, locale, translations } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
@@ -33,7 +34,7 @@ const dateFormat = createDateFormatter(locale);
 ---
 
 <article class="astro-xitter-quote-container" dir={dir}>
-  <Link title="View Post" href={resolveTweetLink(tweet, host)}>
+  <Link title={translations.viewPost} href={resolveTweetLink(tweet, host)}>
     <div class="astro-xitter-quote-heading">
       <Image
         src={user.profile_image_url_https}
@@ -92,7 +93,7 @@ const dateFormat = createDateFormatter(locale);
 
   {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote host={host} />}
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} translations={translations} quote host={host} />}
 </article>
 
 <style>

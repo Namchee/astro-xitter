@@ -1,6 +1,7 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
+import { createLabelFormatter } from './format';
 import Play from './icons/Play.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -11,9 +12,11 @@ interface Props {
   host: XitterHost;
   interactive: boolean;
   quote?: boolean;
+  translations: Translation;
 }
 
-const { tweet, interactive, quote, host } = Astro.props;
+const { tweet, interactive, quote, translations, host } = Astro.props;
+const label = createLabelFormatter(host);
 
 const video = tweet.video?.variants.filter(variant => variant.type === 'application/x-mpegURL')[0]?.src!;
 
@@ -51,7 +54,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
   {/* A fail-safe, if video streaming fails */}
   <Link
-    aria-label={host.type === 'twitter' ? 'Watch video on X' : 'Watch video'}
+    aria-label={label(translations.watchVideoOn)}
     href={host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url}
     class="astro-xitter-video-link-overlay"
   />
@@ -60,10 +63,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     host.type === 'twitter' && (
       <Link
         class="astro-xitter-video-link"
-        aria-label="Watch video on X"
+        aria-label={label(translations.watchVideoOn)}
+        data-continue-watching={label(translations.continueWatchingOn)}
         href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}
       >
-        Watch on X
+        {label(translations.watchOn)}
       </Link>
     )
   }
@@ -72,7 +76,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     interactive && (
       <>
         <Link href={resolveTweetLink(tweet, host)} class="astro-xitter-video-replies" aria-hidden="true">
-          View Replies
+          {translations.viewReplies}
         </Link>
 
         <div class="astro-xitter-video-context-menu" aria-hidden="true">
@@ -82,7 +86,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
               host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url
             }
           >
-            Copy Video Address
+            {translations.copyVideoAddress}
           </button>
         </div>
       </>
@@ -331,7 +335,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
         vid.addEventListener('pause', () => {
           if (!vid.ended) {
-            link.textContent = 'Continue watching on X';
+            link.textContent = link.dataset.continueWatching ?? '';
             link.setAttribute('aria-hidden', 'false');
           }
         });

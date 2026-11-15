@@ -6,7 +6,8 @@
   "exports": {
     ".": {
       "import": "./index.ts"
-    }
+    },
+    "./locale": {}
   },
   "files": [
     "index.ts",

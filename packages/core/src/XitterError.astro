@@ -1,23 +1,31 @@
 ---
+import type { Translation } from './types';
+
 import { ErrorCode } from './const';
 
 interface Props {
   status: number;
 
+  translations: Translation;
   theme?: 'light' | 'dark';
 }
 
-const { status, theme } = Astro.props;
+const { status, translations, theme } = Astro.props;
 
 const ErrorText = {
   [ErrorCode.Deleted]: {
-    title: 'Tweet has been deleted',
-    description: 'This tweet has been deleted by the author and cannot be rendered',
+    title: translations.errorDeletedTitle,
+    description: translations.errorDeletedDescription,
   },
   [ErrorCode.NotFound]: {
-    title: 'Tweet not found',
-    description: 'The requested tweet could not be found',
+    title: translations.errorNotFoundTitle,
+    description: translations.errorNotFoundDescription,
   },
+};
+
+const fallback = {
+  title: translations.errorUnknownTitle,
+  description: translations.errorUnknownDescription,
 };
 ---
 
@@ -31,11 +39,11 @@ const ErrorText = {
   ]}
 >
   <h1 class="astro-xitter-error-title">
-    {ErrorText[status]?.title ?? 'Unknown Error'}
+    {ErrorText[status]?.title ?? fallback.title}
   </h1>
 
   <p class="astro-xitter-error-description">
-    {ErrorText[status]?.description ?? 'Failed to fetch tweet due to unexpected error'}
+    {ErrorText[status]?.description ?? fallback.description}
   </p>
 </div>
 

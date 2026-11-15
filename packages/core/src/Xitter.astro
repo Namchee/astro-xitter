@@ -1,6 +1,7 @@
 ---
-import type { Tweet, XitterCache, XitterHost } from './types';
+import type { Locale as LocaleType, Translation, Tweet, XitterCache, XitterHost } from './types';
 
+import { Locale } from './../locale/en-US';
 import { ErrorCode } from './const';
 import XitterDefault from './XitterDefault.astro';
 import XitterError from './XitterError.astro';
@@ -11,7 +12,7 @@ interface Props {
   host?: XitterHost;
   theme?: 'light' | 'dark';
   interactive?: boolean;
-  locale?: Intl.LocalesArgument;
+  locale?: Intl.UnicodeBCP47LocaleIdentifier | LocaleType;
   cache?: XitterCache;
 }
 
@@ -92,7 +93,16 @@ if (cached) {
   }
 }
 
-let currentLocale = locale;
+let currentLocale = typeof locale === 'object' ? locale.format : locale;
+
+const overrides = typeof locale === 'object' ? locale.translations : undefined;
+
+const translations: Translation = {
+  ...Locale.translations,
+  ...overrides,
+  // Merge per category so a partial plural override keeps the built-in forms.
+  replies: { ...Locale.translations.replies, ...(overrides?.replies ?? {}) },
+};
 
 if (!locale) {
   currentLocale = Astro.currentLocale;
@@ -104,6 +114,9 @@ if (!locale) {
   currentLocale ??= 'en-US';
 }
 
+// Plural rules follow the language of the labels, not the number/date locale.
+const messageLocale = typeof locale === 'object' ? locale.format : Locale.format;
+
 const hasError = !tweet;
 
 const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', [tweet, status]) : null;
@@ -111,13 +124,19 @@ const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', 
 
 {renderedContent && <Fragment set:html={renderedContent} />}
 
-{!renderedContent && hasError && <XitterError status={status} {...(theme === undefined ? {} : { theme })} />}
+{
+  !renderedContent && hasError && (
+    <XitterError status={status} translations={translations} {...(theme === undefined ? {} : { theme })} />
+  )
+}
 
 {
   !renderedContent && !hasError && tweet && (
     <XitterDefault
       tweet={tweet}
-      locale={currentLocale}
+      locale={currentLocale!}
+      messageLocale={messageLocale}
+      translations={translations}
       interactive={interactive}
       {...(host === undefined ? { host: { type: 'twitter' } } : { host })}
       {...(theme === undefined ? {} : { theme })}

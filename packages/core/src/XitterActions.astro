@@ -1,5 +1,5 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { createNumberFormatter } from './format';
 import Chain from './icons/Chain.astro';
@@ -14,17 +14,18 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.LocalesArgument;
+  translations: Translation;
   host: XitterHost;
 }
 
-const { tweet, interactive, locale, host } = Astro.props;
+const { tweet, interactive, locale, translations, host } = Astro.props;
 
 const { format } = createNumberFormatter(locale);
 ---
 
 <div class="astro-xitter-actions-container">
   <XitterActionWrapper
-    title="Like this Tweet"
+    title={translations.likeTooltip}
     class="astro-xitter-actions-link"
     href={`https://x.com/intent/like?tweet_id=${tweet.id_str}`}
     host={host}
@@ -39,7 +40,7 @@ const { format } = createNumberFormatter(locale);
   </XitterActionWrapper>
 
   <XitterActionWrapper
-    title="Reply this Tweet"
+    title={translations.replyTooltip}
     class="astro-xitter-actions-link"
     href={`https://x.com/intent/tweet?in_reply_to=${tweet.id_str}`}
     host={host}
@@ -49,23 +50,27 @@ const { format } = createNumberFormatter(locale);
     </div>
 
     <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-reply">
-      {host.type === 'twitter' ? 'Reply' : format(tweet.conversation_count)}
+      {host.type === 'twitter' ? translations.replyLabel : format(tweet.conversation_count)}
     </span>
   </XitterActionWrapper>
 
   {
     interactive && (
       <button
-        title="Share this Tweet"
+        title={translations.shareTooltip}
         class="astro-xitter-actions-link astro-xitter-actions-copy-button"
         data-tweet={resolveTweetLink(tweet, host)}
+        data-copy-label={translations.copyLabel}
+        data-copied-label={translations.copyToast}
       >
         <div class="astro-xitter-actions-link-icon-container astro-xitter-actions-link-icon-copy-container">
           <Chain class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-copy" />
           <Checkmark class="astro-xitter-actions-link-icon astro-xitter-actions-link-icon-check hidden" />
         </div>
 
-        <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">Copy Link</span>
+        <span class="astro-xitter-actions-link-label astro-xitter-actions-link-label-copy">
+          {translations.copyLabel}
+        </span>
       </button>
     )
   }
@@ -234,13 +239,13 @@ const { format } = createNumberFormatter(locale);
 
       await navigator.clipboard.writeText(tweet);
 
-      text.textContent = 'Copied!';
+      text.textContent = button.dataset.copiedLabel ?? '';
       copy.classList.toggle('hidden');
       check.classList.toggle('hidden');
       button.disabled = true;
 
       setTimeout(() => {
-        text.textContent = 'Copy Link';
+        text.textContent = button.dataset.copyLabel ?? '';
         copy.classList.toggle('hidden');
         check.classList.toggle('hidden');
         button.disabled = false;

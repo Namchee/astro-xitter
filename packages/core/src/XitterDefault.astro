@@ -1,8 +1,8 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { resolveWritingDirection } from './content';
-import { createNumberFormatter } from './format';
+import { createLabelFormatter, createNumberFormatter, createPluralFormatter } from './format';
 import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
 import { resolveTweetLink } from './link';
@@ -21,13 +21,17 @@ interface Props {
   tweet: Tweet;
 
   interactive: boolean;
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
+  messageLocale: Intl.UnicodeBCP47LocaleIdentifier;
+  translations: Translation;
   host: XitterHost;
 
   theme?: 'light' | 'dark';
 }
 
-const { tweet, theme, interactive, locale, host } = Astro.props;
+const { tweet, theme, interactive, locale, messageLocale, translations, host } = Astro.props;
+const label = createLabelFormatter(host);
+const plural = createPluralFormatter(messageLocale, translations.replies);
 
 const { format } = createNumberFormatter(locale);
 const dir = resolveWritingDirection(locale);
@@ -43,23 +47,39 @@ const dir = resolveWritingDirection(locale);
   ]}
   dir={dir}
 >
-  {tweet.parent && <XitterParent tweet={tweet.parent} interactive={interactive} locale={locale} host={host} />}
+  {
+    tweet.parent && (
+      <XitterParent
+        tweet={tweet.parent}
+        interactive={interactive}
+        locale={locale}
+        translations={translations}
+        host={host}
+      />
+    )
+  }
 
-  <XitterHeader tweet={tweet} host={host} />
+  <XitterHeader tweet={tweet} translations={translations} host={host} />
 
   <Link href={resolveTweetLink(tweet, host)} class="astro-xitter-badge">
     {host.type === 'twitter' ? <X /> : <Nitter />}
   </Link>
 
-  <XitterContent tweet={tweet} host={host} />
+  <XitterContent tweet={tweet} translations={translations} host={host} />
 
   {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
+  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} />}
 
   {
     tweet.quoted_tweet && (
-      <XitterQuote locale={locale} tweet={tweet.quoted_tweet} interactive={interactive} host={host} />
+      <XitterQuote
+        locale={locale}
+        tweet={tweet.quoted_tweet}
+        interactive={interactive}
+        translations={translations}
+        host={host}
+      />
     )
   }
 
@@ -67,12 +87,14 @@ const dir = resolveWritingDirection(locale);
 
   <XitterMetadata tweet={tweet} locale={locale} host={host} />
 
-  <XitterActions tweet={tweet} interactive={interactive} locale={locale} host={host} />
+  <XitterActions tweet={tweet} interactive={interactive} locale={locale} translations={translations} host={host} />
 
   {
     host.type === 'twitter' && (
       <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
-        {tweet.conversation_count > 0 ? `Read ${format(tweet.conversation_count)} replies` : 'Read more on X'}
+        {tweet.conversation_count > 0
+          ? plural(tweet.conversation_count, format(tweet.conversation_count))
+          : label(translations.readMoreOn)}
       </Link>
     )
   }
