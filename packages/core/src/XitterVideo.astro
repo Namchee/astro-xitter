@@ -1,7 +1,8 @@
 ---
 import type { Translation, Tweet, XitterHost } from './types';
 
-import { createLabelFormatter } from './format';
+import { HostLabelMap } from './const';
+import { formatLabel } from './format';
 import Play from './icons/Play.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -16,7 +17,6 @@ interface Props {
 }
 
 const { tweet, interactive, quote, translations, host } = Astro.props;
-const label = createLabelFormatter(host);
 
 const video = tweet.video?.variants.filter(variant => variant.type === 'application/x-mpegURL')[0]?.src!;
 
@@ -54,7 +54,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
   {/* A fail-safe, if video streaming fails */}
   <Link
-    aria-label={label(translations.watchVideoOn)}
+    aria-label={formatLabel(translations.watchVideoOn, { host: HostLabelMap[host.type] })}
     href={host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url}
     class="astro-xitter-video-link-overlay"
   />
@@ -63,11 +63,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     host.type === 'twitter' && (
       <Link
         class="astro-xitter-video-link"
-        aria-label={label(translations.watchVideoOn)}
-        data-continue-watching={label(translations.continueWatchingOn)}
+        aria-label={formatLabel(translations.watchVideoOn, { host: HostLabelMap[host.type] })}
+        data-continue-watching={formatLabel(translations.continueWatchingOn, { host: HostLabelMap[host.type] })}
         href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}
       >
-        {label(translations.watchOn)}
+        {formatLabel(translations.watchOn, { host: HostLabelMap[host.type] })}
       </Link>
     )
   }

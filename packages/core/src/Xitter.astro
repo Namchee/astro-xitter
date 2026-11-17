@@ -100,8 +100,6 @@ const overrides = typeof locale === 'object' ? locale.translations : undefined;
 const translations: Translation = {
   ...Locale.translations,
   ...overrides,
-  // Merge per category so a partial plural override keeps the built-in forms.
-  replies: { ...Locale.translations.replies, ...(overrides?.replies ?? {}) },
 };
 
 if (!locale) {
@@ -113,9 +111,6 @@ if (!locale) {
 
   currentLocale ??= 'en-US';
 }
-
-// Plural rules follow the language of the labels, not the number/date locale.
-const messageLocale = typeof locale === 'object' ? locale.format : Locale.format;
 
 const hasError = !tweet;
 
@@ -135,7 +130,6 @@ const renderedContent = hasCustomRenderer ? await Astro.slots.render('default', 
     <XitterDefault
       tweet={tweet}
       locale={currentLocale!}
-      messageLocale={messageLocale}
       translations={translations}
       interactive={interactive}
       {...(host === undefined ? { host: { type: 'twitter' } } : { host })}

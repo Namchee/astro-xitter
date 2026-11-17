@@ -320,19 +320,6 @@ export interface XitterCache {
   delete?: (id: string) => MaybePromise<void>;
 }
 
-/**
- * CLDR plural categories selected by `Intl.PluralRules`.
- */
-export type PluralCategory = Intl.LDMLPluralRule;
-
-/**
- * Plural forms of a label.
- *
- * `other` is required because CLDR guarantees it as the fallback category, so
- * a translation that omits `few` or `many` still renders something.
- */
-export type PluralTranslation = { other: string } & Partial<Record<Exclude<PluralCategory, 'other'>, string>>;
-
 export interface Translation {
   viewProfileOn: string;
   follow: string;
@@ -348,7 +335,7 @@ export interface Translation {
   viewPost: string;
   showMore: string;
   readMoreOn: string;
-  replies: PluralTranslation;
+  replies: string;
 
   watchVideoOn: string;
   watchOn: string;

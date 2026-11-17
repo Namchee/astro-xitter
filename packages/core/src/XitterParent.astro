@@ -3,9 +3,9 @@ import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { TweetUserVerifiedType } from './const';
+import { HostLabelMap, TweetUserVerifiedType } from './const';
 import { processContent, resolveWritingDirection } from './content';
-import { createDateFormatter, createLabelFormatter } from './format';
+import { createDateFormatter, formatLabel } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -18,12 +18,11 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
   translations: Translation;
 }
 
 const { tweet, interactive, locale, translations, host } = Astro.props;
-const label = createLabelFormatter(host);
 const { user } = tweet;
 
 const isVerified =
@@ -39,7 +38,7 @@ const dir = resolveWritingDirection(locale);
 <div class="astro-xitter-parent-container" dir={dir}>
   <div class="astro-xitter-parent-profile-picture-container">
     <Link
-      title={label(translations.viewProfileOn)}
+      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
       href={resolveUserProfile(tweet, host)}
       class="astro-xitter-parent-profile-picture"
     >
@@ -64,7 +63,7 @@ const dir = resolveWritingDirection(locale);
     <div class="astro-xitter-parent-profile">
       <div class="astro-xitter-parent-profile-metadata">
         <Link
-          title={label(translations.viewProfileOn)}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-name astro-xitter-link"
         >
@@ -108,7 +107,7 @@ const dir = resolveWritingDirection(locale);
 
       <div class="astro-xitter-parent-profile-screen">
         <Link
-          title={label(translations.viewProfileOn)}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-screen-name astro-xitter-link"
         >
@@ -121,8 +120,8 @@ const dir = resolveWritingDirection(locale);
               <span class="astro-xitter-parent-profile-separator">&middot;</span>
 
               <Link
+                title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
                 class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
-                title={label(translations.viewProfileOn)}
                 href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
               >
                 {translations.follow}

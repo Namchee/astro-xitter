@@ -15,10 +15,7 @@ const translations: Translation = {
   viewPost: 'View Post',
   showMore: 'Show More',
   readMoreOn: 'Read more on {host}',
-  replies: {
-    one: 'Read {count} reply',
-    other: 'Read {count} replies',
-  },
+  replies: '{count, plural, one {Read # reply} other {Read # replies}}',
 
   watchVideoOn: 'Watch video on {host}',
   watchOn: 'Watch on {host}',

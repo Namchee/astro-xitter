@@ -10,7 +10,7 @@ interface Props {
   tweet: Tweet;
 
   host: XitterHost;
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
 }
 
 const { tweet, locale, host } = Astro.props;

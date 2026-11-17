@@ -3,8 +3,8 @@ import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { TweetUserVerifiedType } from './const';
-import { createLabelFormatter } from './format';
+import { HostLabelMap, TweetUserVerifiedType } from './const';
+import { formatLabel } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -17,7 +17,6 @@ interface Props {
 }
 
 const { tweet, translations, host } = Astro.props;
-const label = createLabelFormatter(host);
 const user = tweet.user;
 
 const isVerified =
@@ -28,7 +27,7 @@ const isVerified =
 
 <div class="astro-xitter-header-container">
   <Link
-    title={label(translations.viewProfileOn)}
+    title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
     href={resolveUserProfile(tweet, host)}
     class="astro-xitter-profile-picture"
   >
@@ -48,7 +47,7 @@ const isVerified =
 
   <div class="astro-xitter-profile">
     <Link
-      title={label(translations.viewProfileOn)}
+      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
       class="astro-xitter-profile-name astro-xitter-link"
       href={resolveUserProfile(tweet, host)}
     >
@@ -86,7 +85,7 @@ const isVerified =
 
     <div class="astro-xitter-profile-screen">
       <Link
-        title={label(translations.viewProfileOn)}
+        title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
         href={resolveUserProfile(tweet, host)}
         class="astro-xitter-profile-screen-name astro-xitter-link"
       >
@@ -100,7 +99,7 @@ const isVerified =
 
             <Link
               class="astro-xitter-profile-screen-follow astro-xitter-link"
-              title={label(translations.viewProfileOn)}
+              title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
               href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
             >
               {translations.follow}

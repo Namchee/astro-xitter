@@ -1,8 +1,9 @@
 ---
 import type { Translation, Tweet, XitterHost } from './types';
 
+import { HostLabelMap } from './const';
 import { resolveWritingDirection } from './content';
-import { createLabelFormatter, createNumberFormatter, createPluralFormatter } from './format';
+import { createNumberFormatter, formatLabel } from './format';
 import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
 import { resolveTweetLink } from './link';
@@ -22,16 +23,13 @@ interface Props {
 
   interactive: boolean;
   locale: Intl.UnicodeBCP47LocaleIdentifier;
-  messageLocale: Intl.UnicodeBCP47LocaleIdentifier;
   translations: Translation;
   host: XitterHost;
 
   theme?: 'light' | 'dark';
 }
 
-const { tweet, theme, interactive, locale, messageLocale, translations, host } = Astro.props;
-const label = createLabelFormatter(host);
-const plural = createPluralFormatter(messageLocale, translations.replies);
+const { tweet, theme, interactive, locale, translations, host } = Astro.props;
 
 const { format } = createNumberFormatter(locale);
 const dir = resolveWritingDirection(locale);
@@ -93,8 +91,8 @@ const dir = resolveWritingDirection(locale);
     host.type === 'twitter' && (
       <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
         {tweet.conversation_count > 0
-          ? plural(tweet.conversation_count, format(tweet.conversation_count))
-          : label(translations.readMoreOn)}
+          ? formatLabel(translations.replies, { count: format(tweet.conversation_count) }, locale)
+          : formatLabel(translations.viewReplies, { host: HostLabelMap[host.type] }, locale)}
       </Link>
     )
   }
