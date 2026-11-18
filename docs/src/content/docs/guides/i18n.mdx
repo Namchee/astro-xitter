@@ -4,21 +4,25 @@ description: Adapting Astro Xitter UI to your locale
 ---
 
 import { Xitter } from 'astro-xitter';
+import { idID } from 'astro-xitter/locale';
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
 
 import Container from '../../../components/Container.astro';
 
-Astro Xitter ships with built-in [internationalization](https://developer.mozilla.org/en-US/docs/Glossary/Internationalization) (i18n) which is applied to the following elements:
+Astro Xitter ships with built-in [internationalization](https://developer.mozilla.org/en-US/docs/Glossary/Internationalization) (i18n) support which is applied to the following elements:
 
 - Numeric elements, such as like and reply count
 - Date and time, such as tweet creation date
 
-The locale used for i18n is derived from [`Astro.currentLocale`](https://docs.astro.build/en/reference/api-reference/#currentlocale) for static rendering. For [on-demand rendering mode](/guides/on-demand) however, [`Astro.preferredLocale`](https://docs.astro.build/en/reference/api-reference/#preferredlocale) will be prioritized instead of `Astro.currentLocale`.
+By default, Astro Xitter uses Astro's locale globals to determine the active locale:
 
-If both globals are `undefined`, Astro Xitter will resolve locale to `en-US` instead.
+- [`Astro.currentLocale`](https://docs.astro.build/en/reference/api-reference/#currentlocale) is used during static rendering.
+- [`Astro.preferredLocale`](https://docs.astro.build/en/reference/api-reference/#preferredlocale) takes precedence during [on-demand rendering mode](/guides/on-demand).
 
-Aside from relying on Astro's globals, you can also supply the locale yourself by passing it to the `locale` prop.
+If neither is available, the locale defaults to `en-US`.
+
+You can also override the detected locale by passing one directly to the `locale` prop.
 
 <Tabs>
     <TabItem label="Astro">
@@ -48,20 +52,189 @@ Aside from relying on Astro's globals, you can also supply the locale yourself b
 The above code will render the following tweet. Notice the difference between how the date is displayed and the unit used for like and reply count.
 
 <Container>
-    <Xitter id="20" locale="id-ID" />
+  <Xitter id="20" locale="id-ID" />
 </Container>
 
-The supplied locale must be compatible with [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument) interface.
+The locale should be supplied in [BCP 47 Language Code](https://developer.mozilla.org/en-US/docs/Glossary/BCP_47_language_tag) format.
 
-## Digits and Clock
+## Translating Text Labels
 
-The digit set and the 12 or 24-hour clock are taken from the locale's [CLDR](https://cldr.unicode.org/) data, and that data does not always match X: recent CLDR releases resolve `ar` to Latin digits and `ja` to the 24-hour clock (`17:00`), while X renders Arabic-Indic digits and `午後5:00`.
+In addition to locale-based formatting, Astro Xitter supports translation dictionaries for localizing UI labels.
 
-Since `locale` accepts any [`Intl.LocalesArgument`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl#locales_argument), a specific behaviour can be requested with a [Unicode locale extension](https://www.unicode.org/reports/tr35/#Unicode_locale_identifier) rather than a dedicated prop:
+To translate labels, you can import a locale from `astro-xitter/locale` namespace and pass the locale object to the `locale` prop.
+
+<Tabs>
+    <TabItem label="Astro">
+        ```astro
+        ---
+        import { Xitter } from 'astro-xitter';
+        import { idID } from 'astro-xitter/locale';
+        ---
+
+        <Xitter id="<TWEET_ID>" locale={idID} />
+        ```
+    </TabItem>
+
+    <TabItem label="MDX">
+        ```mdx
+        ---
+        title: title
+        description: description
+        ---
+
+        import { Xitter } from 'astro-xitter';
+        import { idID } from 'astro-xitter/locale';
+
+        <Xitter id="<TWEET_ID>" locale={idID} />
+        ```
+    </TabItem>
+
+</Tabs>
+
+The above code will render the following tweet. Notice the difference between how numerical information is rendered and the textual labels.
+
+<Container>
+  <Xitter id="20" locale={idID} />
+</Container>
+
+If the locale prop is `undefined`, Astro Xitter will fall back into the default [`en-US`](https://github.com/Namchee/astro-xitter/tree/master/packages/core/locale/en-US.ts) built-in locale.
+
+Currently, Astro Xitter ships the following locale by default:
+
+| Language         | Locale                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| English          | [`en-US`](https://github.com/Namchee/astro-xitter/tree/master/packages/core/locale/en-US.ts) |
+| Bahasa Indonesia | [`id-ID`](https://github.com/Namchee/astro-xitter/tree/master/packages/core/locale/id-ID.ts) |
+
+### Creating Your Own Locale
+
+If you can't find your own locale or want to make a custom translation to some text labels, you can make your own locale object using the following interface.
+
+```ts
+interface Translation {
+  viewProfileOn: string;
+  follow: string;
+  verified: string;
+
+  likeTooltip: string;
+  replyTooltip: string;
+  shareTooltip: string;
+  replyLabel: string;
+  copyLabel: string;
+  copyToast: string;
+
+  viewPost: string;
+  showMore: string;
+  readMoreOn: string;
+  replies: string;
+
+  watchVideoOn: string;
+  watchOn: string;
+  viewReplies: string;
+  copyVideoAddress: string;
+  continueWatchingOn: string;
+
+  errorDeletedTitle: string;
+  errorDeletedDescription: string;
+  errorNotFoundTitle: string;
+  errorNotFoundDescription: string;
+  errorUnknownTitle: string;
+  errorUnknownDescription: string;
+}
+
+interface Locale {
+  code: Intl.UnicodeBCP47LocaleIdentifier;
+  translations: Partial<Translation>;
+}
+
+// Example
+const locale = {
+  code: 'ja-JP',
+  translations: {
+    follow: 'フォロー',
+    verified: '認証済み',
+    replies: '{count, plural, other {返信を#件読む}}',
+    watchVideoOn: '{host}で動画を見る',
+  },
+} satisfies Locale;
+```
+
+The `Locale` interface itself contains 2 properties:
+
+1. `code` is a [BCP 47 Language Tag](https://developer.mozilla.org/en-US/docs/Glossary/BCP_47_language_tag). It's used for formatting numbers and dates, as well as determining pluralization rules.
+2. `translations` contains the translated UI labels. You don't need to provide every key; any missing translations will fall back to their en-US equivalents.
+
+Translation strings support a limited subset of the [ICU Message Format](https://unicode-org.github.io/icu/userguide/format_parse/messages/), currently limited to pluralization. Nested messages are not supported.
+
+Additionally, certain translation keys accept parameters that can be used as variables in ICU message templates.
+
+The following table lists of available translation keys and their respective parameters:
+
+| Key                        | Used as                                                                              | Parameters  |
+| -------------------------- | ------------------------------------------------------------------------------------ | ----------- |
+| `viewProfileOn`            | `title` of the avatar, display name, `@handle`, and follow links                     | `{ host }`  |
+| `follow`                   | Visible text of the follow link in the profile row                                   | —           |
+| `verified`                 | `alt` fallback for the highlighted-label badge image, when the API omits `badgeType` | —           |
+| `likeTooltip`              | `title` of the like link                                                             | —           |
+| `replyTooltip`             | `title` of the reply link                                                            | —           |
+| `shareTooltip`             | `title` of the copy-link button                                                      | —           |
+| `replyLabel`               | Visible label of the reply action, Twitter host only                                 | —           |
+| `copyLabel`                | Visible label and `data-copy-label` of the copy-link button                          | —           |
+| `copyToast`                | `data-copied-label`, swapped into the copy-link button for 3 seconds                 | —           |
+| `viewPost`                 | `title` of the quoted tweet link                                                     | —           |
+| `showMore`                 | Text of the trailing link on long posts (`note_tweet`)                               | —           |
+| `readMoreOn`               | Replies link when the tweet has no replies                                           | `{ host }`  |
+| `replies`                  | Replies link when the tweet has at least one reply                                   | `{ count }` |
+| `watchVideoOn`             | `aria-label` of the fail-safe overlay link and the on-video pill                     | `{ host }`  |
+| `watchOn`                  | Visible text of the on-video pill                                | `{ host }`  |
+| `viewReplies`              | Visible text of the replies link underneath a video                                  | —           |
+| `copyVideoAddress`         | Label of the video right-click context menu item                                     | —           |
+| `continueWatchingOn`       | `data-continue-watching`, restored onto the on-video pill after the user pauses      | `{ host }`  |
+| `errorDeletedTitle`        | Title of the error card for deleted tweets                                           | —           |
+| `errorDeletedDescription`  | Description of the error card for deleted tweets                                     | —           |
+| `errorNotFoundTitle`       | Title of the error card for unresolvable tweet IDs                                   | —           |
+| `errorNotFoundDescription` | Description of the error card for unresolvable tweet IDs                             | —           |
+| `errorUnknownTitle`        | Fallback title for any other failure                                                 | —           |
+| `errorUnknownDescription`  | Fallback description for any other failure                                           | —           |
+
+A few things to keep in mind when using these parameters:
+
+- `host` resolves to `X` on Twitter hosts and `Nitter` on Nitter hosts, so labels read `Watch video on X` or `Watch video on Nitter`.
+- `count` is the raw reply count. Its plural form is determined by the active locale.
+- Only the keys listed with parameters support templating. All other keys are used as-is, so any placeholders in them will appear as plain text.
+
+<Aside>
+  If your locale object is 100% identical with [X Publish](https://publish.x.com/) labels, feel free to [submit a pull
+  request](https://github.com/Namchee/astro-xitter/pulls)!
+</Aside>
+
+### Digits and Clock
+
+Astro Xitter uses the locale's [CLDR](https://cldr.unicode.org/) data to determine which digits and clock cycle to use.
+
+You can customize these preferences through [Unicode locale extensions](https://www.unicode.org/reports/tr35/#Unicode_locale_identifier), without needing additional component props.
 
 ```astro
-<Xitter id="<TWEET_ID>" locale="ar-u-nu-arab" />
-<Xitter id="<TWEET_ID>" locale="ja-u-hc-h12" />
+---
+import { Xitter } from 'astro-xitter';
+
+const arabicLocale = {
+  code: 'ar-u-nu-arab',
+  translations: {
+    // arabic dictionary...
+  },
+};
+
+const japaneseLocale = {
+  code: 'ja-u-hc-h12',
+  translations: {
+    // japanese dictionary...
+  },
+};
+---
+
+<Xitter id="<TWEET_ID>" locale={arabicLocale} />
+<Xitter id="<TWEET_ID>" locale={japaneseLocale} />
 ```
 
 - `-u-nu-` selects the [numbering system](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat#numberingsystem), such as `arab`, `arabext`, `deva`, or `latn`.
