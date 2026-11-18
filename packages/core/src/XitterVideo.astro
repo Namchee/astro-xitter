@@ -1,6 +1,8 @@
 ---
 import type { Translation, Tweet, XitterHost } from './types';
 
+import { undefined } from 'astro:schema';
+
 import { HostLabelMap } from './const';
 import { formatLabel } from './format';
 import Play from './icons/Play.astro';
@@ -36,7 +38,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 >
   <video
     poster={tweet.video?.poster}
-    data-video-src={url}
+    data-video-src={interactive ? url : undefined}
     preload="metadata"
     referrerpolicy="no-referrer"
     class:list={[
