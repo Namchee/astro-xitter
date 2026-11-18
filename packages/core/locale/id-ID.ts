@@ -12,9 +12,9 @@ const translations: Translation = {
   copyLabel: 'Salin tautan',
   copyToast: 'Disalin!',
 
-  viewPost: 'View Post',
-  showMore: 'Show More',
-  readMoreOn: 'Read more on {host}',
+  viewPost: 'Lihat postingan',
+  showMore: 'Tampilkan lebih banyak',
+  readMoreOn: 'Baca selengkapnya di {host}',
   replies: 'Baca {count} balasan',
 
   watchVideoOn: 'Tonton video di {host}',
@@ -23,16 +23,16 @@ const translations: Translation = {
   copyVideoAddress: 'Salin alamat video',
   continueWatchingOn: 'Lanjut menonton di {host}',
 
-  errorDeletedTitle: 'Tweet has been deleted',
-  errorDeletedDescription: 'This tweet has been deleted by the author and cannot be rendered',
-  errorNotFoundTitle: 'Tweet not found',
-  errorNotFoundDescription: 'The requested tweet could not be found',
-  errorUnknownTitle: 'Unknown Error',
-  errorUnknownDescription: 'Failed to fetch tweet due to unexpected error',
+  errorDeletedTitle: 'Postingan sudah dihapus',
+  errorDeletedDescription: 'Postingan ini sudah dihapus oleh pemilik dan tidak dapat dilihat lagi',
+  errorNotFoundTitle: 'Postingan tidak ditemukan',
+  errorNotFoundDescription: 'Postingan yang diminta tidak dapat ditemukan',
+  errorUnknownTitle: 'Kesalahan tidak terduga',
+  errorUnknownDescription: 'Gagal membaca postingan karena kesalahan tidak terduga',
 };
 
 export const Locale = {
-  code: 'en-US',
+  code: 'id-ID',
   translations: translations,
 } satisfies LocaleType;
 

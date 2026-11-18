@@ -95,7 +95,7 @@ const dir = resolveWritingDirection(locale);
       <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
         {tweet.conversation_count > 0
           ? formatLabel(translations.replies, { count: tweet.conversation_count }, locale)
-          : formatLabel(translations.viewReplies, { host: HostLabelMap[host.type] }, locale)}
+          : formatLabel(translations.readMoreOn, { host: HostLabelMap[host.type] }, locale)}
       </Link>
     )
   }
