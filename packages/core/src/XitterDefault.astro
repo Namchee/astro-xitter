@@ -3,7 +3,7 @@ import type { Translation, Tweet, XitterHost } from './types';
 
 import { HostLabelMap } from './const';
 import { resolveWritingDirection } from './content';
-import { createNumberFormatter, formatLabel } from './format';
+import { formatLabel } from './format';
 import Nitter from './icons/Nitter.astro';
 import X from './icons/X.astro';
 import { resolveTweetLink } from './link';
@@ -31,7 +31,6 @@ interface Props {
 
 const { tweet, theme, interactive, locale, translations, host } = Astro.props;
 
-const { format } = createNumberFormatter(locale);
 const dir = resolveWritingDirection(locale);
 ---
 
@@ -57,7 +56,7 @@ const dir = resolveWritingDirection(locale);
     )
   }
 
-  <XitterHeader tweet={tweet} translations={translations} host={host} />
+  <XitterHeader tweet={tweet} translations={translations} host={host} locale={locale} />
 
   <Link href={resolveTweetLink(tweet, host)} class="astro-xitter-badge">
     {host.type === 'twitter' ? <X /> : <Nitter />}
@@ -67,7 +66,11 @@ const dir = resolveWritingDirection(locale);
 
   {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} />}
+  {
+    tweet.video && (
+      <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} locale={locale} />
+    )
+  }
 
   {
     tweet.quoted_tweet && (
@@ -91,7 +94,7 @@ const dir = resolveWritingDirection(locale);
     host.type === 'twitter' && (
       <Link href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}`} class="astro-xitter-replies">
         {tweet.conversation_count > 0
-          ? formatLabel(translations.replies, { count: format(tweet.conversation_count) }, locale)
+          ? formatLabel(translations.replies, { count: tweet.conversation_count }, locale)
           : formatLabel(translations.viewReplies, { host: HostLabelMap[host.type] }, locale)}
       </Link>
     )

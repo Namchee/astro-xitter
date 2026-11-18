@@ -38,7 +38,7 @@ const dir = resolveWritingDirection(locale);
 <div class="astro-xitter-parent-container" dir={dir}>
   <div class="astro-xitter-parent-profile-picture-container">
     <Link
-      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
+      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
       href={resolveUserProfile(tweet, host)}
       class="astro-xitter-parent-profile-picture"
     >
@@ -63,7 +63,7 @@ const dir = resolveWritingDirection(locale);
     <div class="astro-xitter-parent-profile">
       <div class="astro-xitter-parent-profile-metadata">
         <Link
-          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-name astro-xitter-link"
         >
@@ -107,7 +107,7 @@ const dir = resolveWritingDirection(locale);
 
       <div class="astro-xitter-parent-profile-screen">
         <Link
-          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-screen-name astro-xitter-link"
         >
@@ -120,7 +120,7 @@ const dir = resolveWritingDirection(locale);
               <span class="astro-xitter-parent-profile-separator">&middot;</span>
 
               <Link
-                title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] })}
+                title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
                 class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
                 href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
               >
@@ -138,7 +138,11 @@ const dir = resolveWritingDirection(locale);
 
     {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-    {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} />}
+    {
+      tweet.video && (
+        <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} locale={locale} />
+      )
+    }
 
     {
       tweet.quoted_tweet && (

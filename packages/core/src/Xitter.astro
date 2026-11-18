@@ -93,7 +93,7 @@ if (cached) {
   }
 }
 
-let currentLocale = typeof locale === 'object' ? locale.format : locale;
+let currentLocale = typeof locale === 'object' ? locale.code : locale;
 
 const overrides = typeof locale === 'object' ? locale.translations : undefined;
 

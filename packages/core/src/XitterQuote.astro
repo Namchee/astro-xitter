@@ -15,7 +15,7 @@ import XitterVideo from './XitterVideo.astro';
 interface Props {
   tweet: Tweet;
 
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
 
   host: XitterHost;
   interactive: boolean;
@@ -93,7 +93,18 @@ const dateFormat = createDateFormatter(locale);
 
   {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} translations={translations} quote host={host} />}
+  {
+    tweet.video && (
+      <XitterVideo
+        tweet={tweet}
+        interactive={interactive}
+        translations={translations}
+        quote
+        host={host}
+        locale={locale}
+      />
+    )
+  }
 </article>
 
 <style>

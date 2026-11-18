@@ -15,7 +15,7 @@ const translations: Translation = {
   viewPost: 'View Post',
   showMore: 'Show More',
   readMoreOn: 'Read more on {host}',
-  replies: '{count, plural, one {Read # reply} other {Read # replies}}',
+  replies: '{count, plural, =1 {Read # reply} other {Read # replies}}',
 
   watchVideoOn: 'Watch video on {host}',
   watchOn: 'Watch on {host}',
@@ -32,6 +32,8 @@ const translations: Translation = {
 };
 
 export const Locale = {
-  format: 'en-US',
+  code: 'en-US',
   translations: translations,
 } satisfies LocaleType;
+
+export default Locale;

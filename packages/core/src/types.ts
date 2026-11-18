@@ -352,6 +352,6 @@ export interface Translation {
 }
 
 export interface Locale {
-  format: Intl.UnicodeBCP47LocaleIdentifier;
+  code: Intl.UnicodeBCP47LocaleIdentifier;
   translations: Partial<Translation>;
 }

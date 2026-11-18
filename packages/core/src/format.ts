@@ -1,5 +1,3 @@
-
-import { Locale } from '../locale/en-US';
 import { NumberFormatterOptions } from './const';
 
 const TimeFormatOptions = {
@@ -25,19 +23,22 @@ export function createDateFormatter(locale: Intl.LocalesArgument): Intl.DateTime
   return new Intl.DateTimeFormat(locale, DateFormatOptions);
 }
 
-const PLURAL_PATTERN =
-  /\{(?<key>\w+),\s*plural,\s*(?<options>[^\s\{\}](?:[^\{\}]|\{[^\{\}]*\})*)\}/gv;
+const PLURAL_PATTERN = /\{(?<key>\w+),\s*plural,\s*(?<options>[^\s\{\}](?:[^\{\}]|\{[^\{\}]*\})*)\}/gv;
 
 const OPTION_PATTERN = /(?<![\w\-])(?<category>=?[\w\-]+)\s*\{(?<value>[^\{\}]*)\}/gv;
 
-function interpolate(str: string, values: Record<string, string | number>): string {
+const UNPARSED_PLURAL = /\{\w+,\s*plural,/v;
+
+function interpolate(str: string, values: Record<string, string | number>, numbers: Intl.NumberFormat): string {
   return str.replaceAll(/\{(?<key>\w+)\}/gv, (match, key: string) => {
-    if (key in values) {
-      return String(values[key]);
+    if (!(key in values)) {
+      return match;
     }
 
-    return match;
-  })
+    const value = values[key];
+
+    return typeof value === 'number' ? numbers.format(value) : String(value);
+  });
 }
 
 /**
@@ -45,17 +46,19 @@ function interpolate(str: string, values: Record<string, string | number>): stri
  *
  * @param {string} template Label of the string. Should be written in ICU standard
  * @param {Record<string, string | number>} values Replacement value for template
- * @param {Intl.UnicodeBCP47LocaleIdentifier} locale Locale to be used when determining plurality.
+ * @param {Intl.UnicodeBCP47LocaleIdentifier} locale The single locale of the UI. Drives the
+ * plural rules, the numeral system, and the interpolation of numeric values.
  * @returns {string} Formatted string with correct replacement value and plurality
  */
 export function formatLabel(
   template: string,
   values: Record<string, string | number>,
-  locale: Intl.UnicodeBCP47LocaleIdentifier = Locale.format
+  locale: Intl.UnicodeBCP47LocaleIdentifier,
 ): string {
   const rules = new Intl.PluralRules(locale);
+  const numbers = new Intl.NumberFormat(locale, NumberFormatterOptions);
 
-  return template.replaceAll(PLURAL_PATTERN, (match, key: string, options: string) => {
+  const pluralized = template.replaceAll(PLURAL_PATTERN, (match, key: string, options: string) => {
     const count = values[key];
 
     if (typeof count !== 'number') {
@@ -74,6 +77,14 @@ export function formatLabel(
       return match;
     }
 
-    return interpolate(selected.replaceAll('#', String(count)), values);
-  }).replaceAll(/\{(?<key>\w+)\}/gv, (match, key: string) => key in values ? String(values[key]) : match);
+    return interpolate(selected.replaceAll('#', numbers.format(count)), values, numbers);
+  });
+
+  // A plural directive that survived the pass above is beyond this parser, e.g. an option
+  // body holding a nested placeholder. Leave it untouched rather than half-substituting it.
+  if (UNPARSED_PLURAL.test(pluralized)) {
+    return pluralized;
+  }
+
+  return interpolate(pluralized, values, numbers);
 }

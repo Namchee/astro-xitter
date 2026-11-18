@@ -8,5 +8,5 @@
     "allowJs": true,
     "outDir": "./dist"
   },
-  "include": ["index.ts", "env.d.ts", "src"]
+  "include": ["index.ts", "env.d.ts", "src", "locale"]
 }
