@@ -32,7 +32,6 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     'astro-xitter-video-container',
     {
       'astro-xitter-quote-video-container': quote,
-      'non-interactive': !interactive,
     },
   ]}
 >
@@ -41,12 +40,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     data-video-src={interactive ? url : undefined}
     preload="metadata"
     referrerpolicy="no-referrer"
-    class:list={[
-      'astro-xitter-video',
-      {
-        'non-interactive': !interactive,
-      },
-    ]}
+    class='astro-xitter-video'
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}></video>
 
   <div class="astro-xitter-video-play-container">
