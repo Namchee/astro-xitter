@@ -319,3 +319,39 @@ export interface XitterCache {
 
   delete?: (id: string) => MaybePromise<void>;
 }
+
+export interface Translation {
+  viewProfileOn: string;
+  follow: string;
+  verified: string;
+
+  likeTooltip: string;
+  replyTooltip: string;
+  shareTooltip: string;
+  replyLabel: string;
+  copyLabel: string;
+  copyToast: string;
+
+  viewPost: string;
+  showMore: string;
+  readMoreOn: string;
+  replies: string;
+
+  watchVideoOn: string;
+  watchOn: string;
+  viewReplies: string;
+  copyVideoAddress: string;
+  continueWatchingOn: string;
+
+  errorDeletedTitle: string;
+  errorDeletedDescription: string;
+  errorNotFoundTitle: string;
+  errorNotFoundDescription: string;
+  errorUnknownTitle: string;
+  errorUnknownDescription: string;
+}
+
+export interface Locale {
+  code: Intl.UnicodeBCP47LocaleIdentifier;
+  translations: Partial<Translation>;
+}

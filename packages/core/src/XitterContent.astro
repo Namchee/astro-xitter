@@ -1,5 +1,5 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { processContent } from './content';
 import { resolveTweetLink } from './link';
@@ -9,9 +9,10 @@ interface Props {
   tweet: Tweet;
 
   host: XitterHost;
+  translations: Translation;
 }
 
-const { tweet, host } = Astro.props;
+const { tweet, translations, host } = Astro.props;
 const { content, isTruncated } = processContent(tweet, { interactive: true, host: host });
 ---
 
@@ -22,7 +23,7 @@ const { content, isTruncated } = processContent(tweet, { interactive: true, host
       <>
         {'... '}
         <Link class="astro-xitter-content-truncated-notice astro-xitter-link" href={resolveTweetLink(tweet, host)}>
-          Show More
+          {translations.showMore}
         </Link>
       </>
     )

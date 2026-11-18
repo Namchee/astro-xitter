@@ -1,6 +1,7 @@
 ---
 import type { Tweet, XitterHost } from './types';
 
+import { createDateFormatter, createTimeFormatter } from './format';
 import Info from './icons/Info.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -9,41 +10,26 @@ interface Props {
   tweet: Tweet;
 
   host: XitterHost;
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
 }
 
 const { tweet, locale, host } = Astro.props;
 const { created_at } = tweet;
+
+const created = new Date(created_at);
+const time = createTimeFormatter(locale).format(created);
+const date = createDateFormatter(locale).format(created);
 ---
 
 <div class="astro-xitter-metadata-container">
   <Link
-    title={`
-      ${new Date(created_at).toLocaleString(locale, {
-        hour: '2-digit',
-        minute: '2-digit',
-      })} · ${new Date(created_at).toLocaleString(locale, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      })}`}
+    title={`${time} · ${date}`}
     href={resolveTweetLink(tweet, host)}
     class="astro-xitter-metadata astro-xitter-link"
   >
-    {
-      new Date(created_at).toLocaleString(locale, {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    }
+    {time}
     &#8239;&middot;&#8239;
-    {
-      new Date(created_at).toLocaleString(locale, {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-      })
-    }
+    {date}
   </Link>
 
   {
@@ -95,7 +81,7 @@ const { created_at } = tweet;
       display: grid;
       place-items: center;
 
-      margin-right: calc(-1 * var(--astro-xitter-spacing));
+      margin-inline-end: calc(-1 * var(--astro-xitter-spacing));
 
       &:hover,
       &:focus-visible {

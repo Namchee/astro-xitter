@@ -5,12 +5,26 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./index.ts"
-    }
+      "types": "./index.ts",
+      "import": "./index.ts",
+      "default": "./index.ts"
+    },
+    "./locale": {
+      "types": "./locale/index.ts",
+      "import": "./locale/index.ts",
+      "default": "./locale/index.ts"
+    },
+    "./locale/*": {
+      "types": "./locale/*.ts",
+      "import": "./locale/*.ts",
+      "default": "./locale/*.ts"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "index.ts",
-    "src"
+    "src",
+    "locale"
   ],
   "scripts": {
     "lint": "eslint src --fix"

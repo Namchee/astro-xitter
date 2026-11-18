@@ -1,9 +1,10 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { TweetUserVerifiedType } from './const';
+import { HostLabelMap, TweetUserVerifiedType } from './const';
+import { formatLabel } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -12,9 +13,11 @@ interface Props {
   tweet: Tweet;
 
   host: XitterHost;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
+  translations: Translation;
 }
 
-const { tweet, host } = Astro.props;
+const { tweet, translations, host, locale } = Astro.props;
 const user = tweet.user;
 
 const isVerified =
@@ -25,7 +28,7 @@ const isVerified =
 
 <div class="astro-xitter-header-container">
   <Link
-    title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+    title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
     href={resolveUserProfile(tweet, host)}
     class="astro-xitter-profile-picture"
   >
@@ -45,7 +48,7 @@ const isVerified =
 
   <div class="astro-xitter-profile">
     <Link
-      title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
       class="astro-xitter-profile-name astro-xitter-link"
       href={resolveUserProfile(tweet, host)}
     >
@@ -71,7 +74,7 @@ const isVerified =
       {
         user.highlighted_label?.badge?.url && (
           <Image
-            alt={user.highlighted_label.badgeType ?? 'Verified Badge'}
+            alt={user.highlighted_label.badgeType ?? translations.verified}
             src={user.highlighted_label.badge.url}
             width={16}
             height={16}
@@ -83,7 +86,7 @@ const isVerified =
 
     <div class="astro-xitter-profile-screen">
       <Link
-        title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+        title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
         href={resolveUserProfile(tweet, host)}
         class="astro-xitter-profile-screen-name astro-xitter-link"
       >
@@ -97,10 +100,10 @@ const isVerified =
 
             <Link
               class="astro-xitter-profile-screen-follow astro-xitter-link"
-              title="View Profile on X"
+              title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
               href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
             >
-              Follow
+              {translations.follow}
             </Link>
           </>
         )

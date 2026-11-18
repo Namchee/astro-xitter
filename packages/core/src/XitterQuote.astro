@@ -1,10 +1,11 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
 import { TweetUserVerifiedType } from './const';
-import { processContent } from './content';
+import { processContent, resolveWritingDirection } from './content';
+import { createDateFormatter } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -14,21 +15,26 @@ import XitterVideo from './XitterVideo.astro';
 interface Props {
   tweet: Tweet;
 
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
+
   host: XitterHost;
   interactive: boolean;
+  translations: Translation;
 }
 
-const { tweet, interactive, host } = Astro.props;
+const { tweet, interactive, host, locale, translations } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
 const { content } = processContent(tweet, { host });
+const dir = resolveWritingDirection(locale);
+const dateFormat = createDateFormatter(locale);
 ---
 
-<article class="astro-xitter-quote-container">
-  <Link title="View Post" href={resolveTweetLink(tweet, host)}>
+<article class="astro-xitter-quote-container" dir={dir}>
+  <Link title={translations.viewPost} href={resolveTweetLink(tweet, host)}>
     <div class="astro-xitter-quote-heading">
       <Image
         src={user.profile_image_url_https}
@@ -74,13 +80,7 @@ const { content } = processContent(tweet, { host });
           <span class="astro-xitter-quote-profile-separator">&middot;</span>
 
           <span class="astro-xitter-quote-profile-created-at">
-            {
-              new Date(tweet.created_at).toLocaleString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })
-            }
+            {dateFormat.format(new Date(tweet.created_at))}
           </span>
         </div>
       </div>
@@ -93,7 +93,18 @@ const { content } = processContent(tweet, { host });
 
   {(tweet.photos?.length ?? 0) > 0 && <XitterPhotos tweet={tweet} quote host={host} />}
 
-  {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} quote host={host} />}
+  {
+    tweet.video && (
+      <XitterVideo
+        tweet={tweet}
+        interactive={interactive}
+        translations={translations}
+        quote
+        host={host}
+        locale={locale}
+      />
+    )
+  }
 </article>
 
 <style>
@@ -129,8 +140,7 @@ const { content } = processContent(tweet, { host });
       gap: calc(2 * var(--astro-xitter-spacing));
 
       padding-top: calc(3 * var(--astro-xitter-spacing));
-      padding-left: calc(3 * var(--astro-xitter-spacing));
-      padding-right: calc(3 * var(--astro-xitter-spacing));
+      padding-inline: calc(3 * var(--astro-xitter-spacing));
     }
 
     .astro-xitter-quote-avatar {
@@ -170,7 +180,7 @@ const { content } = processContent(tweet, { host });
       font-size: var(--astro-xitter-text-sm);
       color: var(--astro-xitter-header);
 
-      margin-right: calc(0.5 * var(--astro-xitter-spacing));
+      margin-inline-end: calc(0.5 * var(--astro-xitter-spacing));
     }
 
     .astro-xitter-quote-profile-verified-badge {
@@ -193,8 +203,8 @@ const { content } = processContent(tweet, { host });
       font-size: var(--astro-xitter-text-sm);
       line-height: 1;
 
-      margin-left: var(--astro-xitter-spacing);
-      maring-right: var(--astro-xitter-spacing);
+      margin-inline-start: var(--astro-xitter-spacing);
+      margin-inline-end: var(--astro-xitter-spacing);
     }
 
     .astro-xitter-quote-profile-created-at {
@@ -214,8 +224,7 @@ const { content } = processContent(tweet, { host });
 
       color: var(--astro-xitter-content);
 
-      padding-left: calc(3 * var(--astro-xitter-spacing));
-      padding-right: calc(3 * var(--astro-xitter-spacing));
+      padding-inline: calc(3 * var(--astro-xitter-spacing));
 
       &.astro-xitter-quote-content-last {
         padding-bottom: calc(3 * var(--astro-xitter-spacing));

@@ -1,6 +1,10 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
+import { undefined } from 'astro:schema';
+
+import { HostLabelMap } from './const';
+import { formatLabel } from './format';
 import Play from './icons/Play.astro';
 import { resolveTweetLink } from './link';
 import Link from './Link.astro';
@@ -10,10 +14,12 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
   quote?: boolean;
+  translations: Translation;
 }
 
-const { tweet, interactive, quote, host } = Astro.props;
+const { tweet, interactive, quote, translations, host, locale } = Astro.props;
 
 const video = tweet.video?.variants.filter(variant => variant.type === 'application/x-mpegURL')[0]?.src!;
 
@@ -26,21 +32,15 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     'astro-xitter-video-container',
     {
       'astro-xitter-quote-video-container': quote,
-      'non-interactive': !interactive,
     },
   ]}
 >
   <video
     poster={tweet.video?.poster}
-    data-video-src={url}
+    data-video-src={interactive ? url : undefined}
     preload="metadata"
     referrerpolicy="no-referrer"
-    class:list={[
-      'astro-xitter-video',
-      {
-        'non-interactive': !interactive,
-      },
-    ]}
+    class='astro-xitter-video'
     style={`aspect-ratio: ${tweet.video?.aspectRatio[0]} / ${tweet.video?.aspectRatio[1]}`}></video>
 
   <div class="astro-xitter-video-play-container">
@@ -51,7 +51,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
   {/* A fail-safe, if video streaming fails */}
   <Link
-    aria-label={host.type === 'twitter' ? 'Watch video on X' : 'Watch video'}
+    aria-label={formatLabel(translations.watchVideoOn, { host: HostLabelMap[host.type] }, locale)}
     href={host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url}
     class="astro-xitter-video-link-overlay"
   />
@@ -60,10 +60,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     host.type === 'twitter' && (
       <Link
         class="astro-xitter-video-link"
-        aria-label="Watch video on X"
+        aria-label={formatLabel(translations.watchVideoOn, { host: HostLabelMap[host.type] }, locale)}
+        data-continue-watching={formatLabel(translations.continueWatchingOn, { host: HostLabelMap[host.type] }, locale)}
         href={`https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1`}
       >
-        Watch on X
+        {formatLabel(translations.watchOn, { host: HostLabelMap[host.type] }, locale)}
       </Link>
     )
   }
@@ -72,7 +73,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     interactive && (
       <>
         <Link href={resolveTweetLink(tweet, host)} class="astro-xitter-video-replies" aria-hidden="true">
-          View Replies
+          {translations.viewReplies}
         </Link>
 
         <div class="astro-xitter-video-context-menu" aria-hidden="true">
@@ -82,7 +83,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
               host.type === 'twitter' ? `https://x.com/${tweet.user.screen_name}/status/${tweet.id_str}/video/1` : url
             }
           >
-            Copy Video Address
+            {translations.copyVideoAddress}
           </button>
         </div>
       </>
@@ -104,12 +105,11 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       margin-top: calc(3 * var(--astro-xitter-spacing));
 
       &.astro-xitter-quote-video-container {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
+        border-start-start-radius: 0;
+        border-start-end-radius: 0;
 
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
+        border-inline: 0;
+        border-block-end: 0;
       }
     }
 
@@ -173,7 +173,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
       position: absolute;
       z-index: 1;
       top: calc(3 * var(--astro-xitter-spacing));
-      right: calc(3 * var(--astro-xitter-spacing));
+      inset-inline-end: calc(3 * var(--astro-xitter-spacing));
 
       background-color: color-mix(in oklch, black 80%, transparent);
       transition: background-color var(--astro-xitter-transition-duration) var(--astro-xitter-transition-easing);
@@ -203,6 +203,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     .astro-xitter-video-context-menu {
       position: fixed;
       top: 0;
+      /* physical on purpose: positioned from clientX/clientY, which are viewport-relative */
       left: 0;
       z-index: 9999;
       background: var(--astro-xitter-background);
@@ -251,6 +252,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
     .astro-xitter-video-replies {
       position: absolute;
       top: 50%;
+      /* physical on purpose: paired with translateX(-50%) centering, and transforms are direction-agnostic */
       left: 50%;
       transform: translateX(-50%) translateY(-100%);
 
@@ -330,7 +332,7 @@ const url = `${rawUrl.origin}${rawUrl.pathname}`;
 
         vid.addEventListener('pause', () => {
           if (!vid.ended) {
-            link.textContent = 'Continue watching on X';
+            link.textContent = link.dataset.continueWatching ?? '';
             link.setAttribute('aria-hidden', 'false');
           }
         });

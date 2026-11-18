@@ -5,6 +5,16 @@ interface ContentPipelineOptions {
   host?: XitterHost;
 }
 
+function renderEntity(text: string, href: string, interactive?: boolean): string {
+  const isolated = `<bdi>${text}</bdi>`;
+
+  if (!interactive) {
+    return isolated;
+  }
+
+  return `<a href="${href}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">${isolated}</a>`;
+}
+
 export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
   const isTruncated = !!tweet.note_tweet;
 
@@ -28,10 +38,7 @@ export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
       case 'url': {
         const { expanded_url, display_url, url } = entity as Url;
 
-        replacement = `<a href="${expanded_url}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">${display_url}</a>`;
-        if (!options?.interactive) {
-          replacement = display_url;
-        }
+        replacement = renderEntity(display_url, expanded_url, options?.interactive);
 
         // remove if embed exist
         if (url === tweet.card?.url && !tweet.quoted_tweet) {
@@ -42,10 +49,10 @@ export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
       }
       case 'mention': {
         const { screen_name } = entity as UserMention;
-        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/${screen_name}` : `https://x.com/${screen_name}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">@${screen_name}</a>`;
-        if (!options?.interactive) {
-          replacement = `@${screen_name}`;
-        }
+        const href =
+          options?.host?.type === 'nitter' ? `${options.host.origin}/${screen_name}` : `https://x.com/${screen_name}`;
+
+        replacement = renderEntity(`@${screen_name}`, href, options?.interactive);
 
         // remove first mention on reply, but only if it replies to the correct parent
         if (start === 0 && tweet.parent && screen_name.toLowerCase() === tweet.in_reply_to_screen_name?.toLowerCase()) {
@@ -56,19 +63,21 @@ export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
       }
       case 'hashtag': {
         const { text } = entity as Hashtag;
-        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/hashtag/${text}` : `https://x.com/hashtag/${text}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">#${text}</a>`;
-        if (!options?.interactive) {
-          replacement = `#${text}`;
-        }
+        const href =
+          options?.host?.type === 'nitter' ? `${options.host.origin}/hashtag/${text}` : `https://x.com/hashtag/${text}`;
+
+        replacement = renderEntity(`#${text}`, href, options?.interactive);
 
         break;
       }
       case 'symbol': {
         const { text } = entity as Symbol;
-        replacement = `<a href="${options?.host?.type === 'nitter' ? `${options.host.origin}/search?q=%24${text}` : `https://x.com/search?q=%24${text}`}" target="_blank" rel="noreferrer noopener" class="astro-xitter-content-link astro-xitter-link">$${text}</a>`;
-        if (!options?.interactive) {
-          replacement = `$${text}`;
-        }
+        const href =
+          options?.host?.type === 'nitter'
+            ? `${options.host.origin}/search?q=%24${text}`
+            : `https://x.com/search?q=%24${text}`;
+
+        replacement = renderEntity(`$${text}`, href, options?.interactive);
 
         break;
       }
@@ -89,4 +98,13 @@ export function processContent(tweet: Tweet, options?: ContentPipelineOptions) {
     content: content.trim(),
     isTruncated: isTruncated,
   };
+}
+
+export function resolveWritingDirection(locale: Intl.LocalesArgument): 'ltr' | 'rtl' {
+  const tag = Array.isArray(locale) ? locale[0] : String(locale);
+  try {
+    return new Intl.Locale(tag).getTextInfo().direction ?? 'ltr';
+  } catch {
+    return 'ltr';
+  }
 }

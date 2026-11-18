@@ -3,6 +3,11 @@ export const TweetUserVerifiedType = {
   Government: 'Government',
 } as const;
 
+export const HostLabelMap = {
+  twitter: 'X',
+  nitter: 'Nitter',
+} as const;
+
 export const NumberFormatterOptions: Intl.NumberFormatOptions = {
   style: 'decimal',
   notation: 'compact',

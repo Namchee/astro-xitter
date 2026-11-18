@@ -1,10 +1,11 @@
 ---
-import type { Tweet, XitterHost } from './types';
+import type { Translation, Tweet, XitterHost } from './types';
 
 import { Image } from 'astro:assets';
 
-import { TweetUserVerifiedType } from './const';
-import { processContent } from './content';
+import { HostLabelMap, TweetUserVerifiedType } from './const';
+import { processContent, resolveWritingDirection } from './content';
+import { createDateFormatter, formatLabel } from './format';
 import Verified from './icons/Verified.astro';
 import { resolveUserProfile } from './link';
 import Link from './Link.astro';
@@ -17,24 +18,27 @@ interface Props {
 
   host: XitterHost;
   interactive: boolean;
-  locale: Intl.LocalesArgument;
+  locale: Intl.UnicodeBCP47LocaleIdentifier;
+  translations: Translation;
 }
 
-const { tweet, interactive, locale, host } = Astro.props;
+const { tweet, interactive, locale, translations, host } = Astro.props;
 const { user } = tweet;
 
 const isVerified =
   user.is_blue_verified || user.verified || ['Business', 'Government'].includes(user.verified_type ?? '');
 
 const created_at = new Date(tweet.created_at);
+const dateFormat = createDateFormatter(locale);
 
 const { content } = processContent(tweet, { interactive: true, host: host });
+const dir = resolveWritingDirection(locale);
 ---
 
-<div class="astro-xitter-parent-container">
+<div class="astro-xitter-parent-container" dir={dir}>
   <div class="astro-xitter-parent-profile-picture-container">
     <Link
-      title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+      title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
       href={resolveUserProfile(tweet, host)}
       class="astro-xitter-parent-profile-picture"
     >
@@ -59,7 +63,7 @@ const { content } = processContent(tweet, { interactive: true, host: host });
     <div class="astro-xitter-parent-profile">
       <div class="astro-xitter-parent-profile-metadata">
         <Link
-          title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-name astro-xitter-link"
         >
@@ -89,7 +93,7 @@ const { content } = processContent(tweet, { interactive: true, host: host });
                 width={20}
                 height={20}
                 src={user.highlighted_label.badge.url}
-                alt={user.highlighted_label.badgeType ?? 'Verified Badge'}
+                alt={user.highlighted_label.badgeType ?? translations.verified}
                 class="astro-xitter-parent-profile-highlighted-label"
               />
             )
@@ -98,18 +102,12 @@ const { content } = processContent(tweet, { interactive: true, host: host });
 
         <span class="astro-xitter-profile-separator">&middot;</span>
 
-        {
-          new Date(created_at).toLocaleString(locale, {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-          })
-        }
+        {dateFormat.format(created_at)}
       </div>
 
       <div class="astro-xitter-parent-profile-screen">
         <Link
-          title={host.type === 'twitter' ? 'View Profile on X' : 'View Profile'}
+          title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
           href={resolveUserProfile(tweet, host)}
           class="astro-xitter-parent-profile-screen-name astro-xitter-link"
         >
@@ -122,11 +120,11 @@ const { content } = processContent(tweet, { interactive: true, host: host });
               <span class="astro-xitter-parent-profile-separator">&middot;</span>
 
               <Link
+                title={formatLabel(translations.viewProfileOn, { host: HostLabelMap[host.type] }, locale)}
                 class="astro-xitter-parent-profile-screen-follow astro-xitter-link"
-                title="View Profile on X"
                 href={`https://x.com/intent/follow?screen_name=${user.screen_name}`}
               >
-                Follow
+                {translations.follow}
               </Link>
             </>
           )
@@ -140,9 +138,23 @@ const { content } = processContent(tweet, { interactive: true, host: host });
 
     {tweet.photos && tweet.photos.length > 0 && <XitterPhotos tweet={tweet} host={host} />}
 
-    {tweet.video && <XitterVideo tweet={tweet} interactive={interactive} host={host} />}
+    {
+      tweet.video && (
+        <XitterVideo tweet={tweet} interactive={interactive} translations={translations} host={host} locale={locale} />
+      )
+    }
 
-    {tweet.quoted_tweet && <XitterQuote tweet={tweet.quoted_tweet} interactive={interactive} host={host} />}
+    {
+      tweet.quoted_tweet && (
+        <XitterQuote
+          locale={locale}
+          tweet={tweet.quoted_tweet}
+          interactive={interactive}
+          translations={translations}
+          host={host}
+        />
+      )
+    }
   </div>
 </div>
 
@@ -200,7 +212,7 @@ const { content } = processContent(tweet, { interactive: true, host: host });
       flex: 1;
 
       margin: 0;
-      margin-left: calc(2 * var(--astro-xitter-spacing));
+      margin-inline-start: calc(2 * var(--astro-xitter-spacing));
       margin-bottom: calc(3 * var(--astro-xitter-spacing));
     }
 
