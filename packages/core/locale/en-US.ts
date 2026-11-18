@@ -3,7 +3,7 @@ import type { Locale as LocaleType, Translation } from '../src/types';
 const translations: Translation = {
   viewProfileOn: 'View Profile on {host}',
   follow: 'Follow',
-  verified: 'Verified Badge',
+  verified: 'Verified account',
 
   likeTooltip: 'Like this Tweet',
   replyTooltip: 'Reply this Tweet',
