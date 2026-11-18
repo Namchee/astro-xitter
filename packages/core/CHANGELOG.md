@@ -1,5 +1,15 @@
 # astro-xitter
 
+## 1.3.0
+
+### Minor Changes
+
+- [#19](https://github.com/Namchee/astro-xitter/pull/19) [`915820d`](https://github.com/Namchee/astro-xitter/commit/915820d13db3fef34349b4e009ad00ce1216bb8c) Thanks [@Namchee](https://github.com/Namchee)! - Add extended i18n support with translation dictionary
+
+### Patch Changes
+
+- [#19](https://github.com/Namchee/astro-xitter/pull/19) [`915820d`](https://github.com/Namchee/astro-xitter/commit/915820d13db3fef34349b4e009ad00ce1216bb8c) Thanks [@Namchee](https://github.com/Namchee)! - Honor the locale for quoted tweet dates, and drop the leading zero from formatted times to match X
+
 ## 1.2.4
 
 ### Patch Changes
